@@ -1,0 +1,29 @@
+{
+  "name": "huckleberry-ogre",
+  "version": "1.0.0",
+  "description": "Playground personal website",
+  "main": "backend/bin/runServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon bin/runServer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kgaregin/huckleberry-ogre.git"
+  },
+  "author": "Huckleberry Ogre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kgaregin/huckleberry-ogre/issues"
+  },
+  "homepage": "https://github.com/kgaregin/huckleberry-ogre#readme",
+  "devDependencies": {
+    "body-parser": "^1.17.2",
+    "camo": "^0.12.3",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "mongodb": "^2.2.29",
+    "morgan": "^1.8.2",
+    "serve-favicon": "^2.4.3"
+  }
+}
