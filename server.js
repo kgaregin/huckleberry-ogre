@@ -9,6 +9,7 @@ const DB_URI = "mongodb://huckleberryogre:iamcook1@ogre-cluster-shard-00-00-ryml
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const dictionary = require('./routes/dictionary');
 
 const server = express();
 server.set('env', 'development');
@@ -21,8 +22,10 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
 
+// Routes:
 server.use('/', index);
 server.use('/users', users);
+server.use('/dictionary', dictionary);
 
 // catch 404 and forward to error handler
 server.use( (req, res, next) => {

@@ -26,7 +26,7 @@ const serverInstance = http.createServer(server);
  */
 
 serverInstance.listen(port);
-console.dir(`Server being listened on localhost:${port}`)
+// console.dir(`Server being listened on localhost:${port}`)
 serverInstance.on('error', onError);
 serverInstance.on('listening', onListening);
 
