@@ -5,7 +5,7 @@
   "main": "backend/bin/runServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon bin/runServer.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -17,17 +17,8 @@
     "url": "https://github.com/kgaregin/huckleberry-ogre/issues"
   },
   "homepage": "https://github.com/kgaregin/huckleberry-ogre#readme",
-  "devDependencies": {
-    "body-parser": "^1.17.2",
-    "camo": "^0.12.3",
-    "cookie-parser": "^1.4.3",
-    "express": "^4.15.3",
-    "mongodb": "^2.2.29",
-    "morgan": "^1.8.2",
-    "serve-favicon": "^2.4.3"
-  },
   "dependencies": {
-    "hapi": "^16.5.2",
+    "hapi": "^16.4.3",
     "mysql2": "^1.4.1",
     "sequelize": "^4.7.0"
   }

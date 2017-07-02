@@ -1,10 +1,7 @@
-var express = require('express');
-var router = express.Router();
-const PostActions = new require('../src/db/actions/blog/post');
+const DictionaryRouter = require("./dictionary");
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const Routes = [
+    DictionaryRouter,
+]
 
-module.exports = router;
+module.exports = Routes;
