@@ -1,0 +1,20 @@
+{
+  "db":{
+    "remote":{
+      "host": "sql11.freemysqlhosting.net",
+      "port": 3306,
+      "name": "sql11191313",
+      "user": "sql11191313",
+      "password": "j8UlbM3GIV",
+      "dialect": "mysql"
+    },
+    "local":{
+      "host": "localhost",
+      "port": 3306,
+      "name": "huckleberrydb",
+      "user": "root",
+      "password": "Iamcook1",
+      "dialect": "mysql"
+    }
+  }
+}
