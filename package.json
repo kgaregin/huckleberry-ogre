@@ -19,6 +19,8 @@
   "homepage": "https://github.com/kgaregin/huckleberry-ogre#readme",
   "dependencies": {
     "hapi": "^16.4.3",
+    "klaw-sync": "^3.0.0",
+    "lodash": "^4.17.4",
     "mysql2": "^1.4.1",
     "sequelize": "^4.7.0"
   }

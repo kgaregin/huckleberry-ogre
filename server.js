@@ -1,12 +1,15 @@
 'use strict';
-const Routes = require("./routes/index");
-
+const readDirSync = require('klaw-sync');
 const Hapi = require('hapi');
-
+const {isFunction} = require('lodash');
 const server = new Hapi.Server();
 server.connection({port: 3000, host: 'localhost'});
 
-Routes.forEach((Route) => Route(server));
+const routeDirs = readDirSync('./routes', {nodir: true});
+routeDirs.forEach((routeDir) => {
+    const route = require(routeDir.path);
+    isFunction(route) && route(server);
+} );
 
 server.start((err) => {
     if (err) {
@@ -14,3 +17,4 @@ server.start((err) => {
     }
     console.log(`Server running at: ${server.info.uri}`);
 });
+
