@@ -28,3 +28,12 @@ node_modules
 
 # Debug log from npm
 npm-debug.log
+src/db/actions/blog/post.js
+src/db/config.js
+src/db/db.js
+src/db/models/blog/post.js
+src/routes/blog.js
+src/routes/home.js
+src/routes/index.js
+src/server.js
+/.idea/
