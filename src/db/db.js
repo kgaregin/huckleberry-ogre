@@ -1,27 +1,16 @@
-const Sequelize = require('sequelize');
-const config = require('./config');
-const {
-    host, port, name, user, password, dialect
-} = config.db.remote;
-
-const sequelize = new Sequelize(name, user, password, {
-    host, port, dialect
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Sequelize = require("sequelize");
+var config_1 = require("./config");
+var post_1 = require("./models/blog/post");
+var _a = config_1.config.db.remote, host = _a.host, port = _a.port, name = _a.name, user = _a.user, password = _a.password, dialect = _a.dialect;
+var sequelize = new Sequelize(name, user, password, {
+    host: host, port: port, dialect: dialect
 });
-
-sequelize.import('./models/blog/post');
-
-sequelize.sync().then(() => {
-
-    console.log(`db synchronised successful`);
-}).catch(error => {
-    console.log(`db synchronise error: ${error}`)
+exports.sequelize = sequelize;
+sequelize.import('post', post_1.PostModel);
+sequelize.sync().then(function () {
+    console.log("db synchronised successful");
+}).catch(function (error) {
+    console.log("db synchronise error: " + error);
 });
-
-module.exports = sequelize;
-
-const PostActions = new require('./actions/blog/post');
-
-PostActions.newPost({title: 'Hello', message: 'world'}).then(
-    () => console.log('new post created!'),
-    (error) => console.log(error)
-);

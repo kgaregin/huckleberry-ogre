@@ -1,4 +1,6 @@
-HomeRoute = (server) => {
+import {Server} from 'hapi';
+
+const HomeRoute = (server: Server) => {
     server.route({
         method: 'GET',
         path: '/',
@@ -8,4 +10,4 @@ HomeRoute = (server) => {
     });
 };
 
-module.exports = HomeRoute;
+export {HomeRoute};
