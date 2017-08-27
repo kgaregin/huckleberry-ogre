@@ -1,6 +1,12 @@
 import {Sequelize, DataTypes} from 'sequelize';
 
-export interface IPost {title: string, message: string};
+export interface IPost {
+    id?: number,
+    title?: string,
+    message?: string,
+    createdAt?: string,
+    updatedAt?: string
+}
 
 const PostModel = (sequelize: Sequelize, DataTypes: DataTypes) => sequelize.define(
     'post',
