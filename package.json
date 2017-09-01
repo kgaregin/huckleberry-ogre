@@ -1,11 +1,11 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js"
+    "start": "ts-node-dev --project src/server src/server/server "
   },
   "repository": {
     "type": "git",
@@ -19,13 +19,27 @@
   "homepage": "https://github.com/kgaregin/huckleberry-ogre#readme",
   "dependencies": {
     "@types/hapi": "^16.1.9",
-    "@types/klaw-sync": "^1.1.2",
+    "@types/inert": "^4.2.3",
     "@types/lodash": "^4.14.74",
     "@types/sequelize": "^4.0.72",
     "hapi": "^16.4.3",
-    "klaw-sync": "^3.0.0",
+    "inert": "^4.2.1",
     "lodash": "^4.17.4",
     "mysql2": "^1.4.1",
     "sequelize": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
+    "@types/react-redux": "^5.0.6",
+    "awesome-typescript-loader": "^3.2.3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.5.2",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
   }
 }

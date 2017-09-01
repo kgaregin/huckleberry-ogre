@@ -2,12 +2,24 @@
 import * as Hapi from 'hapi';
 import {forEach} from 'lodash';
 import * as routes from './routes';
+import * as inert from 'inert';
+import * as path from 'path';
+
 const server = new Hapi.Server();
+
 server.connection({port: 3000, host: 'localhost'});
 
-forEach(routes,(route) => {
+server.register(inert, (err) => {
+    if (err) {
+        throw err;
+    }
+});
+
+server.path(path.join(__dirname, '../public'));
+
+forEach(routes, (route) => {
     route(server);
-} );
+});
 
 server.start((err) => {
     if (err) {
