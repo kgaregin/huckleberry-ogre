@@ -16,11 +16,11 @@ module.exports = {
             enforce: "pre",
             test: /\.ts|\.tsx$/,
             loader: "source-map-loader",
-            include: __dirname
+            include: path.resolve(__dirname, 'src/frontSource')
         }, {
             test: /\.ts|\.tsx$/,
             loader: "awesome-typescript-loader",
-            include: __dirname
+            include: path.resolve(__dirname, 'src/frontSource')
         }]
     },
     externals: {
