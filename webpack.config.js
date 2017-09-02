@@ -3,10 +3,14 @@ const path = require('path');
 module.exports = {
     entry: './src/frontSource/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'src/public'),
+        path: path.resolve(__dirname, 'src/dist'),
         filename: 'bundle.js'
     },
     devtool: "source-map",
+    devServer: {
+        contentBase: './src/dist',
+        port: 8080
+    },
     module: {
         rules: [{
             enforce: "pre",

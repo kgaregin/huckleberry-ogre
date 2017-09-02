@@ -15,7 +15,7 @@ server.register(inert, (err) => {
     }
 });
 
-server.path(path.join(__dirname, '../public'));
+server.path(path.join(__dirname, '../dist'));
 
 forEach(routes, (route) => {
     route(server);
