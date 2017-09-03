@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/frontSource/index.tsx',
@@ -9,7 +10,12 @@ module.exports = {
     devtool: "source-map",
     devServer: {
         contentBase: './src/dist',
-        port: 8080
+        port: 8080,
+        hot: true
+    },
+    resolve: {
+        // Add '.ts' and '.tsx' as resolvable extensions.
+        extensions: [".ts", ".tsx", ".js", ".json"]
     },
     module: {
         rules: [{
@@ -23,6 +29,9 @@ module.exports = {
             include: path.resolve(__dirname, 'src/frontSource')
         }]
     },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
     externals: {
         "react": "React",
         "react-dom": "ReactDOM"

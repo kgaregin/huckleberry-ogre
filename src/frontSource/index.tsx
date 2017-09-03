@@ -1,11 +1,23 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-// import { Provider } from "react-redux";
-// import { createStore } from "redux";
+import {
+    BrowserRouter as Router,
+    Route
+} from 'react-router-dom';
+import {GlobalLayout, Navigation} from './core';
+import {Blog} from './components/blog/blog';
 
-// const store = createStore(toDoApp);
-
-ReactDOM.render(
-    <div>Hello!</div>,
+ReactDOM.render(<div>
+        <GlobalLayout>
+            <Router>
+                <div>
+                    <Navigation/>
+                    <Route path="/" exact={true} component={Blog}/>
+                    <Route path="/blog/post/:mode" component={Blog}/>
+                </div>
+            </Router>
+        </GlobalLayout>
+    </div>
+    ,
     document.getElementById("root")
 );
