@@ -24,6 +24,15 @@ module.exports = {
             loader: "source-map-loader",
             include: path.resolve(__dirname, 'src/frontSource')
         }, {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader']
+        }, {
+            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+            loader: 'url-loader',
+            options: {
+                limit: 10000
+            }
+        }, {
             test: /\.ts|\.tsx$/,
             loader: "awesome-typescript-loader",
             include: path.resolve(__dirname, 'src/frontSource')

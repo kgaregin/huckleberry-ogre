@@ -1,16 +1,30 @@
 import * as React from "react";
-import {Grid, Row, Col} from 'react-bootstrap';
+import {MuiThemeProvider, createMuiTheme, withStyles} from 'material-ui/styles';
+import {Paper, Grid} from 'material-ui';
+import {green, red, purple} from 'material-ui/colors';
+
+
+const theme = createMuiTheme({
+    palette: {
+        primary: purple, // Purple and green play nicely together.
+        secondary: {
+            ...green,
+            A400: '#00e677',
+        },
+        error: red,
+    },
+});
 
 class GlobalLayout extends React.Component<{}, {}> {
     render() {
         return (
-            <Grid>
-                <Row className="show-grid">
-                    <Col xs={12}>
+            <MuiThemeProvider theme={theme}>
+                <Grid item xs={12}>
+                    <Paper>
                         {this.props.children}
-                    </Col>
-                </Row>
-            </Grid>);
+                    </Paper>
+                </Grid>
+            </MuiThemeProvider>);
     }
 }
 
