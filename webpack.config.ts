@@ -7,7 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, 'src/dist'),
         filename: 'bundle.js'
     },
-    devtool: "source-map",
+    devtool: 'source-map',
     devServer: {
         contentBase: './src/dist',
         port: 8080,
@@ -15,13 +15,13 @@ module.exports = {
     },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js", ".json"]
+        extensions: ['d.ts','.ts', '.tsx', '.js', '.json']
     },
     module: {
         rules: [{
-            enforce: "pre",
+            enforce: 'pre',
             test: /\.ts|\.tsx$/,
-            loader: "source-map-loader",
+            loader: 'source-map-loader',
             include: path.resolve(__dirname, 'src/frontSource')
         }, {
             test: /\.css$/,
@@ -34,7 +34,10 @@ module.exports = {
             }
         }, {
             test: /\.ts|\.tsx$/,
-            loader: "awesome-typescript-loader",
+            loader: 'awesome-typescript-loader',
+            options: {
+                configFileName: path.resolve(__dirname, 'src/frontSource/tsconfig.json')
+            },
             include: path.resolve(__dirname, 'src/frontSource')
         }]
     },
@@ -42,7 +45,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin()
     ],
     externals: {
-        "react": "React",
-        "react-dom": "ReactDOM"
+        'react': 'React',
+        'react-dom': 'ReactDOM'
     }
 };

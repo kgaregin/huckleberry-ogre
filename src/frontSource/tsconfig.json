@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "pretty": true,
+    "module": "commonjs",
+    "noEmit": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "target": "ES5",
+    "jsx": "react",
+    "sourceMap": true
+  }
+}

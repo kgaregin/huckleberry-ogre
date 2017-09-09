@@ -1,12 +1,26 @@
 {
   "compilerOptions": {
-    "pretty": true,
-    "module": "commonjs",
-    "noEmit": true,
-    "strict": true,
-    "experimentalDecorators": true,
-    "target": "ES5",
-    "jsx": "react",
-    "sourceMap": true
-  }
+    "baseUrl": "src/frontSource"
+  },
+
+  "typeRoots": [
+    "node_modules/@types",
+    "node_modules"
+  ],
+  "types": [
+    "node",
+    "lodash",
+    "react",
+    "react-dom",
+    "react-redux",
+    "material-ui",
+    "react-router-dom",
+    "redux",
+    "material-ui-icons"
+  ],
+  "include": [
+    "src/frontSource/**/*",
+    "node_modules/@types/**/*.d.ts",
+    "node_modules/material-ui-icons/*.d.ts"
+  ]
 }

@@ -1,4 +1,4 @@
-import {GlobalLayout} from './GlobalLayout';
-import {Navigation} from "./Navigation";
+import {GlobalLayout} from './components/GlobalLayout';
+import {Navigation} from "./components/Navigation";
 
 export {GlobalLayout, Navigation};
