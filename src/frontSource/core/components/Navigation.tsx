@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Link} from 'react-router-dom';
 import {
     AppBar,
     IconButton,
@@ -11,93 +10,99 @@ import {
     ListItemIcon,
     ListItemText
 } from "material-ui";
-import MenuIcon from 'material-ui-icons/Menu';
-import BorderColorIcon from 'material-ui-icons/BorderColor';
+import BorderColorIcon from "material-ui-icons/BorderColor";
+import MenuIcon from "material-ui-icons/Menu";
+import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/core/components/Navigation";
 import {IWithClasses} from "../Interfaces";
+import * as classNames from "classnames";
+import Divider from "material-ui/Divider";
+import {RouteComponentProps, withRouter, Route} from "react-router-dom";
+import {Blog} from "../../components/blog/Blog";
 
-class NavigationComponent extends React.Component <IWithClasses> {
+class NavigationComponent extends React.Component <IWithClasses & RouteComponentProps<void>> {
     state = {
         isDrawerOpen: false,
     };
 
-    onMenuButtonClick = () => {
+    private handleDrawerOpen = () => {
         this.setState({isDrawerOpen: true});
     };
 
-    onDrawerClose = () => {
+    private handleDrawerClose = () => {
         this.setState({isDrawerOpen: false});
+    };
+
+    private handleListItemClick = (to: string = '/') => {
+        this.props.history.push(to);
+    };
+
+    private getNavList = () => {
+        const {classes} = this.props;
+        return (
+            <div>
+                <List onClick={() => this.handleListItemClick('/blog')} className={classes.list}>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon>
+                            <BorderColorIcon/>
+                        </ListItemIcon>
+                        <ListItemText className={classes.listItemText} primary="Blog"/>
+                    </ListItem>
+                </List>
+            </div>
+        );
     };
 
     render() {
         const {classes} = this.props;
 
-        const navList = (
-            <div>
-                <List className={classes.list}>
-                    <ListItem>
-                        <Link to="/">
-                            <ListItemIcon>
-                                <BorderColorIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Blog" />
-                        </Link>
-                    </ListItem>
-                </List>
-            </div>
-        );
-
         return (
-            <AppBar position="static">
-                <Toolbar disableGutters>
-                    <IconButton
-                        className={classes.menuButton}
-                        color="contrast"
-                        aria-label="Menu"
-                        onClick={this.onMenuButtonClick}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-                    <Typography type="title" color="inherit" className={classes.flex}>
-                        {'Huckleberry Ogre Home'}
-                    </Typography>
+            <div className={classes.root}>
+                <div className={classes.appFrame}>
+                    <AppBar className={classNames(classes.appBar, this.state.isDrawerOpen && classes.appBarShift)}>
+                        <Toolbar className={classes.toolbar} disableGutters={!this.state.isDrawerOpen}>
+                            <IconButton
+                                className={classNames(classes.menuButton, this.state.isDrawerOpen && classes.hide)}
+                                color="contrast"
+                                aria-label="open drawer"
+                                onClick={this.handleDrawerOpen}
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            <Typography type="title" color="inherit" className={classes.flex}>
+                                {'Huckleberry Ogre Home'}
+                            </Typography>
+                            {/*<Button color="contrast">Login</Button>*/}
+                        </Toolbar>
+                    </AppBar>
                     <Drawer
-                        type={'persistent'}
+                        type="persistent"
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
                         open={this.state.isDrawerOpen}
-                        onRequestClose={this.onDrawerClose}
-                        onClick={this.onDrawerClose}
                     >
-                        {navList}
+                        <div className={classes.drawerInner}>
+                            <div className={classes.drawerHeader}>
+                                <IconButton onClick={this.handleDrawerClose}>
+                                    <ChevronLeftIcon/>
+                                </IconButton>
+                            </div>
+                            <Divider/>
+                            <List className={classes.list}>{this.getNavList()}</List>
+                            <Divider/>
+                        </div>
                     </Drawer>
-                    {/*<Button color="contrast">Login</Button>*/}
-                </Toolbar>
-            </AppBar>);
+                    <main className={classNames(classes.content, this.state.isDrawerOpen && classes.contentShift)}>
+                        <Route path="/" exact={true} render={() => <h1>Main page under construction</h1>}/>
+                        <Route path="/blog/:mode?" component={Blog}/>
+                    </main>
+                </div>
+            </div>);
     }
 }
 
-const Navigation = withStyles(styles)(NavigationComponent);
-
-// <Navbar inverse collapseOnSelect>
-//     <Navbar.Header>
-//         <Navbar.Brand>
-//             <LinkContainer to="/" exact={true}>
-//                 <a>Huckleberry Ogre Homepage</a>
-//             </LinkContainer>
-//         </Navbar.Brand>
-//         <Navbar.Toggle/>
-//     </Navbar.Header>
-//     <Navbar.Collapse>
-//         <Nav>
-//             <LinkContainer to="/" exact={true}>
-//                 <NavItem eventKey={1}>Blog</NavItem>
-//             </LinkContainer>
-//             <LinkContainer to="/blog/post/CREATE" exact={true}>
-//                 <NavItem eventKey={2}>New post</NavItem>
-//             </LinkContainer>
-//         </Nav>
-//     </Navbar.Collapse>
-// </Navbar>
-
+const Navigation = withRouter(withStyles(styles)(NavigationComponent));
 
 export {Navigation};
