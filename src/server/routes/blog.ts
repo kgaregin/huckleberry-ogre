@@ -19,8 +19,8 @@ const BlogRoute = (server: Server) => {
         method: 'POST',
         path: '/rest/blog',
         handler: (request, reply) => {
-            const findPostOptions = request.query;
-            PostActions.newPost(findPostOptions).then(
+            const createPostOptions = request.payload;
+            PostActions.newPost(createPostOptions).then(
                 (post) => reply(post),
                 (error) => reply({error})
             )

@@ -5,6 +5,7 @@ import {
     Typography,
     Toolbar,
     Drawer,
+    Grid,
     List,
     ListItem,
     ListItemIcon,
@@ -95,8 +96,12 @@ class NavigationComponent extends React.Component <IWithClasses & RouteComponent
                         </div>
                     </Drawer>
                     <main className={classNames(classes.content, this.state.isDrawerOpen && classes.contentShift)}>
-                        <Route path="/" exact={true} render={() => <h1>Main page under construction</h1>}/>
-                        <Route path="/blog/:mode?" component={Blog}/>
+                        <Grid container justify={'center'}>
+                            <Grid item xl={7} lg={9} md={11} sm={12} xs={12}>
+                                <Route path="/" exact={true} render={() => <h1>Main page under construction</h1>}/>
+                                <Route path="/blog/:mode?" component={Blog}/>
+                            </Grid>
+                        </Grid>
                     </main>
                 </div>
             </div>);

@@ -9,8 +9,9 @@ class PostActions {
         return Post.findAll({where: findPostOptions});
     }
 
-    public static newPost(post: IPost) {
-        return Post.create(post);
+    public static newPost(post: string) {
+        const {title, message} = JSON.parse(post);
+        return Post.create({title, message});
     }
 
     public static deletePost(post: IPost) {
