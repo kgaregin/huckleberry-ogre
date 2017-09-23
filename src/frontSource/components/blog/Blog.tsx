@@ -9,17 +9,12 @@ import {TextField, Button} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
-import {getBlogPosts, handleFormInput} from './Actions';
+import {getBlogPosts, handleFormInput, createBlogPost} from './Actions';
 import {connect} from "react-redux";
-import {polyfill as promiseAutoPolyfill} from "es6-promise";
-import * as fetch from "isomorphic-fetch";
 import {IBlog, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
 import {mergeProps} from "../../core/utils/Utils";
 import {IReduxStore} from "../../core/reduxStore";
-
-promiseAutoPolyfill();
-
 
 type event = FormEvent<HTMLDivElement> & IWithTargetValue<string>;
 
@@ -27,17 +22,6 @@ type BlogComponentType = IBlogProps & IWithClasses & RouteComponentProps<{ mode:
 
 @withRouter
 class BlogComponent extends Component<BlogComponentType> {
-
-    // private handleFormFieldChange = (event: event, name: 'title' | 'message') => {
-    //     const value = event.target.value;
-    //     this.setState(prevState => ({
-    //         ...prevState,
-    //         form: {
-    //             ...prevState.form,
-    //             [name]: value
-    //         }
-    //     }));
-    // };
 
     private handleCreatePostButtonClick = () => {
         this.props.history.push('/blog/CREATE');
@@ -60,15 +44,18 @@ class BlogComponent extends Component<BlogComponentType> {
     // };
 
     renderPostEdit = () => {
-        const {classes} = this.props;
+        const {classes, isFetchInProgress} = this.props;
+        const {title, message} = this.props.form;
+        const {createBlogPost, handleFormInput} = this.props.actions;
+
         return (
             <form className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="title"
                     label="Title"
                     className={classes.textField}
-                    value={this.props.form.title}
-                    onChange={(event: event) => this.props.actions.handleFormInput('title', event.target.value)}
+                    value={title}
+                    onChange={(event: event) => handleFormInput('title', event.target.value)}
                     margin="normal"
                     fullWidth
                 />
@@ -79,16 +66,17 @@ class BlogComponent extends Component<BlogComponentType> {
                     multiline
                     fullWidth
                     rows={"24"}
-                    value={this.props.form.message}
-                    onChange={(event: event) => this.props.actions.handleFormInput('message', event.target.value)}
+                    value={message}
+                    onChange={(event: event) => handleFormInput('message', event.target.value)}
                     margin="normal"
                     placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
                 />
                 <Button
+                    onClick={() => createBlogPost(title, message)}
                     raised color="primary"
                     className={classes.button}
-                    disabled={this.props.isFetchInProgress}
+                    disabled={isFetchInProgress}
                 >
                     Submit
                 </Button>
@@ -122,7 +110,7 @@ class BlogComponent extends Component<BlogComponentType> {
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
 const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
-    return {actions: bindActionCreators({getBlogPosts, handleFormInput}, dispatch)}
+    return {actions: bindActionCreators({getBlogPosts, handleFormInput, createBlogPost}, dispatch)}
 };
 
 const Blog = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(BlogComponent));

@@ -1,23 +1,27 @@
-import {combineReducers, createStore} from "redux";
-import {isFunction} from "lodash";
+import {combineReducers, createStore, applyMiddleware, compose} from "redux";
 import {blogInitial, blogReducer} from "../components/blog/Reducers";
 import {IBlog} from "../components/blog/Models";
+import thunkMiddleware from 'redux-thunk';
 
 const combinedReducers = combineReducers({blogReducer});
 
 const preloadedState = {
-    blogReducer:{
+    blogReducer: {
         ...blogInitial.state
     }
 };
 
 // see docs at https://github.com/zalmoxisus/redux-devtools-extension
-const reduxDevtoolsExtension = (window as any).__REDUX_DEVTOOLS_EXTENSION__;
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
     combinedReducers,
     preloadedState,
-    isFunction(reduxDevtoolsExtension) && reduxDevtoolsExtension()
+    composeEnhancers(
+        applyMiddleware(
+            thunkMiddleware
+        )
+    )
 );
 
 export interface IReduxStore {

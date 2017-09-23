@@ -37,6 +37,17 @@ export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, ac
                     [action.fieldName]: action.fieldValue,
                 }
             };
+        case 'FETCH_BEGIN':
+            return {
+                ...state,
+                isFetchInProgress: true
+            };
+        case 'FETCH_SUCCESS':
+        case 'FETCH_FAIL':
+            return {
+                ...state,
+                isFetchInProgress: false
+            };
         default:
             return state;
     }
