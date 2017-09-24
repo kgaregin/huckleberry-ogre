@@ -1,10 +1,8 @@
 import * as React from "react";
 import {Component} from "react";
-import {withRouter} from 'react-router-dom';
 import {MODE} from "./Enums";
-import {RouteComponentProps} from "react-router-dom";
-import {FormEvent} from "react";
-import {IWithClasses, IWithTargetValue} from "../../core/Interfaces";
+import {withRouter, RouteComponentProps} from "react-router-dom";
+import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {TextField, Button} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
@@ -16,32 +14,12 @@ import {Dispatch, bindActionCreators} from "redux";
 import {mergeProps} from "../../core/utils/Utils";
 import {IReduxStore} from "../../core/reduxStore";
 
-type event = FormEvent<HTMLDivElement> & IWithTargetValue<string>;
-
-type BlogComponentType = IBlogProps & IWithClasses & RouteComponentProps<{ mode: MODE }>;
-
 @withRouter
-class BlogComponent extends Component<BlogComponentType> {
+class BlogComponent extends Component<IBlogProps> {
 
     private handleCreatePostButtonClick = () => {
         this.props.history.push('/blog/CREATE');
     };
-
-    // private handlePostEdit = () => {
-    //     const {title, message} = this.state.form;
-    //     this.setState({isFetchInProgress: true});
-    //     fetch('http://localhost:3000/rest/blog', {
-    //         method: 'post',
-    //         mode: 'no-cors',
-    //         body: JSON.stringify({
-    //             title,
-    //             message
-    //         })
-    //     }).then(() => this.setState(initialState),
-    //         reason => console.log(reason)
-    //     );
-    //
-    // };
 
     renderPostEdit = () => {
         const {classes, isFetchInProgress} = this.props;
@@ -55,7 +33,7 @@ class BlogComponent extends Component<BlogComponentType> {
                     label="Title"
                     className={classes.textField}
                     value={title}
-                    onChange={(event: event) => handleFormInput('title', event.target.value)}
+                    onChange={(event: FormEventWithTargetValue<string>) => handleFormInput('title', event.target.value)}
                     margin="normal"
                     fullWidth
                 />
@@ -67,7 +45,7 @@ class BlogComponent extends Component<BlogComponentType> {
                     fullWidth
                     rows={"24"}
                     value={message}
-                    onChange={(event: event) => handleFormInput('message', event.target.value)}
+                    onChange={(event: FormEventWithTargetValue<string>) => handleFormInput('message', event.target.value)}
                     margin="normal"
                     placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
@@ -104,8 +82,6 @@ class BlogComponent extends Component<BlogComponentType> {
         </div>);
     }
 }
-
-
 
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 

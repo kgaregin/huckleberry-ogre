@@ -1,8 +1,15 @@
 import {Reducer} from "redux";
 import {IBlog} from "./Models";
+import {
+    GET_BLOG_POSTS,
+    HANDLE_FORM_INPUT,
+    FETCH_BEGIN,
+    FETCH_SUCCESS,
+    FETCH_FAIL,
+} from './Actions'
 
 /**
- * Инициализирующее состояние стора.
+ * Initial blog state.
  */
 export const blogInitial = {
     get state() {
@@ -17,11 +24,11 @@ export const blogInitial = {
 };
 
 /**
- * Редюсер блога.
+ * Blog reducer.
  */
 export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, action) => {
     switch (action.type) {
-        case 'GET_BLOG_POSTS':
+        case GET_BLOG_POSTS:
             return {
                 ...state,
                 form: {
@@ -29,7 +36,7 @@ export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, ac
                     message: 'okay',
                 }
             };
-        case 'HANDLE_FORM_INPUT':
+        case HANDLE_FORM_INPUT:
             return {
                 ...state,
                 form: {
@@ -37,13 +44,13 @@ export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, ac
                     [action.fieldName]: action.fieldValue,
                 }
             };
-        case 'FETCH_BEGIN':
+        case FETCH_BEGIN:
             return {
                 ...state,
                 isFetchInProgress: true
             };
-        case 'FETCH_SUCCESS':
-        case 'FETCH_FAIL':
+        case FETCH_SUCCESS:
+        case FETCH_FAIL:
             return {
                 ...state,
                 isFetchInProgress: false

@@ -30,5 +30,5 @@ node_modules
 npm-debug.log
 /.idea/
 huckleberry-ogre.iml
-/src/dist/bundle.js
-/src/dist/bundle.js.map
+/src/server/db/config.ts
+

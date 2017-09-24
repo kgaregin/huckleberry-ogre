@@ -1,5 +1,11 @@
 import {Dispatch} from "redux";
+import {IWithClasses} from "../../core/Interfaces";
+import {MODE} from "./Enums";
+import {RouteComponentProps} from "react-router-dom";
 
+/**
+ * Blog model.
+ */
 export interface IBlog {
     form: {
         title: string;
@@ -8,13 +14,18 @@ export interface IBlog {
     isFetchInProgress: boolean
 }
 
+/**
+ * Blog actions.
+ */
 export interface IBlogActions {
     getBlogPosts: () => void;
     handleFormInput: (fieldName: string, fieldValue: string) => void;
     createBlogPost: (title: string, message: string) => (dispatch: Dispatch<null>) => Promise<{type: string, reason: string} | {type: string, responseValue: Response}>;
 }
 
-export interface IBlogProps extends IBlog{
+/**
+ * Blog component props with classes, router and redux actions.
+ */
+export interface IBlogProps extends IBlog, IWithClasses, RouteComponentProps<{ mode: MODE }>{
     actions: IBlogActions
 }
-
