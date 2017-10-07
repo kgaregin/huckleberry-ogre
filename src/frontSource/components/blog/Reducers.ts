@@ -29,12 +29,9 @@ export const blogInitial = {
 export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, action) => {
     switch (action.type) {
         case GET_BLOG_POSTS:
+            action.posts;
             return {
-                ...state,
-                form: {
-                    title: 'nope',
-                    message: 'okay',
-                }
+                ...state
             };
         case HANDLE_FORM_INPUT:
             return {

@@ -7,7 +7,7 @@ import {TextField, Button} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
-import {getBlogPosts, handleFormInput, createBlogPost} from './Actions';
+import {requestBlogPosts, handleFormInput, submitBlogPost} from './Actions';
 import {connect} from "react-redux";
 import {IBlog, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
@@ -18,13 +18,14 @@ import {IReduxStore} from "../../core/reduxStore";
 class BlogComponent extends Component<IBlogProps> {
 
     private handleCreatePostButtonClick = () => {
-        this.props.history.push('/blog/CREATE');
+        // this.props.history.push('/blog/CREATE');
+        this.props.actions.requestBlogPosts(16);
     };
 
     renderPostEdit = () => {
         const {classes, isFetchInProgress} = this.props;
         const {title, message} = this.props.form;
-        const {createBlogPost, handleFormInput} = this.props.actions;
+        const {submitBlogPost, handleFormInput} = this.props.actions;
 
         return (
             <form className={classes.container} noValidate autoComplete="off">
@@ -51,7 +52,7 @@ class BlogComponent extends Component<IBlogProps> {
                     type={'text'}
                 />
                 <Button
-                    onClick={() => createBlogPost(title, message)}
+                    onClick={() => submitBlogPost(title, message)}
                     raised color="primary"
                     className={classes.button}
                     disabled={isFetchInProgress}
@@ -86,7 +87,7 @@ class BlogComponent extends Component<IBlogProps> {
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
 const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
-    return {actions: bindActionCreators({getBlogPosts, handleFormInput, createBlogPost}, dispatch)}
+    return {actions: bindActionCreators({requestBlogPosts, handleFormInput, submitBlogPost}, dispatch)}
 };
 
 const Blog = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(BlogComponent));

@@ -1,11 +1,7 @@
-import * as fetch from "isomorphic-fetch";
 import {Dispatch} from "redux";
+import {ServiceUtils} from "../../core/utils/ServiceUtils";
 
-/**
- // ToDo: find out if i need this polyfill or babel-polyfill or both not needed (TS should do the job as i see)
- // import {polyfill as promiseAutoPolyfill} from "es6-promise";
- // promiseAutoPolyfill();
- */
+const {get, post} = ServiceUtils;
 
 /**
  * Action types.
@@ -17,38 +13,61 @@ export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAIL = 'FETCH_FAIL';
 
 /**
- *  Actions
+ * Actions
  */
 
 /**
  * Receive all blog posts.
- * @returns {{type: string}}
+ * @returns {Object}
  */
-export function getBlogPosts() {
+export function getBlogPosts(posts: any) {
     return {
         type: GET_BLOG_POSTS,
+        posts
     }
 }
 
 /**
- * Create blog post
+ * Submit blog post
  * @param {string} title
  * @param {string} message
- * @returns {(dispatch: Dispatch<any>) => Promise<{type: string; reason: string} | {type: string; responseValue: Response}>}
+ * @returns {Promise}
  */
-export function createBlogPost(title: string, message: string) {
+export function submitBlogPost(title: string, message: string) {
     return (dispatch: Dispatch<null>) => {
         dispatch(fetchBegin());
-        return fetch('http://localhost:3000/rest/blog', {
-            method: 'post',
-            mode: 'no-cors',
-            body: JSON.stringify({
-                title,
-                message
-            })
-        }).then((responseValue: Response) => dispatch(fetchSuccess(responseValue)),
-            reason => dispatch(fetchFail(reason))
-        );
+        const body = {
+            title,
+            message
+        };
+        return post('blog', body)
+            .then((responseValue: Response) => dispatch(fetchSuccess(responseValue)),
+                reason => dispatch(fetchFail(reason))
+            );
+    }
+}
+
+/**
+ * Submit blog post
+ * @param {number} [id]
+ * @param {string} [title]
+ * @param {string} [message]
+ * @returns {Promise}
+ */
+export function requestBlogPosts(id?: number, title?: string, message?: string) {
+    return (dispatch: Dispatch<null>) => {
+        dispatch(fetchBegin());
+        const payload = {
+            id: `${id}`,
+            title,
+            message
+        };
+        return get('blog', payload)
+            .then(response => {
+                    dispatch(fetchSuccess());
+                    dispatch(getBlogPosts(response));
+                },
+                reason => console.log(reason))
     }
 }
 
@@ -56,7 +75,7 @@ export function createBlogPost(title: string, message: string) {
  * Handles form input events.
  * @param {string} fieldName
  * @param {string} fieldValue
- * @returns {{type: string; fieldName: string; fieldValue: string}}
+ * @returns {Object}
  */
 export function handleFormInput(fieldName: string, fieldValue: string) {
     return {
@@ -78,10 +97,10 @@ export function fetchBegin() {
 
 /**
  * Handle fetch success.
- * @param {Response} responseValue
- * @returns {{type: string; responseValue: Response}}
+ * @param {Response} [responseValue]
+ * @returns {Object}
  */
-export function fetchSuccess(responseValue: Response) {
+export function fetchSuccess(responseValue?: any) {
     return {
         type: FETCH_SUCCESS,
         responseValue
@@ -91,7 +110,7 @@ export function fetchSuccess(responseValue: Response) {
 /**
  * Handle fetch fail.
  * @param {string} reason
- * @returns {{type: string; reason: string}}
+ * @returns {Object}
  */
 export function fetchFail(reason: string) {
     return {

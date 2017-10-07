@@ -7,9 +7,11 @@ const BlogRoute = (server: Server) => {
         method: 'GET',
         path: '/rest/blog',
         handler: (request, reply) => {
-            const findPostOptions = request.query;
-            PostActions.getAllPosts(findPostOptions).then(
-                (post) => reply(post),
+            const queryParams = request.query;
+            PostActions.getAllPosts(queryParams).then(
+                (post) => {
+                    console.log(post)
+                    reply(post)},
                 (error) => reply({error})
             );
         }

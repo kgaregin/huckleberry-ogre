@@ -18,9 +18,9 @@ export interface IBlog {
  * Blog actions.
  */
 export interface IBlogActions {
-    getBlogPosts: () => void;
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{type: string, reason: string} | {type: string, responseValue: Response}>;
     handleFormInput: (fieldName: string, fieldValue: string) => void;
-    createBlogPost: (title: string, message: string) => (dispatch: Dispatch<null>) => Promise<{type: string, reason: string} | {type: string, responseValue: Response}>;
+    submitBlogPost: (title: string, message: string) => (dispatch: Dispatch<null>) => Promise<{type: string, reason: string} | {type: string, responseValue: Response}>;
 }
 
 /**

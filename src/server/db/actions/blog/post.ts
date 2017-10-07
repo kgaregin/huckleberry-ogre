@@ -5,7 +5,10 @@ const Post = sequelize.import('post', PostModel);
 
 class PostActions {
 
-    public static getAllPosts(findPostOptions: IPost = {}) {
+    public static getAllPosts(queryParams: {[key: string]: any}) {
+        const findPostOptions = JSON.parse(queryParams.payload);
+        console.log(findPostOptions);
+        console.log(Post.findAll({where: findPostOptions}))
         return Post.findAll({where: findPostOptions});
     }
 
