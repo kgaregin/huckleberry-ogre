@@ -1,5 +1,6 @@
 import {Dispatch} from "redux";
-import {ServiceUtils} from "../../core/utils/ServiceUtils";
+import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
+import {FETCH_CONTEXT} from "./Enums";
 
 const {get, post} = ServiceUtils;
 
@@ -8,9 +9,7 @@ const {get, post} = ServiceUtils;
  */
 export const GET_BLOG_POSTS = 'GET_BLOG_POSTS';
 export const HANDLE_FORM_INPUT = 'HANDLE_FORM_INPUT';
-export const FETCH_BEGIN = 'FETCH_BEGIN';
-export const FETCH_SUCCESS = 'FETCH_SUCCESS';
-export const FETCH_FAIL = 'FETCH_FAIL';
+
 
 /**
  * Actions
@@ -35,14 +34,14 @@ export function getBlogPosts(posts: any) {
  */
 export function submitBlogPost(title: string, message: string) {
     return (dispatch: Dispatch<null>) => {
-        dispatch(fetchBegin());
+        dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
             title,
             message
         };
         return post('blog', body)
-            .then((responseValue: Response) => dispatch(fetchSuccess(responseValue)),
-                reason => dispatch(fetchFail(reason))
+            .then((responseValue: Response) => dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue)),
+                reason => dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
             );
     }
 }
@@ -56,15 +55,15 @@ export function submitBlogPost(title: string, message: string) {
  */
 export function requestBlogPosts(id?: number, title?: string, message?: string) {
     return (dispatch: Dispatch<null>) => {
-        dispatch(fetchBegin());
+        dispatch(fetchPending(FETCH_CONTEXT.REQUEST_POSTS));
         const payload = {
-            id: `${id}`,
+            id,
             title,
             message
         };
         return get('blog', payload)
             .then(response => {
-                    dispatch(fetchSuccess());
+                    dispatch(fetchSuccess(FETCH_CONTEXT.REQUEST_POSTS));
                     dispatch(getBlogPosts(response));
                 },
                 reason => console.log(reason))
@@ -87,34 +86,40 @@ export function handleFormInput(fieldName: string, fieldValue: string) {
 
 /**
  * Handle fetch begin.
+ * @param context
  * @returns {{type: string}}
  */
-export function fetchBegin() {
+export function fetchPending(context: FETCH_CONTEXT) {
     return {
-        type: FETCH_BEGIN
+        type: FETCH_PENDING,
+        context
     }
 }
 
 /**
  * Handle fetch success.
+ * @param context
  * @param {Response} [responseValue]
  * @returns {Object}
  */
-export function fetchSuccess(responseValue?: any) {
+export function fetchSuccess(context: FETCH_CONTEXT, responseValue?: any) {
     return {
         type: FETCH_SUCCESS,
-        responseValue
+        responseValue,
+        context
     }
 }
 
 /**
  * Handle fetch fail.
+ * @param context
  * @param {string} reason
  * @returns {Object}
  */
-export function fetchFail(reason: string) {
+export function fetchFail(context: FETCH_CONTEXT, reason: string) {
     return {
         type: FETCH_FAIL,
+        context,
         reason
     }
 }

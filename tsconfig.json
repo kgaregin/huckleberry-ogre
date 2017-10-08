@@ -16,7 +16,8 @@
     "material-ui",
     "react-router-dom",
     "redux",
-    "material-ui-icons"
+    "material-ui-icons",
+    "react-scrollbar"
   ],
   "include": [
     "src/frontSource/**/*",

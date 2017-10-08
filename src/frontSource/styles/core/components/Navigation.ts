@@ -52,6 +52,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         // ...theme.mixins.toolbar,
     },
     content: {
+        overflow: 'auto',
         width: '100%',
         marginLeft: -DRAWER_WIDTH,
         flexGrow: 1,

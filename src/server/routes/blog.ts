@@ -9,9 +9,7 @@ const BlogRoute = (server: Server) => {
         handler: (request, reply) => {
             const queryParams = request.query;
             PostActions.getAllPosts(queryParams).then(
-                (post) => {
-                    console.log(post)
-                    reply(post)},
+                (post) => reply(post),
                 (error) => reply({error})
             );
         }

@@ -20,6 +20,10 @@ export interface IRequestMethodOptions {
     isGettingJSON?: boolean;
 }
 
+/** Action types. */
+export const FETCH_PENDING = 'FETCH_PENDING';
+export const FETCH_SUCCESS = 'FETCH_SUCCESS';
+export const FETCH_FAIL = 'FETCH_FAIL';
 
 export class ServiceUtils {
     private static OptionsDefault: IRequestMethodOptions = {
@@ -35,9 +39,11 @@ export class ServiceUtils {
             payload = JSON.stringify(isPayloadGroomed ? pickBy(payload, identity) : payload);
         }
         payload = payload ? `?payload=${payload}` : ``;
-        let result = fetch(`${SERVER_ADDRESS}${REST}${REST_URL}${payload}`);
+        const REQUEST_URL = `${SERVER_ADDRESS}${REST}${REST_URL}${payload}`;
+        let result = fetch(REQUEST_URL);
         result = isGettingJSON ?
-            result.then(response => response.json(),
+            result.then(
+                response => response.json(),
                 reason => console.log(reason)) :
             result;
         return result;
@@ -55,10 +61,21 @@ export class ServiceUtils {
             body
         });
         result = isGettingJSON ?
-            result.then(response => response.json(),
+            result.then(
+                response => response.json(),
                 reason => console.log(reason)) :
             result;
         return result;
     }
 
+}
+
+/**
+ * Defines fetch status.
+ */
+export enum FETCH_STATUS {
+    NONE,
+    PENDING,
+    SUCCESS,
+    FAIL
 }

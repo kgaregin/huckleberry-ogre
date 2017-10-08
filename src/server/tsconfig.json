@@ -7,6 +7,7 @@
     "experimentalDecorators": true,
     "target": "ES6",
     "rootDir": "./",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "sourceMap": true
   }
 }

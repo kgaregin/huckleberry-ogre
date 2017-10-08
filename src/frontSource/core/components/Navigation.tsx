@@ -96,6 +96,7 @@ class NavigationComponent extends React.Component <IWithClasses & RouteComponent
                         </div>
                     </Drawer>
                     <main className={classNames(classes.content, this.state.isDrawerOpen && classes.contentShift)}>
+                        {/*ToDo: добавить модный скролл с поддержикой тач эвентов?*/}
                         <Grid container justify={'center'}>
                             <Grid item xl={7} lg={9} md={11} sm={12} xs={12}>
                                 <Route path="/" exact={true} render={() => <h1>Main page under construction</h1>}/>

@@ -4,9 +4,10 @@
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run client & npm run server",
     "start": "run-p server client",
     "server": "ts-node-dev --project src/server src/server/server ",
+    "server-debug": "ts-node-dev %NODE_DEBUG_OPTION% --project src/server src/server/server ",
     "client": "webpack-dev-server",
     "webpack-error": "webpack --display-error-details"
   },

@@ -14,9 +14,23 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
     button: {
         margin: theme.spacing.unit,
     },
-    buttonCreate:{
+    buttonCreate: {
         position: 'absolute',
         right: '40px',
         bottom: '40px',
+    },
+    postDivider: {
+        width: '70%',
+        margin: '16px auto',
+    },
+    postPaper: {
+        padding: '24px 32px',
+        boxSizing: 'border-box',
+        marginBottom: '24px',
+        wordWrap: 'break-word',
+
+        '&:last-of-type': {
+            marginBottom: 'initial'
+        }
     }
 });
