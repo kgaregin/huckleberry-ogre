@@ -32,5 +32,10 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         '&:last-of-type': {
             marginBottom: 'initial'
         }
+    },
+    postActions: {
+        display: 'flex',
+        margin: 'auto',
+        justifyContent: 'center'
     }
 });

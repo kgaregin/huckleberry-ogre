@@ -15,9 +15,8 @@ class PostActions {
         return Post.create({title, message});
     }
 
-    public static deletePost(post: IPost) {
-        const {id} = post;
-        return Post.destroy({where: {id: `${id}`}})
+    public static deletePost(id: string) {
+        return Post.destroy({where: {id}});
     }
 
     public static updatePost(post: IPost) {

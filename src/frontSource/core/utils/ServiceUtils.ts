@@ -68,6 +68,25 @@ export class ServiceUtils {
         return result;
     }
 
+    public static remove = (REST_URL: string,
+                          body?: string | Object,
+                          options?: IRequestMethodOptions) => {
+        const {isPayloadGroomed, isGettingJSON} = options ? options : ServiceUtils.OptionsDefault;
+        if (isObject(body)) {
+            body = JSON.stringify(isPayloadGroomed ? pickBy(body, identity) : body);
+        }
+        let result = fetch(`${SERVER_ADDRESS}${REST}${REST_URL}`, {
+            method: 'delete',
+            body
+        });
+        result = isGettingJSON ?
+            result.then(
+                response => response.json(),
+                reason => console.log(reason)) :
+            result;
+        return result;
+    }
+
 }
 
 /**

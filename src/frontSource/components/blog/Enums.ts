@@ -13,7 +13,9 @@ export enum MODE {
  */
 export enum FETCH_CONTEXT {
     NONE,
+    REQUEST_POSTS,
     SUBMIT_POST,
-    REQUEST_POSTS
+    UPDATE_POST,
+    DELETE_POST
 }
 

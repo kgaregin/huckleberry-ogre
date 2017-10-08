@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
 import {FETCH_CONTEXT} from "./Enums";
 
-const {get, post} = ServiceUtils;
+const {get, post, remove} = ServiceUtils;
 
 /**
  * Action types.
@@ -62,11 +62,28 @@ export function requestBlogPosts(id?: number, title?: string, message?: string) 
             message
         };
         return get('blog', payload)
-            .then(response => {
+            .then((response) => {
                     dispatch(fetchSuccess(FETCH_CONTEXT.REQUEST_POSTS));
                     dispatch(getBlogPosts(response));
                 },
-                reason => console.log(reason))
+                reason => dispatch(fetchFail(FETCH_CONTEXT.REQUEST_POSTS, reason)))
+    }
+}
+
+/**
+ *
+ * @param {string} id
+ * @returns {Promise}
+ */
+export function removePostByID(id: string) {
+    return (dispatch: Dispatch<null>) => {
+        dispatch(fetchPending(FETCH_CONTEXT.DELETE_POST));
+        const body = {id};
+        return remove('blog', body)
+            .then(() => {
+                    dispatch(fetchSuccess(FETCH_CONTEXT.DELETE_POST));
+                },
+                reason => dispatch(fetchFail(FETCH_CONTEXT.DELETE_POST, reason)))
     }
 }
 

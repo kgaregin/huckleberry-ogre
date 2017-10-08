@@ -1,5 +1,6 @@
 import {Server} from 'hapi';
 import {PostActions} from '../db/actions/blog/post';
+import {isString} from 'lodash';
 
 const BlogRoute = (server: Server) => {
 
@@ -44,11 +45,16 @@ const BlogRoute = (server: Server) => {
         method: 'DELETE',
         path: '/rest/blog',
         handler: (request, reply) => {
-            const findPostOptions = request.query;
-            PostActions.deletePost(findPostOptions).then(
-                (post) => reply(post),
-                (error) => reply({error})
-            )
+            const findPostOptions = isString(request.payload) && JSON.parse(request.payload);
+            const id = findPostOptions && findPostOptions.id;
+            if (id) {
+                PostActions.deletePost(id).then(
+                    (post) => reply(post),
+                    (error) => reply({error})
+                )
+            } else {
+                reply(new Error('post id must be supplied to perform removal'));
+            }
         }
     });
 };

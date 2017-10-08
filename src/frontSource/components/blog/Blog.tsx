@@ -3,11 +3,12 @@ import {Component} from "react";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
-import {TextField, Button, Paper, Typography, Divider} from "material-ui";
+import {TextField, Button, Paper, Typography, Divider, Grid, IconButton} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
-import {requestBlogPosts, handleFormInput, submitBlogPost} from './Actions';
+import DeleteIcon from "material-ui-icons/Delete";
+import {requestBlogPosts, handleFormInput, submitBlogPost, removePostByID} from './Actions';
 import {connect} from "react-redux";
 import {IBlog, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
@@ -24,11 +25,11 @@ class BlogComponent extends Component<IBlogProps> {
     }
 
     componentWillReceiveProps(nextProps: IBlogProps) {
-        const {fetchContext, fetchStatus, history: {push}, actions: {requestBlogPosts}} = nextProps;
-        if (fetchContext === FETCH_CONTEXT.SUBMIT_POST &&
+        const {fetchContext, fetchStatus, history: {push, location}, actions: {requestBlogPosts}} = nextProps;
+        if ((fetchContext === FETCH_CONTEXT.SUBMIT_POST || fetchContext === FETCH_CONTEXT.DELETE_POST) &&
             fetchStatus === FETCH_STATUS.SUCCESS) {
             requestBlogPosts();
-            push('/blog');
+            if (location.pathname !== '/blog') push('/blog');
         }
     }
 
@@ -39,6 +40,10 @@ class BlogComponent extends Component<IBlogProps> {
 
     private handleCreatePostButtonClick = () => {
         this.props.history.push('/blog/CREATE');
+    };
+
+    private handlePostRemove = (postID: string) => {
+        this.props.actions.removePostByID(postID);
     };
 
     renderPostEdit = () => {
@@ -95,13 +100,26 @@ class BlogComponent extends Component<IBlogProps> {
                 {posts.map((post, key) =>
                     post.title && post.message &&
                     <Paper className={classes.postPaper} elevation={10} key={key}>
-                        <Typography type="title" gutterBottom align={'center'}>
-                            {post.title}
-                        </Typography>
-                        <Divider className={classes.postDivider}/>
-                        <Typography type="body1" gutterBottom align={'left'}>
-                            {post.message}
-                        </Typography>
+                        <Grid container>
+                            <Grid item xl={11} lg={11} md={11} sm={12} xs={12}>
+                                <Typography type="title" gutterBottom align={'center'}>
+                                    {post.title}
+                                </Typography>
+                                <Divider className={classes.postDivider}/>
+                                <Typography type="body1" gutterBottom align={'left'}>
+                                    {post.message}
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                                xl={1} lg={1} md={1} sm={12} xs={12}
+                                className={classes.postActions}>
+                                <IconButton onClick={() => post.id && this.handlePostRemove(post.id.toString())}
+                                            aria-label="Remove post">
+                                    <DeleteIcon color={'white'}/>
+                                </IconButton>
+                            </Grid>
+                        </Grid>
                     </Paper>)
                 }
                 <Button
@@ -121,7 +139,7 @@ class BlogComponent extends Component<IBlogProps> {
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
 const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
-    return {actions: bindActionCreators({requestBlogPosts, handleFormInput, submitBlogPost}, dispatch)}
+    return {actions: bindActionCreators({requestBlogPosts, handleFormInput, submitBlogPost, removePostByID}, dispatch)}
 };
 
 const Blog = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(BlogComponent));

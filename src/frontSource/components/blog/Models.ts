@@ -25,6 +25,7 @@ export interface IBlogActions {
     requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
     handleFormInput: (fieldName: string, fieldValue: string) => void;
     submitBlogPost: (title: string, message: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
+    removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<{type: string, context: FETCH_CONTEXT, reason: string} | {type: string, context: FETCH_CONTEXT, responseValue: Response}>
 }
 
 /**
