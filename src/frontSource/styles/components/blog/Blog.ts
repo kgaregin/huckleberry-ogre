@@ -38,5 +38,12 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         margin: 'auto',
         justifyContent: 'center',
         flexDirection: 'column'
+    },
+    postActionButtonIcon: {
+        color: theme.palette.primary.contrastDefaultColor,
+
+        '&:hover':{
+            color: theme.palette.secondary.A700
+        }
     }
 });

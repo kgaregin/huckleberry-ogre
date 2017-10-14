@@ -20,7 +20,7 @@ import {IWithClasses} from "../Interfaces";
 import * as classNames from "classnames";
 import Divider from "material-ui/Divider";
 import {RouteComponentProps, withRouter, Route} from "react-router-dom";
-import {Blog} from "../../components/blog/Blog";
+import {Blog} from "../../modules/blog/Blog";
 
 class NavigationComponent extends React.Component <IWithClasses & RouteComponentProps<void>> {
     state = {

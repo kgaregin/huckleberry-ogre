@@ -1,6 +1,6 @@
 import {combineReducers, createStore, applyMiddleware, compose, Store} from "redux";
-import {blogReducer} from "../components/blog/Reducers";
-import {IBlog} from "../components/blog/Models";
+import {blogReducer} from "../modules/blog/Reducers";
+import {IBlog} from "../modules/blog/Models";
 import thunkMiddleware from 'redux-thunk';
 
 /**

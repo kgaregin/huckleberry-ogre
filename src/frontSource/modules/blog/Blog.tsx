@@ -2,7 +2,6 @@ import * as React from "react";
 import {Component} from "react";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
-import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {TextField, Button, Paper, Typography, Divider, Grid, IconButton} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
@@ -25,13 +24,25 @@ import {IReduxStore} from "../../core/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {IPost} from "../../../server/db/models/blog/post";
 import {sortBy} from "lodash";
+import {ContentEditableField} from "../../components/ContentEditableField";
+import {FormEventWithTargetValue} from "../../core/Interfaces";
+import * as DropZone from "dropzone";
 
 @withRouter
 class BlogComponent extends Component<IBlogProps> {
 
+    dropZoneContainer: HTMLElement;
+
     componentWillMount() {
         const mode = this.props.match.params.mode || MODE.READ;
         if (mode === MODE.READ) this.props.actions.requestBlogPosts();
+    }
+
+    componentDidMount(){
+        const mode = this.props.match.params.mode || MODE.READ;
+        if (mode === MODE.CREATE || mode === MODE.EDIT) {
+            new DropZone(this.dropZoneContainer, {url: `/blog/${mode}`})
+        }
     }
 
     componentWillReceiveProps(nextProps: IBlogProps) {
@@ -71,6 +82,10 @@ class BlogComponent extends Component<IBlogProps> {
         this.props.history.push(`/blog/EDIT/${post.id}`);
     };
 
+    private handleDropZoneRef = (dropZoneContainer: HTMLFormElement) => {
+        this.dropZoneContainer = dropZoneContainer;
+    };
+
     renderPostEdit = () => {
         const {classes, fetchStatus} = this.props;
         const {title, message} = this.props.form;
@@ -78,17 +93,20 @@ class BlogComponent extends Component<IBlogProps> {
         const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
 
         return (
-            <form className={classes.container} noValidate autoComplete="off">
+            <form ref={this.handleDropZoneRef} className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="title"
                     label="Title"
                     className={classes.textField}
                     value={title}
-                    onChange={(event: FormEventWithTargetValue<string>) => handleFormInput('title', event.target.value)}
+                    onChange={
+                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
+                            handleFormInput('title', event.target.value)
+                    }
                     margin="normal"
                     fullWidth
                 />
-                <TextField
+                <ContentEditableField
                     id="message"
                     label="Message"
                     className={classes.textField}
@@ -96,7 +114,10 @@ class BlogComponent extends Component<IBlogProps> {
                     fullWidth
                     rows={"24"}
                     value={message}
-                    onChange={(event: FormEventWithTargetValue<string>) => handleFormInput('message', event.target.value)}
+                    onInput={
+                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
+                            handleFormInput('message', event.target.value)
+                    }
                     margin="normal"
                     placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
@@ -140,13 +161,17 @@ class BlogComponent extends Component<IBlogProps> {
                                 item
                                 xl={1} lg={1} md={1} sm={12} xs={12}
                                 className={classes.postActions}>
-                                <IconButton onClick={() => post.id && this.handlePostRemove(post.id.toString())}
-                                            aria-label="Remove post">
-                                    <DeleteIcon color={'white'}/>
+                                <IconButton
+                                    onClick={() => post.id && this.handlePostRemove(post.id.toString())}
+                                    aria-label="Remove post"
+                                >
+                                    <DeleteIcon className={classes.postActionButtonIcon}/>
                                 </IconButton>
-                                <IconButton onClick={() => post.id && this.handlePostEdit(post)}
-                                            aria-label="Remove post">
-                                    <BorderColorIcon color={'white'}/>
+                                <IconButton
+                                    onClick={() => post.id && this.handlePostEdit(post)}
+                                    aria-label="Remove post"
+                                >
+                                    <BorderColorIcon className={classes.postActionButtonIcon}/>
                                 </IconButton>
                             </Grid>
                         </Grid>
