@@ -36,6 +36,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
     postActions: {
         display: 'flex',
         margin: 'auto',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'column'
     }
 });

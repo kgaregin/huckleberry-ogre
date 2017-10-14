@@ -33,7 +33,7 @@ const BlogRoute = (server: Server) => {
         method: 'PUT',
         path: '/rest/blog',
         handler: (request, reply) => {
-            const findPostOptions = request.query;
+            const findPostOptions = isString(request.payload) && JSON.parse(request.payload);
             PostActions.updatePost(findPostOptions).then(
                 (post) => reply(post),
                 (error) => reply({error})

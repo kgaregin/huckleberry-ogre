@@ -23,14 +23,16 @@ export interface IBlog {
  */
 export interface IBlogActions {
     requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
-    handleFormInput: (fieldName: string, fieldValue: string) => void;
-    submitBlogPost: (title: string, message: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
-    removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<{type: string, context: FETCH_CONTEXT, reason: string} | {type: string, context: FETCH_CONTEXT, responseValue: Response}>
+    handleFormInput: (fieldName: string, fieldValue: string) => (dispatch: Dispatch<null>) => void;
+    prefillPostEditForm: (post: IPost) => (dispatch: Dispatch<null>) => void;
+    clearPostEditForm: () => (dispatch: Dispatch<null>) => void;
+    submitBlogPost: (title: string, message: string,  id: number, mode: MODE) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
+    removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, context: FETCH_CONTEXT, reason: string } | { type: string, context: FETCH_CONTEXT, responseValue: Response }>
 }
 
 /**
  * Blog component props with classes, router and redux actions.
  */
-export interface IBlogProps extends IBlog, IWithClasses, RouteComponentProps<{ mode: MODE }> {
+export interface IBlogProps extends IBlog, IWithClasses, RouteComponentProps<{ mode: MODE, postID: number }> {
     actions: IBlogActions
 }

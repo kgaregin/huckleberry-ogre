@@ -8,13 +8,23 @@ import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/components/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import DeleteIcon from "material-ui-icons/Delete";
-import {requestBlogPosts, handleFormInput, submitBlogPost, removePostByID} from './Actions';
+import BorderColorIcon from "material-ui-icons/BorderColor";
+import {
+    requestBlogPosts,
+    handleFormInput,
+    submitBlogPost,
+    removePostByID,
+    prefillPostEditForm,
+    clearPostEditForm
+} from './Actions';
 import {connect} from "react-redux";
 import {IBlog, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
 import {mergeProps} from "../../core/utils/Utils";
 import {IReduxStore} from "../../core/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
+import {IPost} from "../../../server/db/models/blog/post";
+import {sortBy} from "lodash";
 
 @withRouter
 class BlogComponent extends Component<IBlogProps> {
@@ -26,7 +36,7 @@ class BlogComponent extends Component<IBlogProps> {
 
     componentWillReceiveProps(nextProps: IBlogProps) {
         const {fetchContext, fetchStatus, history: {push, location}, actions: {requestBlogPosts}} = nextProps;
-        if ((fetchContext === FETCH_CONTEXT.SUBMIT_POST || fetchContext === FETCH_CONTEXT.DELETE_POST) &&
+        if ((fetchContext === FETCH_CONTEXT.SUBMIT_POST || fetchContext === FETCH_CONTEXT.REMOVE_POST) &&
             fetchStatus === FETCH_STATUS.SUCCESS) {
             requestBlogPosts();
             if (location.pathname !== '/blog') push('/blog');
@@ -34,8 +44,18 @@ class BlogComponent extends Component<IBlogProps> {
     }
 
     private handleSubmit = () => {
-        const {form: {title, message}, actions: {submitBlogPost}} = this.props;
-        submitBlogPost(title, message);
+        const {
+            form: {title, message},
+            actions: {submitBlogPost},
+            match: {
+                params:
+                    {
+                        mode,
+                        postID: id
+                    }
+            }
+        } = this.props;
+        submitBlogPost(title, message, id, mode);
     };
 
     private handleCreatePostButtonClick = () => {
@@ -44,6 +64,11 @@ class BlogComponent extends Component<IBlogProps> {
 
     private handlePostRemove = (postID: string) => {
         this.props.actions.removePostByID(postID);
+    };
+
+    private handlePostEdit = (post: IPost) => {
+        this.props.actions.prefillPostEditForm(post);
+        this.props.history.push(`/blog/EDIT/${post.id}`);
     };
 
     renderPostEdit = () => {
@@ -92,12 +117,13 @@ class BlogComponent extends Component<IBlogProps> {
         const mode = this.props.match.params.mode || MODE.READ;
         const {classes, posts} = this.props;
 
-        if (mode === MODE.CREATE) {
+        if (mode === MODE.CREATE || mode === MODE.EDIT) {
             return this.renderPostEdit();
         }
+
         return (
             <div>
-                {posts.map((post, key) =>
+                {posts && sortBy(posts, 'id').map((post, key) =>
                     post.title && post.message &&
                     <Paper className={classes.postPaper} elevation={10} key={key}>
                         <Grid container>
@@ -117,6 +143,10 @@ class BlogComponent extends Component<IBlogProps> {
                                 <IconButton onClick={() => post.id && this.handlePostRemove(post.id.toString())}
                                             aria-label="Remove post">
                                     <DeleteIcon color={'white'}/>
+                                </IconButton>
+                                <IconButton onClick={() => post.id && this.handlePostEdit(post)}
+                                            aria-label="Remove post">
+                                    <BorderColorIcon color={'white'}/>
                                 </IconButton>
                             </Grid>
                         </Grid>
@@ -139,7 +169,16 @@ class BlogComponent extends Component<IBlogProps> {
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
 const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
-    return {actions: bindActionCreators({requestBlogPosts, handleFormInput, submitBlogPost, removePostByID}, dispatch)}
+    return {
+        actions: bindActionCreators({
+            requestBlogPosts,
+            handleFormInput,
+            submitBlogPost,
+            removePostByID,
+            prefillPostEditForm,
+            clearPostEditForm
+        }, dispatch)
+    }
 };
 
 const Blog = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(BlogComponent));

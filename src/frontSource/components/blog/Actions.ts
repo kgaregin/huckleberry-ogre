@@ -1,15 +1,17 @@
 import {Dispatch} from "redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
-import {FETCH_CONTEXT} from "./Enums";
+import {FETCH_CONTEXT, MODE} from "./Enums";
+import {IPost} from "../../../server/db/models/blog/post";
 
-const {get, post, remove} = ServiceUtils;
+const {get, post, put, remove} = ServiceUtils;
 
 /**
  * Action types.
  */
 export const GET_BLOG_POSTS = 'GET_BLOG_POSTS';
 export const HANDLE_FORM_INPUT = 'HANDLE_FORM_INPUT';
-
+export const PREFILL_POST_EDIT_FORM = 'PREFILL_POST_EDIT_FORM';
+export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
 
 /**
  * Actions
@@ -27,20 +29,45 @@ export function getBlogPosts(posts: any) {
 }
 
 /**
+ * Clear post form.
+ * @returns {{type: string}}
+ */
+export function clearPostEditForm() {
+    return {
+        type: CLEAR_POST_EDIT_FORM
+    }
+}
+
+/**
  * Submit blog post
  * @param {string} title
  * @param {string} message
+ * @param {number} id
+ * @param {MODE} mode
  * @returns {Promise}
  */
-export function submitBlogPost(title: string, message: string) {
+export function submitBlogPost(title: string, message: string, id?: number, mode?: MODE) {
     return (dispatch: Dispatch<null>) => {
         dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
+            id,
             title,
             message
         };
-        return post('blog', body)
-            .then((responseValue: Response) => dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue)),
+        let action;
+        switch (mode) {
+            case MODE.EDIT:
+                action = put('blog', body);
+                break;
+            case MODE.CREATE:
+            default:
+                action = post('blog', body);
+        }
+        return action
+            .then((responseValue: Response) => {
+                    dispatch(clearPostEditForm());
+                    dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue));
+                },
                 reason => dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
             );
     }
@@ -77,13 +104,24 @@ export function requestBlogPosts(id?: number, title?: string, message?: string) 
  */
 export function removePostByID(id: string) {
     return (dispatch: Dispatch<null>) => {
-        dispatch(fetchPending(FETCH_CONTEXT.DELETE_POST));
+        dispatch(fetchPending(FETCH_CONTEXT.REMOVE_POST));
         const body = {id};
         return remove('blog', body)
             .then(() => {
-                    dispatch(fetchSuccess(FETCH_CONTEXT.DELETE_POST));
+                    dispatch(fetchSuccess(FETCH_CONTEXT.REMOVE_POST));
                 },
-                reason => dispatch(fetchFail(FETCH_CONTEXT.DELETE_POST, reason)))
+                reason => dispatch(fetchFail(FETCH_CONTEXT.REMOVE_POST, reason)))
+    }
+}
+
+/**
+ * Handles post edit.
+ * @param {Partial<IPost>} post
+ */
+export function prefillPostEditForm(post: IPost) {
+    return {
+        type: PREFILL_POST_EDIT_FORM,
+        post: post
     }
 }
 
@@ -140,4 +178,3 @@ export function fetchFail(context: FETCH_CONTEXT, reason: string) {
         reason
     }
 }
-

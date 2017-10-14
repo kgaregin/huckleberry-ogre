@@ -19,9 +19,8 @@ class PostActions {
         return Post.destroy({where: {id}});
     }
 
-    public static updatePost(post: IPost) {
-        const {id, title, message} = post;
-        return Post.update({title, message}, {where: {id: `${id}`}});
+    public static updatePost({id, title, message}: {id: number, title: string, message: string}) {
+        return Post.update({id, title, message}, {where: {id}});
     }
 
 }

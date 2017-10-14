@@ -4,7 +4,7 @@
 export enum MODE {
     READ = <any>'READ',
     CREATE = <any>'CREATE',
-    UPDATE = <any>'UPDATE',
+    EDIT = <any>'EDIT',
     REMOVE = <any>'REMOVE',
 }
 
@@ -16,6 +16,6 @@ export enum FETCH_CONTEXT {
     REQUEST_POSTS,
     SUBMIT_POST,
     UPDATE_POST,
-    DELETE_POST
+    REMOVE_POST
 }
 
