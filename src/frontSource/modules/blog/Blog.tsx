@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Component} from "react";
-import {FETCH_CONTEXT, MODE} from "./Enums";
+import {MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {TextField, Button, Paper, Typography, Divider, Grid, IconButton} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
@@ -20,17 +20,18 @@ import {connect} from "react-redux";
 import {IBlog, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
 import {mergeProps} from "../../core/utils/Utils";
-import {IReduxStore} from "../../core/reduxStore";
+import {IReduxStore} from "../../core/store/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {IPost} from "../../../server/db/models/blog/post";
 import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import * as DropZone from "dropzone";
+import {handleLocationChange} from "../../core/store/Actions";
 
 @withRouter
 class BlogComponent extends Component<IBlogProps> {
-
+    //ToDo: configure dropZone, connect it with form state and handle on server side
     dropZoneContainer: HTMLElement;
 
     componentWillMount() {
@@ -38,19 +39,10 @@ class BlogComponent extends Component<IBlogProps> {
         if (mode === MODE.READ) this.props.actions.requestBlogPosts();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         const mode = this.props.match.params.mode || MODE.READ;
         if (mode === MODE.CREATE || mode === MODE.EDIT) {
             new DropZone(this.dropZoneContainer, {url: `/blog/${mode}`})
-        }
-    }
-
-    componentWillReceiveProps(nextProps: IBlogProps) {
-        const {fetchContext, fetchStatus, history: {push, location}, actions: {requestBlogPosts}} = nextProps;
-        if ((fetchContext === FETCH_CONTEXT.SUBMIT_POST || fetchContext === FETCH_CONTEXT.REMOVE_POST) &&
-            fetchStatus === FETCH_STATUS.SUCCESS) {
-            requestBlogPosts();
-            if (location.pathname !== '/blog') push('/blog');
         }
     }
 
@@ -66,11 +58,11 @@ class BlogComponent extends Component<IBlogProps> {
                     }
             }
         } = this.props;
-        submitBlogPost(title, message, id, mode);
+        submitBlogPost(title, message, this.props.history, id, mode);
     };
 
     private handleCreatePostButtonClick = () => {
-        this.props.history.push('/blog/CREATE');
+        this.props.actions.handleLocationChange(this.props.history, '/blog/CREATE');
     };
 
     private handlePostRemove = (postID: string) => {
@@ -78,8 +70,9 @@ class BlogComponent extends Component<IBlogProps> {
     };
 
     private handlePostEdit = (post: IPost) => {
-        this.props.actions.prefillPostEditForm(post);
-        this.props.history.push(`/blog/EDIT/${post.id}`);
+        const {prefillPostEditForm, handleLocationChange} = this.props.actions;
+        prefillPostEditForm(post);
+        handleLocationChange(this.props.history,`/blog/EDIT/${post.id}`);
     };
 
     private handleDropZoneRef = (dropZoneContainer: HTMLFormElement) => {
@@ -201,7 +194,8 @@ const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
             submitBlogPost,
             removePostByID,
             prefillPostEditForm,
-            clearPostEditForm
+            clearPostEditForm,
+            handleLocationChange
         }, dispatch)
     }
 };

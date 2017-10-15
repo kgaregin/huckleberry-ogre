@@ -21,7 +21,8 @@ export const blogInitial: { state: IBlog } = {
                 message: ''
             },
             fetchStatus: FETCH_STATUS.NONE,
-            fetchContext: FETCH_CONTEXT.NONE
+            fetchContext: FETCH_CONTEXT.NONE,
+            locationPathname: '/blog'
         };
     }
 };

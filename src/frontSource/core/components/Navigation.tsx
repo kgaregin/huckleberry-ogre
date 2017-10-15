@@ -20,9 +20,34 @@ import {IWithClasses} from "../Interfaces";
 import * as classNames from "classnames";
 import Divider from "material-ui/Divider";
 import {RouteComponentProps, withRouter, Route} from "react-router-dom";
+import {IReduxStore} from "../store/reduxStore"
 import {Blog} from "../../modules/blog/Blog";
+import {Dispatch, bindActionCreators} from "redux";
+import {connect} from "react-redux";
+import {mergeProps} from "../utils/Utils";
+import {handleLocationChange} from "../store/Actions";
+import {ICommonState} from "../store/Reducers";
+import {History} from "history";
 
-class NavigationComponent extends React.Component <IWithClasses & RouteComponentProps<void>> {
+/**
+ * Navigation component actions.
+ */
+export interface INavigationActions {
+    handleLocationChange: (history: History, newLocation: string) => (dispatch: Dispatch<null>) => Object;
+}
+
+/**
+ * Navigation component properties.
+ */
+export interface INavigationProps extends IWithClasses, RouteComponentProps<void> {
+    actions: INavigationActions,
+    locationPathname: string;
+}
+
+/**
+ * Navigation component.
+ */
+class NavigationComponent extends React.Component <INavigationProps> {
     state = {
         isDrawerOpen: false,
     };
@@ -36,7 +61,8 @@ class NavigationComponent extends React.Component <IWithClasses & RouteComponent
     };
 
     private handleListItemClick = (to: string = '/') => {
-        this.props.history.push(to);
+        //ToDo extract handleLocationChange action from blog to app layer
+        this.props.actions.handleLocationChange(this.props.history, to)
     };
 
     private getNavList = () => {
@@ -109,6 +135,16 @@ class NavigationComponent extends React.Component <IWithClasses & RouteComponent
     }
 }
 
-const Navigation = withRouter(withStyles(styles)(NavigationComponent));
+const mapStateToProps = (state: IReduxStore) => state.commonReducer;
+
+const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
+    return {
+        actions: bindActionCreators({
+            handleLocationChange
+        }, dispatch)
+    }
+};
+
+const Navigation = withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(NavigationComponent)));
 
 export {Navigation};

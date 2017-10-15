@@ -1,7 +1,9 @@
-import {Dispatch} from "redux";
+import {Dispatch} from "react-redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
+import {handleLocationChange} from "../../core/store/Actions";
+import {History} from "history";
 
 const {get, post, put, remove} = ServiceUtils;
 
@@ -46,7 +48,7 @@ export function clearPostEditForm() {
  * @param {MODE} mode
  * @returns {Promise}
  */
-export function submitBlogPost(title: string, message: string, id?: number, mode?: MODE) {
+export function submitBlogPost(title: string, message: string, history: History, id?: number, mode?: MODE) {
     return (dispatch: Dispatch<null>) => {
         dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
@@ -65,8 +67,11 @@ export function submitBlogPost(title: string, message: string, id?: number, mode
         }
         return action
             .then((responseValue: Response) => {
-                    dispatch(clearPostEditForm());
                     dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue));
+                    dispatch(clearPostEditForm());
+                    dispatch(requestBlogPosts()).then(() => {
+                        dispatch(handleLocationChange(history, '/blog'))
+                    });
                 },
                 reason => dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
             );
@@ -178,3 +183,4 @@ export function fetchFail(context: FETCH_CONTEXT, reason: string) {
         reason
     }
 }
+
