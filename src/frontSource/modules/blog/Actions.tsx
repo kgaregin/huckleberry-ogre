@@ -48,7 +48,7 @@ export function clearPostEditForm() {
  * @param {MODE} mode
  * @returns {Promise}
  */
-export function submitBlogPost(title: string, message: string, history: History, id?: number, mode?: MODE) {
+export function submitBlogPost(title: string, message: string, id?: number, mode?: MODE) {
     return (dispatch: Dispatch<null>) => {
         dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
@@ -70,7 +70,7 @@ export function submitBlogPost(title: string, message: string, history: History,
                     dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue));
                     dispatch(clearPostEditForm());
                     dispatch(requestBlogPosts()).then(() => {
-                        dispatch(handleLocationChange(history, '/blog'))
+                        dispatch(handleLocationChange('/blog'))
                     });
                 },
                 reason => dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))

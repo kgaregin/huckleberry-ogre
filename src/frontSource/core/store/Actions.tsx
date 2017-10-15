@@ -1,6 +1,6 @@
 import * as React from "react";
 import {withRouter} from "react-router-dom"
-import {History} from "history";
+import {history} from "../components/Navigation"
 
 /** Application layer common actions */
 
@@ -11,13 +11,11 @@ export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 
 /**
  * Handle redirect on new location for react-router.
- * @param history
  * @param {string} newLocation
  * @returns {Object}
- * ToDo extract handleLocationChange action from blog to app layer
  */
-export function handleLocationChange(history: History ,newLocation: string) {
-    history.push(newLocation);
+export function handleLocationChange(newLocation: string) {
+    if (history.location.pathname !== newLocation) history.push(newLocation);
     return {
         type: LOCATION_CHANGE
     }

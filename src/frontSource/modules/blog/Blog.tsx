@@ -58,11 +58,11 @@ class BlogComponent extends Component<IBlogProps> {
                     }
             }
         } = this.props;
-        submitBlogPost(title, message, this.props.history, id, mode);
+        submitBlogPost(title, message, id, mode);
     };
 
     private handleCreatePostButtonClick = () => {
-        this.props.actions.handleLocationChange(this.props.history, '/blog/CREATE');
+        this.props.actions.handleLocationChange('/blog/CREATE');
     };
 
     private handlePostRemove = (postID: string) => {
@@ -72,7 +72,7 @@ class BlogComponent extends Component<IBlogProps> {
     private handlePostEdit = (post: IPost) => {
         const {prefillPostEditForm, handleLocationChange} = this.props.actions;
         prefillPostEditForm(post);
-        handleLocationChange(this.props.history,`/blog/EDIT/${post.id}`);
+        handleLocationChange(`/blog/EDIT/${post.id}`);
     };
 
     private handleDropZoneRef = (dropZoneContainer: HTMLFormElement) => {

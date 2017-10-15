@@ -30,10 +30,18 @@ import {ICommonState} from "../store/Reducers";
 import {History} from "history";
 
 /**
+ * Kinda dirty workaround to get access to history.
+ * Since "push" method from react-router-redux don't work or i can't cook it right.
+ * Also react-router docs suck!
+ * ToDo: find way to replace it with real solution.
+ */
+export let history: History;
+
+/**
  * Navigation component actions.
  */
 export interface INavigationActions {
-    handleLocationChange: (history: History, newLocation: string) => (dispatch: Dispatch<null>) => Object;
+    handleLocationChange: (newLocation: string) => (dispatch: Dispatch<null>) => Object;
 }
 
 /**
@@ -52,6 +60,10 @@ class NavigationComponent extends React.Component <INavigationProps> {
         isDrawerOpen: false,
     };
 
+    componentDidMount() {
+        history = this.props.history;
+    }
+
     private handleDrawerOpen = () => {
         this.setState({isDrawerOpen: true});
     };
@@ -62,7 +74,7 @@ class NavigationComponent extends React.Component <INavigationProps> {
 
     private handleListItemClick = (to: string = '/') => {
         //ToDo extract handleLocationChange action from blog to app layer
-        this.props.actions.handleLocationChange(this.props.history, to)
+        this.props.actions.handleLocationChange(to)
     };
 
     private getNavList = () => {
@@ -145,6 +157,4 @@ const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
     }
 };
 
-const Navigation = withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(NavigationComponent)));
-
-export {Navigation};
+export const Navigation = withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(NavigationComponent)));

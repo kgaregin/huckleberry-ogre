@@ -29,7 +29,7 @@ export interface IBlogActions {
     handleFormInput: (fieldName: string, fieldValue: string) => (dispatch: Dispatch<null>) => Object;
     prefillPostEditForm: (post: IPost) => (dispatch: Dispatch<null>) => Object;
     clearPostEditForm: () => (dispatch: Dispatch<null>) => Object;
-    submitBlogPost: (title: string, message: string, history: History, id: number, mode: MODE) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
+    submitBlogPost: (title: string, message: string, id: number, mode: MODE) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
     removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, context: FETCH_CONTEXT, reason: string } | { type: string, context: FETCH_CONTEXT, responseValue: Response }>
 }
 
