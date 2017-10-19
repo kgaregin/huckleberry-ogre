@@ -4,7 +4,7 @@ import {MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {TextField, Button, Paper, Typography, Divider, Grid, IconButton} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
-import {styles} from "../../styles/components/blog/Blog";
+import {styles} from "../../styles/modules/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
 import DeleteIcon from "material-ui-icons/Delete";
 import BorderColorIcon from "material-ui-icons/BorderColor";
@@ -26,24 +26,21 @@ import {IPost} from "../../../server/db/models/blog/post";
 import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
-import * as DropZone from "dropzone";
 import {handleLocationChange} from "../../core/store/Actions";
 
+export interface IBlogComponentState {
+    dropZoneClickable?: HTMLDivElement;
+    dropZoneContainer?: HTMLFormElement;
+}
+
 @withRouter
-class BlogComponent extends Component<IBlogProps> {
-    //ToDo: configure dropZone, connect it with form state and handle on server side
-    dropZoneContainer: HTMLElement;
+class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
+
+    state: IBlogComponentState = {};
 
     componentWillMount() {
         const mode = this.props.match.params.mode || MODE.READ;
         if (mode === MODE.READ) this.props.actions.requestBlogPosts();
-    }
-
-    componentDidMount() {
-        const mode = this.props.match.params.mode || MODE.READ;
-        if (mode === MODE.CREATE || mode === MODE.EDIT) {
-            new DropZone(this.dropZoneContainer, {url: `/blog/${mode}`})
-        }
     }
 
     private handleSubmit = () => {
@@ -75,18 +72,35 @@ class BlogComponent extends Component<IBlogProps> {
         handleLocationChange(`/blog/EDIT/${post.id}`);
     };
 
-    private handleDropZoneRef = (dropZoneContainer: HTMLFormElement) => {
-        this.dropZoneContainer = dropZoneContainer;
+    private handleDropZoneClickableRef = (dropZoneClickable: HTMLDivElement) => {
+        this.setState({dropZoneClickable})
+    };
+
+    private handleDropZoneContainerRef = (dropZoneContainer: HTMLFormElement) => {
+        this.setState({dropZoneContainer})
     };
 
     renderPostEdit = () => {
-        const {classes, fetchStatus} = this.props;
-        const {title, message} = this.props.form;
-        const {handleFormInput} = this.props.actions;
+        const {
+            classes,
+            fetchStatus,
+            match: {params: {mode}},
+            form: {title, message},
+            actions: {handleFormInput}
+        } = this.props;
+        const {dropZoneClickable, dropZoneContainer} = this.state;
         const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
 
+        const dropZoneOptions: Dropzone.DropzoneOptions = {
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            clickable: dropZoneClickable,
+            previewTemplate: `<div class="dz-preview dz-file-preview"><div class="dz-details">
+                                <img data-dz-thumbnail /></div></div>`
+        };
+
         return (
-            <form ref={this.handleDropZoneRef} className={classes.container} noValidate autoComplete="off">
+            <form ref={this.handleDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="title"
                     label="Title"
@@ -114,14 +128,26 @@ class BlogComponent extends Component<IBlogProps> {
                     margin="normal"
                     placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
+                    dropZoneUrl={`/blog/${mode}`}
+                    dropZoneContainer={dropZoneContainer}
+                    dropZoneOptions={dropZoneOptions}
                 />
                 <Button
                     onClick={this.handleSubmit}
-                    raised color="primary"
+                    raised
+                    color="accent"
                     className={classes.button}
                     disabled={isFetchInProgress}
                 >
-                    Submit
+                    {'Submit'}
+                </Button>
+                <Button
+                    raised
+                    color="contrast"
+                    className={classes.button}
+                >
+                    {'Add images'}
+                    <div className={classes.buttonClickableOverlay} ref={this.handleDropZoneClickableRef}/>
                 </Button>
             </form>
         );

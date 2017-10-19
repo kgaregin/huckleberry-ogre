@@ -42,8 +42,15 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
     postActionButtonIcon: {
         color: theme.palette.primary.contrastDefaultColor,
 
-        '&:hover':{
+        '&:hover': {
             color: theme.palette.secondary.A700
         }
+    },
+    buttonClickableOverlay: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
     }
 });

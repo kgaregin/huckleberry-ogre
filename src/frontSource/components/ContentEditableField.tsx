@@ -1,25 +1,50 @@
 import * as React from "react";
-import {TextField} from "material-ui";
+import {TextField, Button} from "material-ui";
 import {TextFieldProps} from "material-ui/TextField";
 import {isFunction} from "lodash";
 import {FormEventWithTargetValue, HTMLDivElementWithValue} from "../core/Interfaces";
+import * as DropZone from "dropzone";
 
-export interface ContentEditableField {
-    inputElement: HTMLDivElementWithValue;
+//ToDo: configure dropZone, connect it with form state and handle on server side
+export interface ContentEditableFieldProps extends TextFieldProps {
+    dropZoneUrl: string;
+    dropZoneOptions?: Dropzone.DropzoneOptions;
+    dropZoneContainer?: HTMLElement;
 }
 
-export class ContentEditableField extends React.Component<TextFieldProps, ContentEditableField> {
+export class ContentEditableField extends React.Component<ContentEditableFieldProps> {
 
-    handleInputRef = (inputElement: HTMLDivElementWithValue) => this.setState({inputElement});
+    inputElement: HTMLDivElementWithValue;
+    dropZone: DropZone;
+
+    handleInputRef = (inputElement: HTMLDivElementWithValue) => {
+        this.inputElement = inputElement
+    };
 
     handleChange = (event: FormEventWithTargetValue<HTMLDivElement, string>) => {
         const {onInput} = this.props;
-        this.state.inputElement.value = event.target.innerHTML;
+        this.inputElement.value = event.target.innerHTML;
         if (isFunction(onInput)) onInput(event);
     };
 
+    componentWillReceiveProps(nextProps: ContentEditableFieldProps) {
+        const {dropZoneUrl, dropZoneOptions, dropZoneContainer} = nextProps;
+        const {dropZoneContainer: oldDropZoneContainer} = this.props;
+        if (dropZoneContainer && !this.dropZone) {
+            this.dropZone = new DropZone(
+                dropZoneContainer,
+                {
+                    url: dropZoneUrl,
+                    ...dropZoneOptions,
+                    previewsContainer: this.inputElement
+                }
+            );
+        }
+
+    }
+
     render() {
-        let props = this.props;
+        let {dropZoneUrl, dropZoneOptions, dropZoneContainer, ...props} = this.props;
         const {rows} = props;
         const inputProps = {
             contentEditable: true,
