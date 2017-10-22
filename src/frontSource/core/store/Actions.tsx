@@ -16,6 +16,7 @@ export const LOCATION_CHANGE = 'LOCATION_CHANGE';
  */
 export function handleLocationChange(newLocation: string) {
     if (history.location.pathname !== newLocation) history.push(newLocation);
+
     return {
         type: LOCATION_CHANGE
     }

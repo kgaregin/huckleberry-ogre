@@ -31,17 +31,13 @@ import {handleLocationChange} from "../../core/store/Actions";
 export interface IBlogComponentState {
     dropZoneClickable?: HTMLDivElement;
     dropZoneContainer?: HTMLFormElement;
+    dropZoneInput?: HTMLInputElement;
 }
 
 @withRouter
 class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
 
     state: IBlogComponentState = {};
-
-    componentWillMount() {
-        const mode = this.props.match.params.mode || MODE.READ;
-        if (mode === MODE.READ) this.props.actions.requestBlogPosts();
-    }
 
     private handleSubmit = () => {
         const {
@@ -72,12 +68,16 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
         handleLocationChange(`/blog/EDIT/${post.id}`);
     };
 
-    private handleDropZoneClickableRef = (dropZoneClickable: HTMLDivElement) => {
+    private saveDropZoneClickableRef = (dropZoneClickable: HTMLDivElement) => {
         this.setState({dropZoneClickable})
     };
 
-    private handleDropZoneContainerRef = (dropZoneContainer: HTMLFormElement) => {
+    private saveDropZoneContainerRef = (dropZoneContainer: HTMLFormElement) => {
         this.setState({dropZoneContainer})
+    };
+
+    private saveDropZoneInputRef = (dropZoneInput: HTMLInputElement) => {
+        this.setState({dropZoneInput})
     };
 
     renderPostEdit = () => {
@@ -88,19 +88,22 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
             form: {title, message},
             actions: {handleFormInput}
         } = this.props;
-        const {dropZoneClickable, dropZoneContainer} = this.state;
+        const {dropZoneClickable, dropZoneContainer, dropZoneInput} = this.state;
         const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
 
         const dropZoneOptions: Dropzone.DropzoneOptions = {
+            url: `/blog/${mode}`,
+            paramName: 'dropZoneInput',
             autoProcessQueue: false,
             uploadMultiple: true,
             clickable: dropZoneClickable,
+            hiddenInputContainer: '#dropZoneInput' as any,
             previewTemplate: `<div class="dz-preview dz-file-preview"><div class="dz-details">
                                 <img data-dz-thumbnail /></div></div>`
         };
 
         return (
-            <form ref={this.handleDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
+            <form ref={this.saveDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="title"
                     label="Title"
@@ -128,7 +131,6 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
                     margin="normal"
                     placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
-                    dropZoneUrl={`/blog/${mode}`}
                     dropZoneContainer={dropZoneContainer}
                     dropZoneOptions={dropZoneOptions}
                 />
@@ -147,8 +149,9 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
                     className={classes.button}
                 >
                     {'Add images'}
-                    <div className={classes.buttonClickableOverlay} ref={this.handleDropZoneClickableRef}/>
+                    <div className={classes.buttonClickableOverlay} ref={this.saveDropZoneClickableRef}/>
                 </Button>
+                <input name='dropZoneInput' id='dropZoneInput' ref={this.saveDropZoneInputRef} multiple type="file"/>
             </form>
         );
     };

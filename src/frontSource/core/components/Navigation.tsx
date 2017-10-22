@@ -28,6 +28,8 @@ import {mergeProps} from "../utils/Utils";
 import {handleLocationChange} from "../store/Actions";
 import {ICommonState} from "../store/Reducers";
 import {History} from "history";
+import {MODE} from "../../modules/blog/Enums";
+import {requestBlogPosts} from "../../modules/blog/Actions";
 
 /**
  * Kinda dirty workaround to get access to history.
@@ -42,6 +44,7 @@ export let history: History;
  */
 export interface INavigationActions {
     handleLocationChange: (newLocation: string) => (dispatch: Dispatch<null>) => Object;
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
 }
 
 /**
@@ -78,10 +81,14 @@ class NavigationComponent extends React.Component <INavigationProps> {
 
     private getNavList = () => {
         const {classes} = this.props;
+
         return (
             <div>
-                <List onClick={() => this.handleListItemClick('/blog')} className={classes.list}>
-                    <ListItem className={classes.listItem}>
+                <List className={classes.list}>
+                    <ListItem
+                        className={classes.listItem}
+                        onClick={() => this.handleListItemClick('/blog')}
+                    >
                         <ListItemIcon>
                             <BorderColorIcon/>
                         </ListItemIcon>
@@ -137,7 +144,15 @@ class NavigationComponent extends React.Component <INavigationProps> {
                         <Grid container justify={'center'}>
                             <Grid item xl={7} lg={9} md={11} sm={12} xs={12}>
                                 <Route path="/" exact={true} render={() => <h1>Main page under construction</h1>}/>
-                                <Route path="/blog/:mode?/:postID?" component={Blog}/>
+                                <Route
+                                    path="/blog/:mode?/:postID?"
+                                    render={(props) => {
+                                        const mode = props.match.params.mode || MODE.READ;
+
+                                        if (mode === MODE.READ) this.props.actions.requestBlogPosts();
+                                        return <Blog/>
+                                    }}
+                                />
                             </Grid>
                         </Grid>
                     </main>
@@ -151,7 +166,8 @@ const mapStateToProps = (state: IReduxStore) => state.commonReducer;
 const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
     return {
         actions: bindActionCreators({
-            handleLocationChange
+            handleLocationChange,
+            requestBlogPosts
         }, dispatch)
     }
 };
