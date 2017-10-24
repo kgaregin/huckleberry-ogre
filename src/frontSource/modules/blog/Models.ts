@@ -5,7 +5,7 @@ import {RouteComponentProps} from "react-router-dom";
 import {IPost} from "../../../server/db/models/blog/post";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {INavigationActions} from "../../core/components/Navigation";
-import {History} from "history";
+
 
 /**
  * Blog model.
@@ -25,7 +25,7 @@ export interface IBlog {
  * Blog actions.
  */
 export interface IBlogActions {
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<void | { type: string; context: FETCH_CONTEXT; reason: string; }>;
     handleFormInput: (fieldName: string, fieldValue: string) => (dispatch: Dispatch<null>) => Object;
     prefillPostEditForm: (post: IPost) => (dispatch: Dispatch<null>) => Object;
     clearPostEditForm: () => (dispatch: Dispatch<null>) => Object;

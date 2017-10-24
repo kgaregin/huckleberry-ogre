@@ -17,7 +17,7 @@ import {
     clearPostEditForm
 } from './Actions';
 import {connect} from "react-redux";
-import {IBlog, IBlogProps} from "./Models";
+import {IBlog, IBlogActions, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
 import {mergeProps} from "../../core/utils/Utils";
 import {IReduxStore} from "../../core/store/reduxStore";
@@ -27,6 +27,7 @@ import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from "../../core/store/Actions";
+import * as Dropzone from 'react-dropzone'
 
 export interface IBlogComponentState {
     dropZoneClickable?: HTMLDivElement;
@@ -88,19 +89,7 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
             form: {title, message},
             actions: {handleFormInput}
         } = this.props;
-        const {dropZoneClickable, dropZoneContainer, dropZoneInput} = this.state;
         const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
-
-        const dropZoneOptions: Dropzone.DropzoneOptions = {
-            url: `/blog/${mode}`,
-            paramName: 'dropZoneInput',
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            clickable: dropZoneClickable,
-            hiddenInputContainer: '#dropZoneInput' as any,
-            previewTemplate: `<div class="dz-preview dz-file-preview"><div class="dz-details">
-                                <img data-dz-thumbnail /></div></div>`
-        };
 
         return (
             <form ref={this.saveDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
@@ -110,30 +99,30 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
                     className={classes.textField}
                     value={title}
                     onChange={
-                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
+                        (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
                             handleFormInput('title', event.target.value)
                     }
                     margin="normal"
                     fullWidth
                 />
-                <ContentEditableField
-                    id="message"
-                    label="Message"
-                    className={classes.textField}
-                    multiline
-                    fullWidth
-                    rows={"24"}
-                    value={message}
-                    onInput={
-                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
-                            handleFormInput('message', event.target.value)
-                    }
-                    margin="normal"
-                    placeholder="Put a few awesome lines of what you going to write about..."
-                    type={'text'}
-                    dropZoneContainer={dropZoneContainer}
-                    dropZoneOptions={dropZoneOptions}
-                />
+                <Dropzone>
+                    <ContentEditableField
+                        id="message"
+                        label="Message"
+                        className={classes.textField}
+                        multiline
+                        fullWidth
+                        rows={"24"}
+                        value={message}
+                        onInput={
+                            (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
+                                handleFormInput('message', event.target.value)
+                        }
+                        margin="normal"
+                        placeholder="Put a few awesome lines of what you going to write about..."
+                        type={'text'}
+                    />
+                </Dropzone>
                 <Button
                     onClick={this.handleSubmit}
                     raised
@@ -151,7 +140,6 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
                     {'Add images'}
                     <div className={classes.buttonClickableOverlay} ref={this.saveDropZoneClickableRef}/>
                 </Button>
-                <input name='dropZoneInput' id='dropZoneInput' ref={this.saveDropZoneInputRef} multiple type="file"/>
             </form>
         );
     };
@@ -213,9 +201,11 @@ class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
     }
 }
 
-const mapStateToProps = (state: IReduxStore) => state.blogReducer;
+import {MapStateToProps, MapDispatchToProps} from 'react-redux';
 
-const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
+const mapStateToProps: MapStateToProps<IBlog, IBlogProps> = (state: IReduxStore) => state.blogReducer;
+
+const mapDispatchToProps: MapDispatchToProps<{actions: IBlogActions} ,IBlogProps> = (dispatch: Dispatch<IBlog>) => {
     return {
         actions: bindActionCreators({
             requestBlogPosts,

@@ -50,7 +50,7 @@ export interface INavigationActions {
 /**
  * Navigation component properties.
  */
-export interface INavigationProps extends IWithClasses, RouteComponentProps<void> {
+export interface INavigationProps extends IWithClasses, RouteComponentProps<{}> {
     actions: INavigationActions,
     locationPathname: string;
 }

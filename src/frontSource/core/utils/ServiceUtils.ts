@@ -32,7 +32,7 @@ export class ServiceUtils {
     };
 
     public static get = (REST_URL: string,
-                         payload?: string | Object,
+                         payload?: Object,
                          options?: IRequestMethodOptions) => {
         const {isPayloadGroomed, isGettingJSON} = options ? options : ServiceUtils.OptionsDefault;
         if (isObject(payload)) {
@@ -50,7 +50,7 @@ export class ServiceUtils {
     };
 
     public static post = (REST_URL: string,
-                          body?: string | Object,
+                          body?: Object,
                           options?: IRequestMethodOptions) => {
         const {isPayloadGroomed, isGettingJSON} = options ? options : ServiceUtils.OptionsDefault;
         if (isObject(body)) {
@@ -69,7 +69,7 @@ export class ServiceUtils {
     };
 
     public static put = (REST_URL: string,
-                          body?: string | Object,
+                          body?: Object,
                           options?: IRequestMethodOptions) => {
         const {isPayloadGroomed, isGettingJSON} = options ? options : ServiceUtils.OptionsDefault;
         if (isObject(body)) {
@@ -88,7 +88,7 @@ export class ServiceUtils {
     };
 
     public static remove = (REST_URL: string,
-                          body?: string | Object,
+                          body?: Object,
                           options?: IRequestMethodOptions) => {
         const {isPayloadGroomed, isGettingJSON} = options ? options : ServiceUtils.OptionsDefault;
         if (isObject(body)) {
