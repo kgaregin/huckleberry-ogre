@@ -73,7 +73,9 @@ export function submitBlogPost(title: string, message: string, id?: number, mode
                         dispatch(handleLocationChange('/blog'))
                     });
                 },
-                reason => dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
+                reason => {
+                    dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
+                }
             );
     }
 }
@@ -94,11 +96,15 @@ export function requestBlogPosts(id?: number, title?: string, message?: string) 
             message
         };
         return get('blog', payload)
-            .then((response) => {
+            .then(
+                (response) => {
                     dispatch(fetchSuccess(FETCH_CONTEXT.REQUEST_POSTS));
                     dispatch(getBlogPosts(response));
                 },
-                reason => dispatch(fetchFail(FETCH_CONTEXT.REQUEST_POSTS, reason)))
+                reason => {
+                    dispatch(fetchFail(FETCH_CONTEXT.REQUEST_POSTS, reason))
+                }
+            );
     }
 }
 
@@ -112,10 +118,14 @@ export function removePostByID(id: string) {
         dispatch(fetchPending(FETCH_CONTEXT.REMOVE_POST));
         const body = {id};
         return remove('blog', body)
-            .then(() => {
+            .then(
+                () => {
                     dispatch(fetchSuccess(FETCH_CONTEXT.REMOVE_POST));
                 },
-                reason => dispatch(fetchFail(FETCH_CONTEXT.REMOVE_POST, reason)))
+                reason => {
+                    dispatch(fetchFail(FETCH_CONTEXT.REMOVE_POST, reason))
+                }
+            );
     }
 }
 

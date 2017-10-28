@@ -10,7 +10,7 @@ render(
     <Provider store={store}>
         <GlobalLayout>
             <Router>
-                {React.createElement(Navigation)}
+                <Navigation/>
             </Router>
         </GlobalLayout>
     </Provider>,

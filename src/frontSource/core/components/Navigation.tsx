@@ -9,22 +9,21 @@ import {
     List,
     ListItem,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    WithStyles,
+    StyledComponent
 } from "material-ui";
 import BorderColorIcon from "material-ui-icons/BorderColor";
 import MenuIcon from "material-ui-icons/Menu";
 import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/core/components/Navigation";
-import {IWithClasses} from "../Interfaces";
 import * as classNames from "classnames";
 import Divider from "material-ui/Divider";
 import {RouteComponentProps, withRouter, Route} from "react-router-dom";
-import {IReduxStore} from "../store/reduxStore"
 import {Blog} from "../../modules/blog/Blog";
 import {Dispatch, bindActionCreators} from "redux";
-import {connect} from "react-redux";
-import {mergeProps} from "../utils/Utils";
+import {connect, MapDispatchToProps} from "react-redux";
 import {handleLocationChange} from "../store/Actions";
 import {ICommonState} from "../store/Reducers";
 import {History} from "history";
@@ -43,22 +42,21 @@ export let history: History;
  * Navigation component actions.
  */
 export interface INavigationActions {
-    handleLocationChange: (newLocation: string) => (dispatch: Dispatch<null>) => Object;
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
+    handleLocationChange: (newLocation: string) => { type: string };
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<void>;
 }
 
 /**
  * Navigation component properties.
  */
-export interface INavigationProps extends IWithClasses, RouteComponentProps<{}> {
+export interface INavigationProps {
     actions: INavigationActions,
-    locationPathname: string;
 }
 
 /**
  * Navigation component.
  */
-class NavigationComponent extends React.Component <INavigationProps> {
+class NavigationComponent extends React.Component <INavigationProps & WithStyles & RouteComponentProps<{ mode: MODE }>> {
     state = {
         isDrawerOpen: false,
     };
@@ -161,9 +159,7 @@ class NavigationComponent extends React.Component <INavigationProps> {
     }
 }
 
-const mapStateToProps = (state: IReduxStore) => state.commonReducer;
-
-const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
+const mapDispatchToProps: MapDispatchToProps<{ actions: INavigationActions }, {}> = (dispatch: Dispatch<ICommonState>) => {
     return {
         actions: bindActionCreators({
             handleLocationChange,
@@ -172,4 +168,13 @@ const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
     }
 };
 
-export const Navigation = withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(NavigationComponent)));
+const NavigationWithRouter = withRouter<INavigationProps & WithStyles>(NavigationComponent);
+
+const NavigationWithRouterStyled = withStyles(styles)<INavigationProps>(NavigationWithRouter);
+
+const NavigationWithRouterStyledConnected = connect<{} & StyledComponent<{}, string>, INavigationProps, {}>(
+    null,
+    mapDispatchToProps
+)<INavigationProps>(NavigationWithRouterStyled);
+
+export {NavigationWithRouterStyledConnected as Navigation};

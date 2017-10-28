@@ -1,11 +1,10 @@
 import * as React from "react";
-import {MuiThemeProvider, withStyles} from 'material-ui/styles';
-import {Grid, Paper} from 'material-ui';
-import {theme} from '../../Theme';
+import {MuiThemeProvider, withStyles} from "material-ui/styles";
+import {Grid, Paper, WithStyles} from "material-ui";
+import {theme} from "../../Theme";
 import {styles} from "../../styles/core/components/GlobalLayout";
-import {IWithClasses} from "../Interfaces";
 
-class GlobalLayoutComponent extends React.Component<IWithClasses> {
+class GlobalLayoutComponent extends React.Component<{children: JSX.Element} & WithStyles> {
     render() {
         return (
             <MuiThemeProvider theme={theme}>

@@ -2,7 +2,7 @@ import * as React from "react";
 import {Component} from "react";
 import {MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
-import {TextField, Button, Paper, Typography, Divider, Grid, IconButton} from "material-ui";
+import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
 import {styles} from "../../styles/modules/blog/Blog";
 import ModeEditIcon from "material-ui-icons/ModeEdit";
@@ -19,7 +19,6 @@ import {
 import {connect} from "react-redux";
 import {IBlog, IBlogActions, IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
-import {mergeProps} from "../../core/utils/Utils";
 import {IReduxStore} from "../../core/store/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {IPost} from "../../../server/db/models/blog/post";
@@ -35,10 +34,7 @@ export interface IBlogComponentState {
     dropZoneInput?: HTMLInputElement;
 }
 
-@withRouter
-class BlogComponent extends Component<IBlogProps, IBlogComponentState> {
-
-    state: IBlogComponentState = {};
+class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentProps<{ mode: MODE, postID: number }>, IBlogComponentState> {
 
     private handleSubmit = () => {
         const {
@@ -205,7 +201,7 @@ import {MapStateToProps, MapDispatchToProps} from 'react-redux';
 
 const mapStateToProps: MapStateToProps<IBlog, IBlogProps> = (state: IReduxStore) => state.blogReducer;
 
-const mapDispatchToProps: MapDispatchToProps<{actions: IBlogActions} ,IBlogProps> = (dispatch: Dispatch<IBlog>) => {
+const mapDispatchToProps: MapDispatchToProps<{ actions: IBlogActions }, IBlogProps> = (dispatch: Dispatch<IBlog>) => {
     return {
         actions: bindActionCreators({
             requestBlogPosts,
@@ -219,6 +215,13 @@ const mapDispatchToProps: MapDispatchToProps<{actions: IBlogActions} ,IBlogProps
     }
 };
 
-const Blog = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps, mergeProps)(BlogComponent));
+const BlogWithRouter = withRouter(BlogComponent);
 
-export {Blog};
+const BlogWithRouterStyled = withStyles(styles)<IBlogProps>(BlogWithRouter);
+
+const BlogWithRouterStyledConnected = connect<IBlog, { actions: IBlogActions }, {}>(
+    mapStateToProps,
+    mapDispatchToProps
+)(BlogWithRouterStyled);
+
+export {BlogWithRouterStyledConnected as Blog};

@@ -1,5 +1,4 @@
 import * as React from "react";
-import {withRouter} from "react-router-dom"
 import {history} from "../components/Navigation"
 
 /** Application layer common actions */

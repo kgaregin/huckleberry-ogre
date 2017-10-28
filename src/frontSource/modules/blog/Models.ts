@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {IWithClasses} from "../../core/Interfaces";
+import {WithStyles} from "material-ui";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {RouteComponentProps} from "react-router-dom";
 import {IPost} from "../../../server/db/models/blog/post";
@@ -25,17 +25,17 @@ export interface IBlog {
  * Blog actions.
  */
 export interface IBlogActions {
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<void | { type: string; context: FETCH_CONTEXT; reason: string; }>;
-    handleFormInput: (fieldName: string, fieldValue: string) => (dispatch: Dispatch<null>) => Object;
-    prefillPostEditForm: (post: IPost) => (dispatch: Dispatch<null>) => Object;
-    clearPostEditForm: () => (dispatch: Dispatch<null>) => Object;
-    submitBlogPost: (title: string, message: string, id: number, mode: MODE) => (dispatch: Dispatch<null>) => Promise<{ type: string, reason: string } | { type: string, responseValue: Response }>;
-    removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<{ type: string, context: FETCH_CONTEXT, reason: string } | { type: string, context: FETCH_CONTEXT, responseValue: Response }>
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<void>;
+    handleFormInput: (fieldName: string, fieldValue: string) => {type: string; fieldName: string; fieldValue: string;};
+    prefillPostEditForm: (post: IPost) => {type: string; post: IPost};
+    clearPostEditForm: () => {type: string};
+    submitBlogPost: (title: string, message: string, id?: number, mode?: MODE) => (dispatch: Dispatch<null>) => Promise<void>;
+    removePostByID: (id: string) => (dispatch: Dispatch<null>) => Promise<void>
 }
 
 /**
  * Blog component props with classes, router and redux actions.
  */
-export interface IBlogProps extends IBlog, IWithClasses, RouteComponentProps<{ mode: MODE, postID: number }> {
+export interface IBlogProps extends IBlog {
     actions: IBlogActions & INavigationActions
 }
