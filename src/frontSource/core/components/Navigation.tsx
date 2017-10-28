@@ -85,7 +85,7 @@ class NavigationComponent extends React.Component <INavigationProps & WithStyles
                 <List className={classes.list}>
                     <ListItem
                         className={classes.listItem}
-                        onClick={() => this.handleListItemClick('/blog')}
+                        onClick={() => this.handleListItemClick('blog')}
                     >
                         <ListItemIcon>
                             <BorderColorIcon/>
