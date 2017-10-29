@@ -1,5 +1,6 @@
 import * as React from "react";
-import {history} from "../components/Navigation"
+import {push} from 'react-router-redux'
+import {history, store} from "./reduxStore";
 /** Application layer common actions */
 
 /**
@@ -13,7 +14,7 @@ export const LOCATION_CHANGE = 'LOCATION_CHANGE';
  * @returns {Object}
  */
 export function handleLocationChange(newLocation: string) {
-    if (history.location.pathname !== newLocation) history.push(newLocation);
+    if (history.location.pathname !== newLocation) store.dispatch(push(newLocation));
 
     return {
         type: LOCATION_CHANGE

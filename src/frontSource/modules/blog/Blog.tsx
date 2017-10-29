@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Component} from "react";
-import {MODE} from "./Enums";
+import {FETCH_CONTEXT, MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles} from "material-ui";
 import withStyles from "material-ui/styles/withStyles";
@@ -26,7 +26,6 @@ import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from "../../core/store/Actions";
-
 const Dropzone = require('react-dropzone').default;
 
 export interface IBlogComponentState {
@@ -36,6 +35,37 @@ export interface IBlogComponentState {
 }
 
 class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentProps<{ mode: MODE, postID: number }>, IBlogComponentState> {
+
+    componentWillMount(){
+        this.updateBlogPosts();
+    }
+
+    /**
+     * Not quiet good solution, but no better ideas atm.
+     * ToDo: find out how to handle updateBlogPosts in a possibly better way.
+     */
+    componentWillReceiveProps(nextProps: IBlogProps){
+        const {fetchContext, fetchStatus} = nextProps;
+        const {fetchContext: oldFetchContext, fetchStatus: oldFetchStatus} = this.props;
+
+        if (!(oldFetchContext === fetchContext && oldFetchStatus === fetchStatus)){
+            let isPostsUpdated = false;
+
+            switch (fetchContext) {
+                case FETCH_CONTEXT.REMOVE_POST:
+                case FETCH_CONTEXT.SUBMIT_POST:
+                case FETCH_CONTEXT.UPDATE_POST:
+                    isPostsUpdated = fetchStatus === FETCH_STATUS.SUCCESS;
+            }
+            isPostsUpdated && this.updateBlogPosts();
+        }
+    }
+
+    private updateBlogPosts = () => {
+        const {actions, match} = this.props;
+        const mode = match.params.mode || MODE.READ;
+        if (mode === MODE.READ) actions.requestBlogPosts();
+    };
 
     private handleSubmit = () => {
         const {

@@ -3,8 +3,8 @@ import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
 import {handleLocationChange} from "../../core/store/Actions";
-import {History} from "history";
 
+/** Async request methods. */
 const {get, post, put, remove} = ServiceUtils;
 
 /**

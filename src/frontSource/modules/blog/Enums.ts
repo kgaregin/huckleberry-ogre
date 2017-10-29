@@ -1,6 +1,4 @@
-/**
- * Defines viewing mode of blog component.
- */
+/** Defines viewing mode of blog component. */
 export enum MODE {
     READ = <any>'READ',
     CREATE = <any>'CREATE',
@@ -8,9 +6,7 @@ export enum MODE {
     REMOVE = <any>'REMOVE',
 }
 
-/**
- * Defines fetch context.
- */
+/** Defines fetch context. */
 export enum FETCH_CONTEXT {
     NONE,
     REQUEST_POSTS,
@@ -18,4 +14,3 @@ export enum FETCH_CONTEXT {
     UPDATE_POST,
     REMOVE_POST
 }
-

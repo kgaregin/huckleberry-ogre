@@ -3,23 +3,26 @@ import {blogReducer} from "../../modules/blog/Reducers";
 import {IBlog} from "../../modules/blog/Models";
 import thunkMiddleware from 'redux-thunk';
 import {commonReducer, ICommonState} from "./Reducers";
-import {history} from "../../";
-import {routerReducer, routerMiddleware} from 'react-router-redux';
+import {createHashHistory} from "history";
+import {routerReducer, routerMiddleware, RouterState} from 'react-router-redux';
 
-/**
- * Main redux store interface.
- */
+/** Main redux store interface. */
 export interface IReduxStore {
     blogReducer: IBlog,
-    commonReducer: ICommonState
+    commonReducer: ICommonState,
+    routerReducer: Reducer<RouterState>
+
 }
 
+/** Hash history. */
+export const history = createHashHistory();
+
 /** Combined reducers **/
-const combinedReducers = combineReducers(
+const combinedReducers = combineReducers<IReduxStore>(
     {
         blogReducer,
         commonReducer,
-        router: routerReducer
+        routerReducer
     }
 );
 /** Enhancers. See docs at https://github.com/zalmoxisus/redux-devtools-extension **/
@@ -31,11 +34,12 @@ const reactRouterReduxMiddleware = routerMiddleware(history);
  * Main redux store.
  * @type {Store<IReduxStore>}
  */
-export const store: Store<IReduxStore> = createStore<any>(
+export const store: Store<IReduxStore> = createStore(
     combinedReducers,
+    composeEnhancers(
         applyMiddleware(
             thunkMiddleware,
             reactRouterReduxMiddleware,
-        )
+        ))
 );
 

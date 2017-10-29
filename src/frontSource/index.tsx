@@ -1,15 +1,10 @@
 import "typeface-roboto";
 import * as React from "react";
 import {render} from "react-dom";
-import {Router} from "react-router-dom";
-import {} from "react-router";
-import {createHashHistory} from "history";
 import {GlobalLayout, Navigation} from "./core";
-import {store} from "./core/store/reduxStore";
+import {store, history} from "./core/store/reduxStore";
 import {Provider} from "react-redux";
-import {ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-router-redux'
-
-export const history = createHashHistory();
+import {ConnectedRouter} from 'react-router-redux'
 
 render(
     <Provider store={store}>

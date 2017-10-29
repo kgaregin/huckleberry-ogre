@@ -4,7 +4,7 @@ import {FETCH_CONTEXT, MODE} from "./Enums";
 import {RouteComponentProps} from "react-router-dom";
 import {IPost} from "../../../server/db/models/blog/post";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
-import {INavigationActions} from "../../core/components/Navigation";
+import {INavigationActions} from "../../core/modules/Navigation";
 
 
 /**

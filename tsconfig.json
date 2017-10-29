@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": "src/frontSource"
+    "baseUrl": "src/frontSource",
+    "lib": [
+      "dom",
+      "es2017"
+    ]
   },
-
   "typeRoots": [
     "node_modules/@types",
     "node_modules"
