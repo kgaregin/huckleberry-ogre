@@ -1,7 +1,5 @@
 import * as React from "react";
-import {history} from "../../"
-import {push} from "react-router-redux";
-import {store} from "../store/reduxStore";
+import {history} from "../components/Navigation"
 /** Application layer common actions */
 
 /**

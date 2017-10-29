@@ -1,4 +1,4 @@
-import {combineReducers, createStore, applyMiddleware, compose, Store} from "redux";
+import {combineReducers, createStore, applyMiddleware, compose, Store, Reducer} from "redux";
 import {blogReducer} from "../../modules/blog/Reducers";
 import {IBlog} from "../../modules/blog/Models";
 import thunkMiddleware from 'redux-thunk';
@@ -31,13 +31,11 @@ const reactRouterReduxMiddleware = routerMiddleware(history);
  * Main redux store.
  * @type {Store<IReduxStore>}
  */
-export const store: Store<IReduxStore> = createStore(
+export const store: Store<IReduxStore> = createStore<any>(
     combinedReducers,
-    composeEnhancers(
         applyMiddleware(
             thunkMiddleware,
             reactRouterReduxMiddleware,
         )
-    )
 );
 

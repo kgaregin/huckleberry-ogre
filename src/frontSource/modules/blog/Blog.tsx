@@ -26,7 +26,8 @@ import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from "../../core/store/Actions";
-import * as Dropzone from 'react-dropzone'
+
+const Dropzone = require('react-dropzone').default;
 
 export interface IBlogComponentState {
     dropZoneClickable?: HTMLDivElement;
@@ -215,13 +216,13 @@ const mapDispatchToProps: MapDispatchToProps<{ actions: IBlogActions }, IBlogPro
     }
 };
 
-const BlogWithRouter = withRouter(BlogComponent);
+const BlogStyled = withStyles(styles)<IBlogProps>(BlogComponent);
 
-const BlogWithRouterStyled = withStyles(styles)<IBlogProps>(BlogWithRouter);
-
-const BlogWithRouterStyledConnected = connect<IBlog, { actions: IBlogActions }, {}>(
+const BlogStyledConnected = connect<IBlog, { actions: IBlogActions }, {}>(
     mapStateToProps,
     mapDispatchToProps
-)(BlogWithRouterStyled);
+)(BlogStyled);
 
-export {BlogWithRouterStyledConnected as Blog};
+const BlogStyledConnectedWithRouter = withRouter(BlogStyledConnected);
+
+export {BlogStyledConnectedWithRouter as Blog};

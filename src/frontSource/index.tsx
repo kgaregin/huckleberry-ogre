@@ -2,6 +2,7 @@ import "typeface-roboto";
 import * as React from "react";
 import {render} from "react-dom";
 import {Router} from "react-router-dom";
+import {} from "react-router";
 import {createHashHistory} from "history";
 import {GlobalLayout, Navigation} from "./core";
 import {store} from "./core/store/reduxStore";

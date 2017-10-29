@@ -38,7 +38,8 @@ module.exports = {
             options: {
                 configFileName: path.resolve(__dirname, 'src/frontSource/tsconfig.json')
             },
-            include: path.resolve(__dirname, 'src/frontSource')
+            include: path.resolve(__dirname, 'src/frontSource'),
+            exclude: /node_modules/
         }]
     },
     plugins: [
