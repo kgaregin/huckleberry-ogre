@@ -1,4 +1,3 @@
-import * as React from "react";
 import {push} from 'react-router-redux'
 import {history, store} from "./reduxStore";
 /** Application layer common actions */

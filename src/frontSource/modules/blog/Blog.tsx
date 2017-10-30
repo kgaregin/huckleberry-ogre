@@ -26,7 +26,8 @@ import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from "../../core/store/Actions";
-const Dropzone = require('react-dropzone').default;
+// const Dropzone = require('react-dropzone').default;
+import * as Dropzone from 'react-dropzone';
 
 export interface IBlogComponentState {
     dropZoneClickable?: HTMLDivElement;

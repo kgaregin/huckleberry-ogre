@@ -29,6 +29,7 @@ import {ICommonState} from "../store/Reducers";
 import {MODE} from "../../modules/blog/Enums";
 import {requestBlogPosts} from "../../modules/blog/Actions";
 import {IReduxStore} from "../store/reduxStore";
+import {ErrorBoundary} from "./ErrorBoundary";
 
 /**
  * Navigation component actions.
@@ -134,10 +135,12 @@ class NavigationComponent extends React.Component <INavigationProps & WithStyles
                         {/*ToDo: maybe add some cool iScroll with touch events support here?*/}
                         <Grid container justify={'center'}>
                             <Grid item xl={7} lg={9} md={11} sm={12} xs={12}>
-                                <Switch>
-                                    <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
-                                    <Route path="/blog/:mode?/:postID?" component={Blog}/>
-                                </Switch>
+                                <ErrorBoundary>
+                                    <Switch>
+                                        <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
+                                        <Route path="/blog/:mode?/:postID?" component={Blog}/>
+                                    </Switch>
+                                </ErrorBoundary>
                             </Grid>
                         </Grid>
                     </main>

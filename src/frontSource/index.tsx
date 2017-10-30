@@ -5,6 +5,7 @@ import {GlobalLayout, Navigation} from "./core";
 import {store, history} from "./core/store/reduxStore";
 import {Provider} from "react-redux";
 import {ConnectedRouter} from 'react-router-redux'
+import {ErrorBoundary} from "./core/modules/ErrorBoundary";
 
 render(
     <Provider store={store}>
