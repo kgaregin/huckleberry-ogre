@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: './src/frontSource/index.tsx',
@@ -9,7 +11,7 @@ module.exports = {
     },
     devtool: 'source-map',
     devServer: {
-        contentBase: './src/dist',
+        contentBase: './',
         port: 8080,
         hot: true
     },
@@ -43,7 +45,12 @@ module.exports = {
         }]
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new CleanWebpackPlugin(['dist']),
+        new HtmlWebpackPlugin({
+            title: 'Huckleberry Ogre welcomes you, stranger!',
+            template: 'index_template.ejs'
+        }),
+        new webpack.HotModuleReplacementPlugin(),
     ],
     externals: {
         'react': 'React',

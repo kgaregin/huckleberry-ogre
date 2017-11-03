@@ -109,68 +109,68 @@ class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentPr
         this.setState({dropZoneInput})
     };
 
-    renderPostEdit = () => {
-        const {
-            classes,
-            fetchStatus,
-            match: {params: {mode}},
-            form: {title, message},
-            actions: {handleFormInput}
-        } = this.props;
-        const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
+renderPostEdit = () => {
+    const {
+        classes,
+        fetchStatus,
+        match: {params: {mode}},
+        form: {title, message},
+        actions: {handleFormInput}
+    } = this.props;
+    const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
 
-        return (
-            <form ref={this.saveDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
-                <TextField
-                    id="title"
-                    label="Title"
+    return (
+        <form ref={this.saveDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
+            <TextField
+                id="title"
+                label="Title"
+                className={classes.textField}
+                value={title}
+                onChange={
+                    (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
+                        handleFormInput('title', event.target.value)
+                }
+                margin="normal"
+                fullWidth
+            />
+            <Dropzone>
+                <ContentEditableField
+                    id="message"
+                    label="Message"
                     className={classes.textField}
-                    value={title}
-                    onChange={
-                        (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
-                            handleFormInput('title', event.target.value)
+                    multiline
+                    fullWidth
+                    rows={"24"}
+                    value={message}
+                    onInput={
+                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
+                            handleFormInput('message', event.target.value)
                     }
                     margin="normal"
-                    fullWidth
+                    placeholder="Put a few awesome lines of what you going to write about..."
+                    type={'text'}
                 />
-                <Dropzone>
-                    <ContentEditableField
-                        id="message"
-                        label="Message"
-                        className={classes.textField}
-                        multiline
-                        fullWidth
-                        rows={"24"}
-                        value={message}
-                        onInput={
-                            (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
-                                handleFormInput('message', event.target.value)
-                        }
-                        margin="normal"
-                        placeholder="Put a few awesome lines of what you going to write about..."
-                        type={'text'}
-                    />
-                </Dropzone>
-                <Button
-                    onClick={this.handleSubmit}
-                    raised
-                    color="accent"
-                    className={classes.button}
-                    disabled={isFetchInProgress}
-                >
-                    {'Submit'}
-                </Button>
-                <Button
-                    raised
-                    color="contrast"
-                    className={classes.button}
-                >
-                    {'Add images'}
-                    <div className={classes.buttonClickableOverlay} ref={this.saveDropZoneClickableRef}/>
-                </Button>
-            </form>
-        );
-    };
+            </Dropzone>
+            <Button
+                onClick={this.handleSubmit}
+                raised
+                color="accent"
+                className={classes.button}
+                disabled={isFetchInProgress}
+            >
+                {'Submit'}
+            </Button>
+            <Button
+                raised
+                color="contrast"
+                className={classes.button}
+            >
+                {'Add images'}
+                <div className={classes.buttonClickableOverlay} ref={this.saveDropZoneClickableRef}/>
+            </Button>
+        </form>
+    );
+};
 
     render() {
         const mode = this.props.match.params.mode || MODE.READ;
