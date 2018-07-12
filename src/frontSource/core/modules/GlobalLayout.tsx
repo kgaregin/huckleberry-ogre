@@ -1,6 +1,5 @@
 import * as React from "react";
-import {MuiThemeProvider, withStyles} from "material-ui/styles";
-import {Grid, Paper, WithStyles} from "material-ui";
+import {MuiThemeProvider, withStyles, Grid, Paper, WithStyles} from "@material-ui/core";
 import {theme} from "../../Theme";
 import {styles} from "../../styles/core/components/GlobalLayout";
 

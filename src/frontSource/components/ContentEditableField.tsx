@@ -1,6 +1,6 @@
 import * as React from "react";
-import {TextField} from "material-ui";
-import {TextFieldProps} from "material-ui/TextField";
+import {TextField} from "@material-ui/core";
+import {TextFieldProps} from "@material-ui/core/TextField";
 import {isFunction} from "lodash";
 import {FormEventWithTargetValue, HTMLDivElementWithValue} from "../core/Interfaces";
 

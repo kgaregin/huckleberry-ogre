@@ -49,7 +49,7 @@ export function clearPostEditForm() {
  * @returns {Promise}
  */
 export function submitBlogPost(title: string, message: string, id?: number, mode?: MODE) {
-    return (dispatch: Dispatch<null>) => {
+    return (dispatch: any) => {
         dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
             id,

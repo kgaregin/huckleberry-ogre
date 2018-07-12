@@ -1,35 +1,35 @@
-import * as React from "react";
+import * as React from 'react';
 import {
     AppBar,
     IconButton,
     Typography,
     Toolbar,
     Drawer,
+    Divider,
     Grid,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
     WithStyles,
-    StyledComponentProps
-} from "material-ui";
-import BorderColorIcon from "material-ui-icons/BorderColor";
-import MenuIcon from "material-ui-icons/Menu";
-import ChevronLeftIcon from "material-ui-icons/ChevronLeft";
-import withStyles from "material-ui/styles/withStyles";
-import {styles} from "../../styles/core/components/Navigation";
-import * as classNames from "classnames";
-import Divider from "material-ui/Divider";
-import {RouteComponentProps, withRouter, Route, Switch} from "react-router-dom";
-import {Blog} from "../../modules/blog/Blog";
-import {Dispatch, bindActionCreators} from "redux";
-import {connect, MapDispatchToProps, MapStateToProps} from "react-redux";
-import {handleLocationChange} from "../store/Actions";
-import {ICommonState} from "../store/Reducers";
-import {MODE} from "../../modules/blog/Enums";
-import {requestBlogPosts} from "../../modules/blog/Actions";
-import {IReduxStore} from "../store/reduxStore";
-import {ErrorBoundary} from "./ErrorBoundary";
+    StyledComponentProps,
+    withStyles,
+} from '@material-ui/core';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import {styles} from '../../styles/core/components/Navigation';
+import * as classNames from 'classnames';
+import {RouteComponentProps, withRouter, Route, Switch} from 'react-router-dom';
+import {Blog} from '../../modules/blog/Blog';
+import {Dispatch, bindActionCreators} from 'redux';
+import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
+import {handleLocationChange} from '../store/Actions';
+import {ICommonState} from '../store/Reducers';
+import {MODE} from '../../modules/blog/Enums';
+import {requestBlogPosts} from '../../modules/blog/Actions';
+import {IReduxStore} from '../store/reduxStore';
+import {ErrorBoundary} from './ErrorBoundary';
 
 /**
  * Navigation component actions.
@@ -42,15 +42,22 @@ export interface INavigationActions {
 /**
  * Navigation component properties.
  */
-export interface INavigationProps {
+interface IProps extends RouteComponentProps<{ mode: MODE }>, WithStyles<typeof styles> {
     actions: INavigationActions,
+}
+
+/**
+ * State.
+ */
+interface IState {
+    isDrawerOpen: boolean;
 }
 
 /**
  * Navigation component.
  */
-class NavigationComponent extends React.Component <INavigationProps & WithStyles & RouteComponentProps<{ mode: MODE }>> {
-    state = {
+class NavigationComponent extends React.Component<IProps, IState> {
+    state: IState = {
         isDrawerOpen: false,
     };
 
@@ -101,20 +108,20 @@ class NavigationComponent extends React.Component <INavigationProps & WithStyles
                         <Toolbar className={classes.toolbar} disableGutters={!isDrawerOpen}>
                             <IconButton
                                 className={classNames(classes.menuButton, isDrawerOpen && classes.hide)}
-                                color="contrast"
+                                color="primary"
                                 aria-label="open drawer"
                                 onClick={this.handleDrawerOpen}
                             >
                                 <MenuIcon/>
                             </IconButton>
-                            <Typography type="title" color="inherit" className={classes.flex}>
+                            <Typography color="inherit" className={classes.flex}>
                                 {'Huckleberry Ogre Home'}
                             </Typography>
                             {/*<Button color="contrast">Login</Button>*/}
                         </Toolbar>
                     </AppBar>
                     <Drawer
-                        type="persistent"
+                        variant="persistent"
                         classes={{
                             paper: classes.drawerPaper,
                         }}
@@ -149,24 +156,24 @@ class NavigationComponent extends React.Component <INavigationProps & WithStyles
     }
 }
 
-const mapStateToProps: MapStateToProps<ICommonState, {}> = (state: IReduxStore) => state.commonReducer;
+interface IDispatchProps {
+    actions: INavigationActions;
+}
 
-const mapDispatchToProps: MapDispatchToProps<{ actions: INavigationActions }, {}> = (dispatch: Dispatch<ICommonState>) => {
+const mapStateToProps = (state: IReduxStore) => state.commonReducer;
+
+const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
     return {
         actions: bindActionCreators({
             handleLocationChange,
             requestBlogPosts
         }, dispatch)
-    }
+    };
 };
 
-const NavigationStyled = withStyles(styles)<INavigationProps>(NavigationComponent);
-
-const NavigationStyledConnected = connect<{} & StyledComponentProps, INavigationProps, {}>(
+const NavigationStyledConnectedWithRouter = withStyles(styles)<{}>(withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)<INavigationProps>(NavigationStyled);
-
-const NavigationStyledConnectedWithRouter = withRouter(NavigationStyledConnected);
+)(NavigationComponent)));
 
 export {NavigationStyledConnectedWithRouter as Navigation};

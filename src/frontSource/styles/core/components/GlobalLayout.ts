@@ -1,4 +1,4 @@
-import {StyleRules} from 'material-ui/styles'
+import {StyleRules} from '@material-ui/core/styles'
 
 export const styles: StyleRules = {
     rootGrid:{

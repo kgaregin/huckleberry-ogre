@@ -2,12 +2,11 @@ import * as React from "react";
 import {Component} from "react";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
-import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles} from "material-ui";
-import withStyles from "material-ui/styles/withStyles";
+import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles, withStyles} from "@material-ui/core";
 import {styles} from "../../styles/modules/blog/Blog";
-import ModeEditIcon from "material-ui-icons/ModeEdit";
-import DeleteIcon from "material-ui-icons/Delete";
-import BorderColorIcon from "material-ui-icons/BorderColor";
+import ModeEditIcon from "@material-ui/icons/ModeEdit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import BorderColorIcon from "@material-ui/icons/BorderColor";
 import {
     requestBlogPosts,
     handleFormInput,
@@ -26,8 +25,8 @@ import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from "../../core/store/Actions";
-// const Dropzone = require('react-dropzone').default;
-import * as Dropzone from 'react-dropzone';
+const Dropzone = require('react-dropzone').default;
+// import * as Dropzone from 'react-dropzone';
 
 export interface IBlogComponentState {
     dropZoneClickable?: HTMLDivElement;
@@ -153,16 +152,16 @@ renderPostEdit = () => {
             </Dropzone>
             <Button
                 onClick={this.handleSubmit}
-                raised
-                color="accent"
+                variant="raised"
+                color="primary"
                 className={classes.button}
                 disabled={isFetchInProgress}
             >
                 {'Submit'}
             </Button>
             <Button
-                raised
-                color="contrast"
+                variant="raised"
+                color="primary"
                 className={classes.button}
             >
                 {'Add images'}
@@ -187,11 +186,11 @@ renderPostEdit = () => {
                     <Paper className={classes.postPaper} elevation={10} key={key}>
                         <Grid container>
                             <Grid item xl={11} lg={11} md={11} sm={12} xs={12}>
-                                <Typography type="title" gutterBottom align={'center'}>
+                                <Typography variant="title" gutterBottom align={'center'}>
                                     {post.title}
                                 </Typography>
                                 <Divider className={classes.postDivider}/>
-                                <Typography type="body1" gutterBottom align={'left'}>
+                                <Typography variant="body1" gutterBottom align={'left'}>
                                     {post.message}
                                 </Typography>
                             </Grid>
@@ -216,8 +215,8 @@ renderPostEdit = () => {
                     </Paper>)
                 }
                 <Button
-                    fab
-                    color="accent"
+                    variant="fab"
+                    color="primary"
                     aria-label="edit"
                     className={classes.buttonCreate}
                     onClick={this.handleCreatePostButtonClick}
@@ -229,11 +228,9 @@ renderPostEdit = () => {
     }
 }
 
-import {MapStateToProps, MapDispatchToProps} from 'react-redux';
+const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
-const mapStateToProps: MapStateToProps<IBlog, IBlogProps> = (state: IReduxStore) => state.blogReducer;
-
-const mapDispatchToProps: MapDispatchToProps<{ actions: IBlogActions }, IBlogProps> = (dispatch: Dispatch<IBlog>) => {
+const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
     return {
         actions: bindActionCreators({
             requestBlogPosts,
@@ -247,13 +244,9 @@ const mapDispatchToProps: MapDispatchToProps<{ actions: IBlogActions }, IBlogPro
     }
 };
 
-const BlogStyled = withStyles(styles)<IBlogProps>(BlogComponent);
-
-const BlogStyledConnected = connect<IBlog, { actions: IBlogActions }, {}>(
+const BlogStyledConnectedWithRouter = withStyles(styles)(withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(BlogStyled);
-
-const BlogStyledConnectedWithRouter = withRouter(BlogStyledConnected);
+)(BlogComponent)));
 
 export {BlogStyledConnectedWithRouter as Blog};

@@ -2,12 +2,15 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "pretty": true,
-    "module": "commonjs",
+    "module": "esnext",
     "noEmit": true,
     "strict": true,
     "experimentalDecorators": true,
     "target": "ES5",
     "jsx": "react",
-    "sourceMap": true
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false
   }
 }

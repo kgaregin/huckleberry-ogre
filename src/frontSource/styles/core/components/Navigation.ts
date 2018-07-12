@@ -1,7 +1,8 @@
-import {StyleRulesCallback, Theme} from "material-ui/styles";
+import {StyleRulesCallback, Theme} from "@material-ui/core";
 import {DRAWER_WIDTH} from "../../../core/consts";
+import createStyles from '@material-ui/core/es/styles/createStyles';
 
-export const styles: StyleRulesCallback = (theme: Theme) => ({
+export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     root: {
         width: '100%',
         height: '100vh',
@@ -63,12 +64,10 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         height: 'calc(100% - 112px)',
-        marginTop: 64,
+        marginTop: '64',
         [theme.breakpoints.up('sm')]: {
-            content: {
-                height: 'calc(100% - 112px)',
-                marginTop: 64,
-            },
+            height: 'calc(100% - 112px)',
+            marginTop: '64'
         },
     },
     contentShift: {
@@ -88,7 +87,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
     list: {
         width: '100%',
         '&:hover': {
-            backgroundColor: theme.palette.primary.A700,
+            backgroundColor: theme.palette.primary.dark,
             cursor: 'pointer'
         }
     }

@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {WithStyles} from "material-ui";
+import {WithStyles} from "@material-ui/core";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {RouteComponentProps} from "react-router-dom";
 import {IPost} from "../../../server/db/models/blog/post";

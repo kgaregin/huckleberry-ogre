@@ -1,4 +1,4 @@
-import {StyleRulesCallback, Theme} from "material-ui/styles";
+import {StyleRulesCallback, Theme} from "@material-ui/core";
 import {DRAWER_WIDTH} from "../../../core/consts";
 
 export const styles: StyleRulesCallback = (theme: Theme) => ({
@@ -40,10 +40,10 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         flexDirection: 'column'
     },
     postActionButtonIcon: {
-        color: theme.palette.primary.contrastDefaultColor,
+        color: theme.palette.primary.contrastText,
 
         '&:hover': {
-            color: theme.palette.secondary.A700
+            color: theme.palette.secondary.dark
         }
     },
     buttonClickableOverlay: {

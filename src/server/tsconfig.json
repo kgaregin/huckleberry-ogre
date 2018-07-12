@@ -1,13 +1,14 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "pretty": true,
-    "module": "commonjs",
     "noEmit": true,
     "strict": true,
     "experimentalDecorators": true,
-    "target": "ES6",
-    "rootDir": "./",
+    "target": "ES5",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true
   }
 }
