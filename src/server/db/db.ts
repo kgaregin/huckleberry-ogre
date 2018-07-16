@@ -1,8 +1,8 @@
 import * as Sequelize from 'sequelize';
-import {DB_CONNECTION_URI} from './config';
+import {DB_CONNECTION_OPTIONS} from './config';
 import {PostModel} from './models/blog/post'
 
-const sequelize = new Sequelize(DB_CONNECTION_URI);
+const sequelize = new Sequelize(DB_CONNECTION_OPTIONS);
 
 sequelize.import('post', PostModel);
 
