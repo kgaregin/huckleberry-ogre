@@ -1,5 +1,4 @@
 import {StyleRulesCallback, Theme} from "@material-ui/core";
-import {DRAWER_WIDTH} from "../../../core/consts";
 
 export const styles: StyleRulesCallback = (theme: Theme) => ({
     container: {

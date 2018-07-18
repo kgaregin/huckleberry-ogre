@@ -12,7 +12,6 @@ import {
     ListItemIcon,
     ListItemText,
     WithStyles,
-    StyledComponentProps,
     withStyles,
 } from '@material-ui/core';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
@@ -23,20 +22,18 @@ import * as classNames from 'classnames';
 import {RouteComponentProps, withRouter, Route, Switch} from 'react-router-dom';
 import {Blog} from '../../modules/blog/Blog';
 import {Dispatch, bindActionCreators} from 'redux';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
+import {connect, MapDispatchToPropsParam} from 'react-redux';
 import {handleLocationChange} from '../store/Actions';
-import {ICommonState} from '../store/Reducers';
 import {MODE} from '../../modules/blog/Enums';
 import {requestBlogPosts} from '../../modules/blog/Actions';
-import {IReduxStore} from '../store/reduxStore';
 import {ErrorBoundary} from './ErrorBoundary';
 
 /**
  * Navigation component actions.
  */
-export interface INavigationActions {
+export type INavigationActions = {
     handleLocationChange: (newLocation: string) => { type: string };
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch<null>) => Promise<void>;
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch) => Promise<void>;
 }
 
 /**
@@ -156,13 +153,13 @@ class NavigationComponent extends React.Component<IProps, IState> {
     }
 }
 
-interface IDispatchProps {
+interface TDispatchProps {
     actions: INavigationActions;
 }
 
-const mapStateToProps = (state: IReduxStore) => state.commonReducer;
+interface TOwnProps extends RouteComponentProps<{ mode: MODE }>, WithStyles<typeof styles>{}
 
-const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
+const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = (dispatch: Dispatch): TDispatchProps => {
     return {
         actions: bindActionCreators({
             handleLocationChange,
@@ -171,9 +168,8 @@ const mapDispatchToProps = (dispatch: Dispatch<ICommonState>) => {
     };
 };
 
-const NavigationStyledConnectedWithRouter = withStyles(styles)<{}>(withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(NavigationComponent)));
+const ConnectedComponent = connect<void, TDispatchProps, TOwnProps>(null, mapDispatchToProps)((props: IProps) => <NavigationComponent {...props}/>);
+const WithRouterConnectedComponent = withRouter<TOwnProps>((props: TOwnProps) => <ConnectedComponent {...props}/>);
+const NavigationStyledConnectedWithRouter = withStyles(styles)(props => <WithRouterConnectedComponent {...props}/>);
 
 export {NavigationStyledConnectedWithRouter as Navigation};

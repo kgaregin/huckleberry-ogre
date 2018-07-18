@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './src/frontSource/index.tsx',
+    entry: './src/client/index.tsx',
     output: {
         path: path.resolve(__dirname, 'src/dist'),
         filename: 'bundle.js'
@@ -24,7 +24,7 @@ module.exports = {
             enforce: 'pre',
             test: /\.ts|\.tsx$/,
             loader: 'source-map-loader',
-            include: path.resolve(__dirname, 'src/frontSource')
+            include: path.resolve(__dirname, 'src/client')
         }, {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
@@ -38,9 +38,9 @@ module.exports = {
             test: /\.ts|\.tsx$/,
             loader: 'awesome-typescript-loader',
             options: {
-                configFileName: path.resolve(__dirname, 'src/frontSource/tsconfig.json')
+                configFileName: path.resolve(__dirname, 'src/client/tsconfig.json')
             },
-            include: path.resolve(__dirname, 'src/frontSource'),
+            include: path.resolve(__dirname, 'src/client'),
             exclude: /node_modules/
         }]
     },

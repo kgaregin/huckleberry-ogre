@@ -1,5 +1,5 @@
 import {sequelize} from '../../db';
-import {PostModel, IPost} from '../../models/blog/post';
+import {PostModel} from '../../models/blog/post';
 
 const Post = sequelize.import('post', PostModel);
 

@@ -16,7 +16,7 @@ import {
     clearPostEditForm
 } from './Actions';
 import {connect} from "react-redux";
-import {IBlog, IBlogActions, IBlogProps} from "./Models";
+import {IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
 import {IReduxStore} from "../../core/store/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
@@ -104,15 +104,10 @@ class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentPr
         this.setState({dropZoneContainer})
     };
 
-    private saveDropZoneInputRef = (dropZoneInput: HTMLInputElement) => {
-        this.setState({dropZoneInput})
-    };
-
 renderPostEdit = () => {
     const {
         classes,
         fetchStatus,
-        match: {params: {mode}},
         form: {title, message},
         actions: {handleFormInput}
     } = this.props;
@@ -230,7 +225,7 @@ renderPostEdit = () => {
 
 const mapStateToProps = (state: IReduxStore) => state.blogReducer;
 
-const mapDispatchToProps = (dispatch: Dispatch<IBlog>) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         actions: bindActionCreators({
             requestBlogPosts,

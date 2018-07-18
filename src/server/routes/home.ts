@@ -4,7 +4,7 @@ const HomeRoute = (server: Server) => {
     server.route({
         method: 'GET',
         path: '/',
-        handler: function (request, reply) {
+        handler: function (__, reply) {
             reply.file('index.html');
         }
     });

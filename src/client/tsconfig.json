@@ -11,6 +11,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "skipLibCheck": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }
