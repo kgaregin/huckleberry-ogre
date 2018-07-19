@@ -7,8 +7,8 @@ class GlobalLayoutComponent extends React.Component<{children: JSX.Element} & Wi
     render() {
         return (
             <MuiThemeProvider theme={theme}>
-                <Grid className={this.props.classes.rootGrid} item xs={12} xl={10}>
-                    <Paper>
+                <Grid container>
+                    <Paper className={this.props.classes.mainPaper} square>
                         {this.props.children}
                     </Paper>
                 </Grid>
