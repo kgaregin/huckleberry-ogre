@@ -30,5 +30,4 @@ node_modules
 npm-debug.log
 /.idea/
 huckleberry-ogre.iml
-/src/server/db/config.ts
 
