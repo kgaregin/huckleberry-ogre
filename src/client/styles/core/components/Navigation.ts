@@ -64,10 +64,9 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
             duration: theme.transitions.duration.leavingScreen,
         }),
         height: 'calc(100% - 112px)',
-        marginTop: '64',
+        marginTop: '64px',
         [theme.breakpoints.up('sm')]: {
-            height: 'calc(100% - 112px)',
-            marginTop: '64'
+            height: 'calc(100% - 112px)'
         },
     },
     contentShift: {
