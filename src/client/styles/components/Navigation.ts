@@ -1,5 +1,5 @@
 import {StyleRulesCallback, Theme} from "@material-ui/core";
-import {DRAWER_WIDTH} from "../../../core/consts";
+import {DRAWER_WIDTH} from "../../core/consts";
 import createStyles from '@material-ui/core/es/styles/createStyles';
 
 export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
@@ -34,6 +34,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     menuButton: {
         marginLeft: 12,
         marginRight: 20,
+        color: theme.palette.secondary.contrastText
     },
     hide: {
         display: 'none',
@@ -42,14 +43,18 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         position: 'relative',
         height: 'auto',
         width: DRAWER_WIDTH,
-        borderRight: '0px !important'
+        borderRight: '0px !important',
+
+    },
+    drawerDocked: {
+
     },
     drawerHeader: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
         padding: '0 8px',
-        height: '64px'
+        height: '64px',
         // ...theme.mixins.toolbar,
     },
     content: {
@@ -86,7 +91,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     list: {
         width: '100%',
         '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
+            backgroundColor: theme.palette.primary.light,
             cursor: 'pointer'
         }
     }

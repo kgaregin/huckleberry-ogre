@@ -1,13 +1,13 @@
 import {combineReducers, createStore, applyMiddleware, compose, Store} from "redux";
-import {blogReducer} from "../../modules/blog/Reducers";
-import {IBlog} from "../../modules/blog/Models";
+import {blogReducer} from "../modules/blog/Reducers";
 import thunkMiddleware from 'redux-thunk';
 import {createHashHistory} from "history";
 import {routerReducer, routerMiddleware, RouterState} from 'react-router-redux';
+import {IBlogOwnProps} from '../modules/blog/Blog';
 
 /** Main redux store interface. */
 export interface IReduxStore {
-    blogReducer: IBlog;
+    blogReducer: IBlogOwnProps;
     routerReducer: RouterState;
 }
 

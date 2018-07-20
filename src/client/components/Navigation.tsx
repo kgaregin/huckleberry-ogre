@@ -17,31 +17,18 @@ import {
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import {styles} from '../../styles/core/components/Navigation';
+import {styles} from '../styles/components/Navigation';
 import * as classNames from 'classnames';
 import {RouteComponentProps, withRouter, Route, Switch} from 'react-router-dom';
-import {Blog} from '../../modules/blog/Blog';
-import {Dispatch, bindActionCreators} from 'redux';
-import {connect, MapDispatchToPropsParam} from 'react-redux';
-import {handleLocationChange} from '../store/Actions';
-import {MODE} from '../../modules/blog/Enums';
-import {requestBlogPosts} from '../../modules/blog/Actions';
+import {Blog} from '../modules/blog/Blog';
+import {MODE} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
-
-/**
- * Navigation component actions.
- */
-export type INavigationActions = {
-    handleLocationChange: (newLocation: string) => { type: string };
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch) => Promise<void>;
-}
+import {handleLocationChange} from '../core/utils/Utils';
 
 /**
  * Navigation component properties.
  */
-interface IProps extends RouteComponentProps<{ mode: MODE }>, WithStyles<typeof styles> {
-    actions: INavigationActions,
-}
+type IProps = RouteComponentProps<{ mode: MODE }> & WithStyles<typeof styles>;
 
 /**
  * State.
@@ -67,7 +54,7 @@ class NavigationComponent extends React.Component<IProps, IState> {
     };
 
     private handleListItemClick = (to: string = '/') => {
-        this.props.actions.handleLocationChange(to);
+        handleLocationChange(to);
     };
 
     private getNavList = () => {
@@ -121,6 +108,7 @@ class NavigationComponent extends React.Component<IProps, IState> {
                         variant="persistent"
                         classes={{
                             paper: classes.drawerPaper,
+                            docked: classes.drawerDocked
                         }}
                         open={isDrawerOpen}
                     >
@@ -153,23 +141,9 @@ class NavigationComponent extends React.Component<IProps, IState> {
     }
 }
 
-interface TDispatchProps {
-    actions: INavigationActions;
-}
-
 interface TOwnProps extends RouteComponentProps<{ mode: MODE }>, WithStyles<typeof styles>{}
 
-const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = (dispatch: Dispatch): TDispatchProps => {
-    return {
-        actions: bindActionCreators({
-            handleLocationChange,
-            requestBlogPosts
-        }, dispatch)
-    };
-};
-
-const ConnectedComponent = connect<void, TDispatchProps, TOwnProps>(null, mapDispatchToProps)((props: IProps) => <NavigationComponent {...props}/>);
-const WithRouterConnectedComponent = withRouter<TOwnProps>((props: TOwnProps) => <ConnectedComponent {...props}/>);
+const WithRouterConnectedComponent = withRouter<TOwnProps>((props: TOwnProps) => <NavigationComponent {...props}/>);
 const NavigationStyledConnectedWithRouter = withStyles(styles)(props => <WithRouterConnectedComponent {...props}/>);
 
 export {NavigationStyledConnectedWithRouter as Navigation};

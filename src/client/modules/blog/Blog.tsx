@@ -13,28 +13,49 @@ import {
     submitBlogPost,
     removePostByID,
     prefillPostEditForm,
-    clearPostEditForm
+    clearPostEditForm,
+    IBlogActions
 } from './Actions';
 import {connect} from "react-redux";
-import {IBlogProps} from "./Models";
 import {Dispatch, bindActionCreators} from "redux";
-import {IReduxStore} from "../../core/store/reduxStore";
+import {IReduxStore} from "../../core/reduxStore";
 import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {IPost} from "../../../server/db/models/blog/post";
 import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
-import {handleLocationChange} from "../../core/store/Actions";
+import {handleLocationChange} from '../../core/utils/Utils';
 const Dropzone = require('react-dropzone').default;
 // import * as Dropzone from 'react-dropzone';
 
-export interface IBlogComponentState {
+export interface IState {
     dropZoneClickable?: HTMLDivElement;
     dropZoneContainer?: HTMLFormElement;
     dropZoneInput?: HTMLInputElement;
 }
 
-class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentProps<{ mode: MODE, postID: number }>, IBlogComponentState> {
+/**
+ * Blog own props.
+ */
+export interface IBlogOwnProps {
+    posts: IPost[],
+    form: {
+        title: string;
+        message: string;
+    },
+    fetchStatus: FETCH_STATUS,
+    fetchContext: FETCH_CONTEXT,
+    locationPathname: string
+}
+
+/**
+ * Blog props.
+ */
+interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: MODE, postID: number }>, WithStyles<typeof styles>{
+    actions: IBlogActions;
+}
+
+class BlogComponent extends Component<IProps, IState> {
 
     componentWillMount(){
         this.updateBlogPosts();
@@ -44,7 +65,7 @@ class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentPr
      * Not quiet good solution, but no better ideas atm.
      * ToDo: find out how to handle updateBlogPosts in a possibly better way.
      */
-    componentWillReceiveProps(nextProps: IBlogProps){
+    componentWillReceiveProps(nextProps: IProps){
         const {fetchContext, fetchStatus} = nextProps;
         const {fetchContext: oldFetchContext, fetchStatus: oldFetchStatus} = this.props;
 
@@ -83,7 +104,7 @@ class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentPr
     };
 
     private handleCreatePostButtonClick = () => {
-        this.props.actions.handleLocationChange('/blog/CREATE');
+        handleLocationChange('/blog/CREATE');
     };
 
     private handlePostRemove = (postID: string) => {
@@ -91,7 +112,7 @@ class BlogComponent extends Component<IBlogProps & WithStyles & RouteComponentPr
     };
 
     private handlePostEdit = (post: IPost) => {
-        const {prefillPostEditForm, handleLocationChange} = this.props.actions;
+        const {prefillPostEditForm} = this.props.actions;
         prefillPostEditForm(post);
         handleLocationChange(`/blog/EDIT/${post.id}`);
     };
@@ -233,8 +254,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
             submitBlogPost,
             removePostByID,
             prefillPostEditForm,
-            clearPostEditForm,
-            handleLocationChange
+            clearPostEditForm
         }, dispatch)
     }
 };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ErrorInfo} from 'react';
-import {Ghost} from "../../components/ghost/Ghost";
+import {Ghost} from "./Ghost";
 
 export interface IErrorBoundaryState {
     hasError: boolean;

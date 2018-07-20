@@ -1,8 +1,8 @@
-import {Dispatch} from "react-redux";
+import {Dispatch} from "redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
 import {FETCH_CONTEXT, MODE} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
-import {handleLocationChange} from "../../core/store/Actions";
+import {handleLocationChange} from "../../core/utils/Utils";
 
 /** Async request methods. */
 const {get, post, put, remove} = ServiceUtils;
@@ -16,8 +16,16 @@ export const PREFILL_POST_EDIT_FORM = 'PREFILL_POST_EDIT_FORM';
 export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
 
 /**
- * Actions
+ * Blog actions.
  */
+export interface IBlogActions {
+    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch) => Promise<void>;
+    handleFormInput: (fieldName: string, fieldValue: string) => {type: string; fieldName: string; fieldValue: string;};
+    prefillPostEditForm: (post: IPost) => {type: string; post: IPost};
+    clearPostEditForm: () => {type: string};
+    submitBlogPost: (title: string, message: string, id?: number, mode?: MODE) => (dispatch: Dispatch) => Promise<void>;
+    removePostByID: (id: string) => (dispatch: Dispatch) => Promise<void>
+}
 
 /**
  * Receive all blog posts.
@@ -70,7 +78,7 @@ export function submitBlogPost(title: string, message: string, id?: number, mode
                     dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue));
                     dispatch(clearPostEditForm());
                     dispatch(requestBlogPosts()).then(() => {
-                        dispatch(handleLocationChange('/blog'))
+                        handleLocationChange('/blog')
                     });
                 },
                 reason => {
@@ -88,7 +96,7 @@ export function submitBlogPost(title: string, message: string, id?: number, mode
  * @returns {Promise}
  */
 export function requestBlogPosts(id?: number, title?: string, message?: string) {
-    return (dispatch: Dispatch<null>) => {
+    return (dispatch: Dispatch) => {
         dispatch(fetchPending(FETCH_CONTEXT.REQUEST_POSTS));
         const payload = {
             id,
@@ -114,7 +122,7 @@ export function requestBlogPosts(id?: number, title?: string, message?: string) 
  * @returns {Promise}
  */
 export function removePostByID(id: string) {
-    return (dispatch: Dispatch<null>) => {
+    return (dispatch: Dispatch) => {
         dispatch(fetchPending(FETCH_CONTEXT.REMOVE_POST));
         const body = {id};
         return remove('blog', body)

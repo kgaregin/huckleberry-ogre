@@ -17,7 +17,7 @@ module.exports = {
     },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ['d.ts','.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json']
     },
     module: {
         rules: [{

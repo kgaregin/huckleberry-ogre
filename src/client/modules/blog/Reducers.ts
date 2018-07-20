@@ -1,36 +1,32 @@
-import {Reducer} from "redux";
-import {IBlog} from "./Models";
+import {Reducer} from 'redux';
 import {
     CLEAR_POST_EDIT_FORM,
     GET_BLOG_POSTS,
     HANDLE_FORM_INPUT,
     PREFILL_POST_EDIT_FORM,
-} from './Actions'
-import {FETCH_FAIL, FETCH_PENDING, FETCH_STATUS, FETCH_SUCCESS} from "../../core/utils/ServiceUtils";
-import {FETCH_CONTEXT} from "./Enums";
+} from './Actions';
+import {FETCH_FAIL, FETCH_PENDING, FETCH_STATUS, FETCH_SUCCESS} from '../../core/utils/ServiceUtils.ts';
+import {FETCH_CONTEXT} from './Enums';
+import {IBlogOwnProps} from './Blog';
 
 /**
  * Initial blog state.
  */
-export const blogInitial: { state: IBlog } = {
-    get state() {
-        return {
-            posts: [],
-            form: {
-                title: '',
-                message: ''
-            },
-            fetchStatus: FETCH_STATUS.NONE,
-            fetchContext: FETCH_CONTEXT.NONE,
-            locationPathname: '/blog'
-        };
-    }
+export const initBlogState: IBlogOwnProps = {
+    posts: [],
+    form: {
+        title: '',
+        message: ''
+    },
+    fetchStatus: FETCH_STATUS.NONE,
+    fetchContext: FETCH_CONTEXT.NONE,
+    locationPathname: '/blog'
 };
 
 /**
  * Blog reducer.
  */
-export const blogReducer: Reducer<IBlog> = (state: IBlog = blogInitial.state, action) => {
+export const blogReducer: Reducer<IBlogOwnProps> = (state: IBlogOwnProps = initBlogState, action) => {
     switch (action.type) {
         case CLEAR_POST_EDIT_FORM:
             return {
