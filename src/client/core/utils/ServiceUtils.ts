@@ -108,13 +108,3 @@ export class ServiceUtils {
     }
 
 }
-
-/**
- * Defines fetch status.
- */
-export enum FETCH_STATUS {
-    NONE,
-    PENDING,
-    SUCCESS,
-    FAIL
-}

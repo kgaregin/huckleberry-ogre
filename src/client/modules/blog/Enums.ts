@@ -5,12 +5,3 @@ export enum MODE {
     EDIT = <any>'EDIT',
     REMOVE = <any>'REMOVE',
 }
-
-/** Defines fetch context. */
-export enum FETCH_CONTEXT {
-    NONE,
-    REQUEST_POSTS,
-    SUBMIT_POST,
-    UPDATE_POST,
-    REMOVE_POST
-}

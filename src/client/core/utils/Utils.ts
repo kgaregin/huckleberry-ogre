@@ -1,5 +1,5 @@
 import {push} from 'react-router-redux';
-import {history} from '../reduxStore';
+import {history, store} from '../reduxStore';
 
 /**
  * Workaround for TS compiler.
@@ -18,5 +18,5 @@ export const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
  * @returns {Object}
  */
 export const handleLocationChange = (newLocation: string) => {
-    history.location.pathname !== newLocation && push(newLocation);
+    history.location.pathname !== newLocation && store.dispatch(push(newLocation));
 };

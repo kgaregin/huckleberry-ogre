@@ -1,8 +1,9 @@
 import {Dispatch} from "redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
-import {FETCH_CONTEXT, MODE} from "./Enums";
+import {MODE} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
 import {handleLocationChange} from "../../core/utils/Utils";
+import {FETCH_CONTEXT} from "../../core/enums";
 
 /** Async request methods. */
 const {get, post, put, remove} = ServiceUtils;

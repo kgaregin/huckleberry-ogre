@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Component} from "react";
-import {FETCH_CONTEXT, MODE} from "./Enums";
+import {MODE} from "./Enums";
 import {withRouter, RouteComponentProps} from "react-router-dom";
 import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles, withStyles} from "@material-ui/core";
 import {styles} from "../../styles/modules/blog/Blog";
@@ -19,12 +19,12 @@ import {
 import {connect} from "react-redux";
 import {Dispatch, bindActionCreators} from "redux";
 import {IReduxStore} from "../../core/reduxStore";
-import {FETCH_STATUS} from "../../core/utils/ServiceUtils";
 import {IPost} from "../../../server/db/models/blog/post";
 import {sortBy} from "lodash";
 import {ContentEditableField} from "../../components/ContentEditableField";
 import {FormEventWithTargetValue} from "../../core/Interfaces";
 import {handleLocationChange} from '../../core/utils/Utils';
+import {FETCH_CONTEXT, FETCH_STATUS} from "../../core/enums";
 const Dropzone = require('react-dropzone').default;
 // import * as Dropzone from 'react-dropzone';
 

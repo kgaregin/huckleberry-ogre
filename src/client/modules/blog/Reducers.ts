@@ -5,9 +5,9 @@ import {
     HANDLE_FORM_INPUT,
     PREFILL_POST_EDIT_FORM,
 } from './Actions';
-import {FETCH_FAIL, FETCH_PENDING, FETCH_STATUS, FETCH_SUCCESS} from '../../core/utils/ServiceUtils.ts';
-import {FETCH_CONTEXT} from './Enums';
+import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS} from '../../core/utils/ServiceUtils';
 import {IBlogOwnProps} from './Blog';
+import {FETCH_CONTEXT, FETCH_STATUS} from "../../core/enums";
 
 /**
  * Initial blog state.
