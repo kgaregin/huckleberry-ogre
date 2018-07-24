@@ -19,7 +19,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         bottom: '40px',
     },
     postDivider: {
-        width: '70%',
+        width: '90%',
         margin: '16px auto',
     },
     postPaper: {
@@ -36,7 +36,10 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         display: 'flex',
         margin: 'auto',
         justifyContent: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'row'
+        }
     },
     postActionButtonIcon: {
         color: theme.palette.primary.contrastText,
@@ -44,12 +47,5 @@ export const styles: StyleRulesCallback = (theme: Theme) => ({
         '&:hover': {
             color: theme.palette.secondary.dark
         }
-    },
-    buttonClickableOverlay: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
     }
 });

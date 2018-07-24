@@ -1,5 +1,5 @@
 /** Defines viewing mode of blog component. */
-export enum MODE {
+export enum EBlogViewMode {
     READ = <any>'READ',
     CREATE = <any>'CREATE',
     EDIT = <any>'EDIT',

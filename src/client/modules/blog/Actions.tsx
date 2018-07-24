@@ -1,6 +1,7 @@
+//ToDo: add proper typings for "dispatch: any" from redux-thunk
 import {Dispatch} from "redux";
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
-import {MODE} from "./Enums";
+import {EBlogViewMode} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
 import {handleLocationChange} from "../../core/utils/Utils";
 import {FETCH_CONTEXT} from "../../core/enums";
@@ -24,7 +25,7 @@ export interface IBlogActions {
     handleFormInput: (fieldName: string, fieldValue: string) => {type: string; fieldName: string; fieldValue: string;};
     prefillPostEditForm: (post: IPost) => {type: string; post: IPost};
     clearPostEditForm: () => {type: string};
-    submitBlogPost: (title: string, message: string, id?: number, mode?: MODE) => (dispatch: Dispatch) => Promise<void>;
+    submitBlogPost: (title: string, message: string, id?: number, mode?: EBlogViewMode) => (dispatch: Dispatch) => Promise<void>;
     removePostByID: (id: string) => (dispatch: Dispatch) => Promise<void>
 }
 
@@ -54,10 +55,10 @@ export function clearPostEditForm() {
  * @param {string} title
  * @param {string} message
  * @param {number} id
- * @param {MODE} mode
+ * @param {EBlogViewMode} mode
  * @returns {Promise}
  */
-export function submitBlogPost(title: string, message: string, id?: number, mode?: MODE) {
+export function submitBlogPost(title: string, message: string, id?: number, mode?: EBlogViewMode) {
     return (dispatch: any) => {
         dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
         const body = {
@@ -67,10 +68,10 @@ export function submitBlogPost(title: string, message: string, id?: number, mode
         };
         let action;
         switch (mode) {
-            case MODE.EDIT:
+            case EBlogViewMode.EDIT:
                 action = put('blog', body);
                 break;
-            case MODE.CREATE:
+            case EBlogViewMode.CREATE:
             default:
                 action = post('blog', body);
         }
@@ -123,12 +124,13 @@ export function requestBlogPosts(id?: number, title?: string, message?: string) 
  * @returns {Promise}
  */
 export function removePostByID(id: string) {
-    return (dispatch: Dispatch) => {
+    return (dispatch: any) => {
         dispatch(fetchPending(FETCH_CONTEXT.REMOVE_POST));
         const body = {id};
         return remove('blog', body)
             .then(
                 () => {
+                    dispatch(requestBlogPosts());
                     dispatch(fetchSuccess(FETCH_CONTEXT.REMOVE_POST));
                 },
                 reason => {

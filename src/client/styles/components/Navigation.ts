@@ -32,12 +32,21 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         }),
     },
     menuButton: {
+        transform: 'scale(1)',
+        transition: '.3s .3s',
         marginLeft: 12,
         marginRight: 20,
         color: theme.palette.secondary.contrastText
     },
+    homeButton: {
+        transition: '.3s'
+    },
+    homeButtonShift: {
+        transform: 'translate3d(-70px,0,0)'
+    },
     hide: {
-        display: 'none',
+        transform: 'scale(0)',
+        transition: '.3s'
     },
     drawerPaper: {
         position: 'relative',
@@ -86,13 +95,14 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         userSelect: 'none'
     },
     listItem: {
-        padding: '0 16px !important'
-    },
-    list: {
-        width: '100%',
+        padding: '8px 16px !important',
         '&:hover': {
             backgroundColor: theme.palette.primary.light,
             cursor: 'pointer'
         }
+    },
+    list: {
+        width: '100%',
+        padding: '0'
     }
 });

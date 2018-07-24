@@ -1,12 +1,22 @@
-import * as React from "react";
-import {Component} from "react";
-import {MODE} from "./Enums";
-import {withRouter, RouteComponentProps} from "react-router-dom";
-import {TextField, Button, Paper, Typography, Divider, Grid, IconButton, WithStyles, withStyles} from "@material-ui/core";
-import {styles} from "../../styles/modules/blog/Blog";
-import ModeEditIcon from "@material-ui/icons/ModeEdit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import BorderColorIcon from "@material-ui/icons/BorderColor";
+import * as React from 'react';
+import {Component} from 'react';
+import {EBlogViewMode} from './Enums';
+import {withRouter, RouteComponentProps} from 'react-router-dom';
+import {
+    TextField,
+    Button,
+    Paper,
+    Typography,
+    Divider,
+    Grid,
+    IconButton,
+    WithStyles,
+    withStyles
+} from '@material-ui/core';
+import {styles} from '../../styles/modules/blog/Blog';
+import ModeEditIcon from '@material-ui/icons/ModeEdit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {
     requestBlogPosts,
     handleFormInput,
@@ -16,23 +26,19 @@ import {
     clearPostEditForm,
     IBlogActions
 } from './Actions';
-import {connect} from "react-redux";
-import {Dispatch, bindActionCreators} from "redux";
-import {IReduxStore} from "../../core/reduxStore";
-import {IPost} from "../../../server/db/models/blog/post";
-import {sortBy} from "lodash";
-import {ContentEditableField} from "../../components/ContentEditableField";
-import {FormEventWithTargetValue} from "../../core/Interfaces";
+import {connect} from 'react-redux';
+import {Dispatch, bindActionCreators} from 'redux';
+import {IReduxStore} from '../../core/reduxStore';
+import {IPost} from '../../../server/db/models/blog/post';
+import {sortBy} from 'lodash';
+import {FormEventWithTargetValue} from '../../core/Interfaces';
 import {handleLocationChange} from '../../core/utils/Utils';
-import {FETCH_CONTEXT, FETCH_STATUS} from "../../core/enums";
-const Dropzone = require('react-dropzone').default;
-// import * as Dropzone from 'react-dropzone';
+import {FETCH_CONTEXT, FETCH_STATUS} from '../../core/enums';
+import * as classNames from 'classnames';
+// import DropZone from 'react-dropzone';
 
-export interface IState {
-    dropZoneClickable?: HTMLDivElement;
-    dropZoneContainer?: HTMLFormElement;
-    dropZoneInput?: HTMLInputElement;
-}
+// const Dropzone = require('react-dropzone').default;
+// import * as Dropzone from 'react-dropzone';
 
 /**
  * Blog own props.
@@ -51,42 +57,15 @@ export interface IBlogOwnProps {
 /**
  * Blog props.
  */
-interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: MODE, postID: number }>, WithStyles<typeof styles>{
+interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: number }>, WithStyles<typeof styles> {
     actions: IBlogActions;
 }
 
-class BlogComponent extends Component<IProps, IState> {
+class BlogComponent extends Component<IProps> {
 
-    componentWillMount(){
-        this.updateBlogPosts();
+    componentWillMount() {
+        this.props.actions.requestBlogPosts();
     }
-
-    /**
-     * Not quiet good solution, but no better ideas atm.
-     * ToDo: find out how to handle updateBlogPosts in a possibly better way.
-     */
-    componentWillReceiveProps(nextProps: IProps){
-        const {fetchContext, fetchStatus} = nextProps;
-        const {fetchContext: oldFetchContext, fetchStatus: oldFetchStatus} = this.props;
-
-        if (!(oldFetchContext === fetchContext && oldFetchStatus === fetchStatus)){
-            let isPostsUpdated = false;
-
-            switch (fetchContext) {
-                case FETCH_CONTEXT.REMOVE_POST:
-                case FETCH_CONTEXT.SUBMIT_POST:
-                case FETCH_CONTEXT.UPDATE_POST:
-                    isPostsUpdated = fetchStatus === FETCH_STATUS.SUCCESS;
-            }
-            isPostsUpdated && this.updateBlogPosts();
-        }
-    }
-
-    private updateBlogPosts = () => {
-        const {actions, match} = this.props;
-        const mode = match.params.mode || MODE.READ;
-        if (mode === MODE.READ) actions.requestBlogPosts();
-    };
 
     private handleSubmit = () => {
         const {
@@ -117,91 +96,81 @@ class BlogComponent extends Component<IProps, IState> {
         handleLocationChange(`/blog/EDIT/${post.id}`);
     };
 
-    private saveDropZoneClickableRef = (dropZoneClickable: HTMLDivElement) => {
-        this.setState({dropZoneClickable})
-    };
+    renderPostEdit = () => {
+        const {
+            classes,
+            fetchStatus,
+            form: {title, message},
+            actions: {handleFormInput}
+        } = this.props;
+        const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
 
-    private saveDropZoneContainerRef = (dropZoneContainer: HTMLFormElement) => {
-        this.setState({dropZoneContainer})
-    };
-
-renderPostEdit = () => {
-    const {
-        classes,
-        fetchStatus,
-        form: {title, message},
-        actions: {handleFormInput}
-    } = this.props;
-    const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
-
-    return (
-        <form ref={this.saveDropZoneContainerRef} className={classes.container} noValidate autoComplete="off">
-            <TextField
-                id="title"
-                label="Title"
-                className={classes.textField}
-                value={title}
-                onChange={
-                    (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
-                        handleFormInput('title', event.target.value)
-                }
-                margin="normal"
-                fullWidth
-            />
-            <Dropzone>
-                <ContentEditableField
+        return (
+            <form className={classes.container} noValidate>
+                <TextField
+                    placeholder="Got something new?"
+                    id="title"
+                    label="Title"
+                    className={classes.textField}
+                    value={title}
+                    onChange={
+                        (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
+                            handleFormInput('title', event.target.value)
+                    }
+                    margin="normal"
+                    fullWidth
+                />
+                <TextField
+                    placeholder="Go on and share it with friends!"
                     id="message"
                     label="Message"
                     className={classes.textField}
                     multiline
                     fullWidth
-                    rows={"24"}
+                    rows={'24'}
                     value={message}
                     onInput={
                         (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
                             handleFormInput('message', event.target.value)
                     }
                     margin="normal"
-                    placeholder="Put a few awesome lines of what you going to write about..."
                     type={'text'}
                 />
-            </Dropzone>
-            <Button
-                onClick={this.handleSubmit}
-                variant="raised"
-                color="primary"
-                className={classes.button}
-                disabled={isFetchInProgress}
-            >
-                {'Submit'}
-            </Button>
-            <Button
-                variant="raised"
-                color="primary"
-                className={classes.button}
-            >
-                {'Add images'}
-                <div className={classes.buttonClickableOverlay} ref={this.saveDropZoneClickableRef}/>
-            </Button>
-        </form>
-    );
-};
+                <Button
+                    onClick={this.handleSubmit}
+                    variant="raised"
+                    color="primary"
+                    className={classes.button}
+                    disabled={isFetchInProgress}
+                >
+                    {'Submit'}
+                </Button>
+                <Button
+                    variant="raised"
+                    color="primary"
+                    className={classes.button}
+                >
+                    {'Add images'}
+                </Button>
+            </form>
+        );
+    };
 
     render() {
-        const mode = this.props.match.params.mode || MODE.READ;
+        const mode = this.props.match.params.mode || EBlogViewMode.READ;
         const {classes, posts} = this.props;
 
-        if (mode === MODE.CREATE || mode === MODE.EDIT) {
+        if (mode === EBlogViewMode.CREATE || mode === EBlogViewMode.EDIT) {
             return this.renderPostEdit();
         }
 
         return (
             <div>
-                {posts && sortBy(posts, 'id').map((post, key) =>
+                {sortBy(posts, 'id').map(post =>
                     post.title && post.message &&
-                    <Paper className={classes.postPaper} elevation={10} key={key}>
+                    <Paper className={classes.postPaper} key={post.id}>
                         <Grid container>
-                            <Grid item xl={11} lg={11} md={11} sm={12} xs={12}>
+                            <Grid item md={11} xs={12}>
                                 <Typography variant="title" gutterBottom align={'center'}>
                                     {post.title}
                                 </Typography>
@@ -210,10 +179,8 @@ renderPostEdit = () => {
                                     {post.message}
                                 </Typography>
                             </Grid>
-                            <Grid
-                                item
-                                xl={1} lg={1} md={1} sm={12} xs={12}
-                                className={classes.postActions}>
+                            <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>
+                            <Grid item md={1} xs={12} className={classes.postActions}>
                                 <IconButton
                                     onClick={() => post.id && this.handlePostRemove(post.id.toString())}
                                     aria-label="Remove post"
@@ -222,7 +189,7 @@ renderPostEdit = () => {
                                 </IconButton>
                                 <IconButton
                                     onClick={() => post.id && this.handlePostEdit(post)}
-                                    aria-label="Remove post"
+                                    aria-label="Edit post"
                                 >
                                     <BorderColorIcon className={classes.postActionButtonIcon}/>
                                 </IconButton>
@@ -256,7 +223,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
             prefillPostEditForm,
             clearPostEditForm
         }, dispatch)
-    }
+    };
 };
 
 const BlogStyledConnectedWithRouter = withStyles(styles)(withRouter(connect(

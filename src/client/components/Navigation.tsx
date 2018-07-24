@@ -19,16 +19,16 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
 import * as classNames from 'classnames';
-import {RouteComponentProps, withRouter, Route, Switch} from 'react-router-dom';
+import {RouteComponentProps, withRouter, Route, Switch, Link} from 'react-router-dom';
 import {Blog} from '../modules/blog/Blog';
-import {MODE} from '../modules/blog/Enums';
+import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
 import {handleLocationChange} from '../core/utils/Utils';
 
 /**
  * Navigation component properties.
  */
-type IProps = RouteComponentProps<{ mode: MODE }> & WithStyles<typeof styles>;
+type IProps = RouteComponentProps<{ mode: EBlogViewMode }> & WithStyles<typeof styles>;
 
 /**
  * State.
@@ -54,26 +54,26 @@ class NavigationComponent extends React.Component<IProps, IState> {
     };
 
     private handleListItemClick = (to: string = '/') => {
+        this.handleDrawerClose();
         handleLocationChange(to);
     };
 
-    private getNavList = () => {
+    private getNavigationList = () => {
         const {classes} = this.props;
 
         return (
-            <div>
-                <List className={classes.list}>
-                    <ListItem
-                        className={classes.listItem}
-                        onClick={() => this.handleListItemClick('/blog')}
-                    >
-                        <ListItemIcon>
-                            <BorderColorIcon/>
-                        </ListItemIcon>
-                        <ListItemText className={classes.listItemText} primary="Blog"/>
-                    </ListItem>
-                </List>
-            </div>
+            <List className={classes.list}>
+                <ListItem
+                    className={classes.listItem}
+                    onClick={() => this.handleListItemClick('/blog')}
+                >
+                    <ListItemIcon>
+                        <BorderColorIcon/>
+                    </ListItemIcon>
+                    <ListItemText className={classes.listItemText} primary="Blog"/>
+                </ListItem>
+                <Divider/>
+            </List>
         );
     };
 
@@ -98,8 +98,11 @@ class NavigationComponent extends React.Component<IProps, IState> {
                             >
                                 <MenuIcon/>
                             </IconButton>
-                            <Typography color="inherit" className={classes.flex}>
-                                {'Huckleberry Ogre Home'}
+                            <Typography variant="title"
+                                        className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}>
+                                <Link to="/" onClick={this.handleDrawerClose}>
+                                    {'Huckleberry Ogre Home'}
+                                </Link>
                             </Typography>
                             {/*<Button color="contrast">Login</Button>*/}
                         </Toolbar>
@@ -119,14 +122,13 @@ class NavigationComponent extends React.Component<IProps, IState> {
                                 </IconButton>
                             </div>
                             <Divider/>
-                            <List className={classes.list}>{this.getNavList()}</List>
-                            <Divider/>
+                            {this.getNavigationList()}
                         </div>
                     </Drawer>
-                    <main className={mainClassName}>
+                    <main className={mainClassName} onClick={this.handleDrawerClose}>
                         {/*ToDo: maybe add some cool iScroll with touch events support here?*/}
                         <Grid container justify={'center'}>
-                            <Grid item xl={7} lg={9} md={11} sm={12} xs={12}>
+                            <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
                                 <ErrorBoundary>
                                     <Switch>
                                         <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
@@ -141,7 +143,8 @@ class NavigationComponent extends React.Component<IProps, IState> {
     }
 }
 
-interface TOwnProps extends RouteComponentProps<{ mode: MODE }>, WithStyles<typeof styles>{}
+interface TOwnProps extends RouteComponentProps<{ mode: EBlogViewMode }>, WithStyles<typeof styles> {
+}
 
 const WithRouterConnectedComponent = withRouter<TOwnProps>((props: TOwnProps) => <NavigationComponent {...props}/>);
 const NavigationStyledConnectedWithRouter = withStyles(styles)(props => <WithRouterConnectedComponent {...props}/>);
