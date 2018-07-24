@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ErrorInfo} from 'react';
 import {Ghost} from "./Ghost";
+import {Paper, Typography, Divider} from '@material-ui/core';
 
 export interface IErrorBoundaryState {
     hasError: boolean;
@@ -29,14 +30,13 @@ export class ErrorBoundary extends React.Component<{ children: JSX.Element }, IE
         if (hasError) {
             // You can render any custom fallback UI
             return (
-                <div>
-                    <h1>Something went wrong.</h1>
+                <Paper style={{padding: '16px', margin: '16px', textAlign: 'center'}}>
+                    <Typography variant="title" style={{marginBottom: '16px'}}>Something went wrong.</Typography>
                     <Ghost/>
-                    <hr/>
-                    <h3>{error && error.toString()}</h3>
-                    <br/>
-                    <h3>{errorInfo && errorInfo.componentStack}</h3>
-                </div>
+                    <Typography variant="subheading" style={{textAlign: 'left'}}>{error && error.toString()}</Typography>
+                    <Divider style={{margin: '8px 0'}}/>
+                    <Typography variant="subheading" style={{textAlign: 'left'}}>{errorInfo && errorInfo.componentStack}</Typography>
+                </Paper>
             );
         }
         return children;

@@ -1,6 +1,8 @@
 import {StyleRulesCallback, Theme} from "@material-ui/core";
-import {DRAWER_WIDTH} from "../../core/consts";
 import createStyles from '@material-ui/core/es/styles/createStyles';
+
+/** Menu width. */
+export const DRAWER_WIDTH = 240;
 
 export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     root: {

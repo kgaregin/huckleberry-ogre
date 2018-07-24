@@ -1,15 +1,6 @@
 import {FormEvent} from "react";
 
 /**
- * For styled components (@withStyles).
- */
-export interface IWithClasses {
-    classes: {
-        [key: string]: string
-    }
-}
-
-/**
  * For events that's having value on their target.
  */
 export interface FormEventWithTargetValue<E, T> extends FormEvent<E>{
