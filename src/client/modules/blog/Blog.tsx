@@ -11,7 +11,8 @@ import {
     Grid,
     IconButton,
     WithStyles,
-    withStyles
+    withStyles,
+    StyledComponentProps
 } from '@material-ui/core';
 import {styles} from '../../styles/modules/blog/Blog';
 import ModeEditIcon from '@material-ui/icons/ModeEdit';
@@ -22,18 +23,17 @@ import {
     handleFormInput,
     submitBlogPost,
     removePostByID,
-    prefillPostEditForm,
+    fillPostEditForm,
     clearPostEditForm,
     IBlogActions
 } from './Actions';
 import {connect} from 'react-redux';
 import {Dispatch, bindActionCreators} from 'redux';
-import {IReduxStore} from '../../core/reduxStore';
+import {IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models/blog/post';
 import {sortBy} from 'lodash';
-import {FormEventWithTargetValue} from '../../core/Interfaces';
 import {handleLocationChange} from '../../core/utils/Utils';
-import {FETCH_CONTEXT, FETCH_STATUS} from '../../core/enums';
+import {EFetchContext, EFetchStatus} from '../../core/enums';
 import * as classNames from 'classnames';
 // import DropZone from 'react-dropzone';
 
@@ -41,17 +41,29 @@ import * as classNames from 'classnames';
 // import * as Dropzone from 'react-dropzone';
 
 /**
+ * Form fields set.
+ *
+ * @prop {string} title Post title.
+ * @prop {string} message Post message.
+ */
+interface IForm {
+    title: string;
+    message: string;
+}
+
+/**
  * Blog own props.
+ *
+ * {IPost[]} posts Array of posts from server.
+ * {IForm} form Form fields set.
+ * {EFetchStatus} fetchStatus Fetch status info.
+ * {EFetchContext} fetchContext Fetch context info.
  */
 export interface IBlogOwnProps {
     posts: IPost[],
-    form: {
-        title: string;
-        message: string;
-    },
-    fetchStatus: FETCH_STATUS,
-    fetchContext: FETCH_CONTEXT,
-    locationPathname: string
+    form: IForm,
+    fetchStatus: EFetchStatus,
+    fetchContext: EFetchContext
 }
 
 /**
@@ -67,6 +79,9 @@ class BlogComponent extends Component<IProps> {
         this.props.actions.requestBlogPosts();
     }
 
+    /**
+     * Submit button handler.
+     */
     private handleSubmit = () => {
         const {
             form: {title, message},
@@ -82,20 +97,37 @@ class BlogComponent extends Component<IProps> {
         submitBlogPost(title, message, id, mode);
     };
 
+    /**
+     * Create post button click handler.
+     */
     private handleCreatePostButtonClick = () => {
+        this.props.actions.clearPostEditForm();
         handleLocationChange('/blog/CREATE');
     };
 
+    /**
+     * Remove post button click handler.
+     *
+     * @param {string} postID Identifier of post being removed.
+     */
     private handlePostRemove = (postID: string) => {
         this.props.actions.removePostByID(postID);
     };
 
+    /**
+     * Edit post button click handler.
+     *
+     * @param {IPost} post Post to edit.
+     */
     private handlePostEdit = (post: IPost) => {
-        const {prefillPostEditForm} = this.props.actions;
-        prefillPostEditForm(post);
+        const {fillPostEditForm} = this.props.actions;
+        fillPostEditForm(post);
         handleLocationChange(`/blog/EDIT/${post.id}`);
     };
 
+    /**
+     * Edit view mode render method.
+     */
     renderPostEdit = () => {
         const {
             classes,
@@ -103,7 +135,7 @@ class BlogComponent extends Component<IProps> {
             form: {title, message},
             actions: {handleFormInput}
         } = this.props;
-        const isFetchInProgress = fetchStatus === FETCH_STATUS.PENDING;
+        const isFetchInProgress = fetchStatus === EFetchStatus.PENDING;
 
         return (
             <form className={classes.container} noValidate>
@@ -113,12 +145,10 @@ class BlogComponent extends Component<IProps> {
                     label="Title"
                     className={classes.textField}
                     value={title}
-                    onChange={
-                        (event: FormEventWithTargetValue<HTMLInputElement, string>) =>
-                            handleFormInput('title', event.target.value)
-                    }
+                    onChange={event => handleFormInput('title', event.currentTarget.value)}
                     margin="normal"
                     fullWidth
+                    autoComplete="off"
                 />
                 <TextField
                     placeholder="Go on and share it with friends!"
@@ -129,10 +159,7 @@ class BlogComponent extends Component<IProps> {
                     fullWidth
                     rows={'24'}
                     value={message}
-                    onInput={
-                        (event: FormEventWithTargetValue<HTMLDivElement, string>) =>
-                            handleFormInput('message', event.target.value)
-                    }
+                    onChange={event => handleFormInput('message', event.currentTarget.value)}
                     margin="normal"
                     type={'text'}
                 />
@@ -211,7 +238,7 @@ class BlogComponent extends Component<IProps> {
     }
 }
 
-const mapStateToProps = (state: IReduxStore) => state.blogReducer;
+const mapStateToProps = (state: IAppState) => state.blogReducer;
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
@@ -220,15 +247,19 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
             handleFormInput,
             submitBlogPost,
             removePostByID,
-            prefillPostEditForm,
+            fillPostEditForm,
             clearPostEditForm
         }, dispatch)
     };
 };
 
-const BlogStyledConnectedWithRouter = withStyles(styles)(withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(BlogComponent)));
+type TRouterProps = RouteComponentProps<{ mode: EBlogViewMode, postID: number }>;
+type TStyleProps = WithStyles<typeof styles>;
 
-export {BlogStyledConnectedWithRouter as Blog};
+type TDispatchProps = { actions: IBlogActions }
+
+const Connected: React.ComponentClass<TStyleProps & TRouterProps> = connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps>(mapStateToProps, mapDispatchToProps)((props: IProps) => <BlogComponent {...props}/>);
+const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter((props: TStyleProps & TRouterProps) => <Connected {...props}/>);
+const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)((props: TStyleProps) => <WithRouterConnected {...props}/>);
+
+export {WithRouterConnectedStyled as Blog};

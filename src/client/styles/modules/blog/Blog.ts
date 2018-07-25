@@ -1,6 +1,6 @@
-import {StyleRulesCallback, Theme} from "@material-ui/core";
+import {StyleRulesCallback, Theme, createStyles} from "@material-ui/core";
 
-export const styles: StyleRulesCallback = (theme: Theme) => ({
+export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     container: {
         display: 'flex',
         flexWrap: 'wrap',

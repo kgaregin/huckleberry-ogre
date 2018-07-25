@@ -1,5 +1,14 @@
 import {Sequelize, DataTypes} from 'sequelize';
 
+/**
+ * Blog post model.
+ *
+ * {number} id Unique identifier of post.
+ * {string} title Heading of post.
+ * {string} message Body of post.
+ * {string} createdAt Creation timestamp.
+ * {string} updatedAt Last update timestamp.
+ */
 export interface IPost {
     id?: number,
     title?: string,
@@ -8,11 +17,17 @@ export interface IPost {
     updatedAt?: string
 }
 
-const PostModel = (sequelize: Sequelize, DataTypes: DataTypes) => sequelize.define(
+/**
+ * Blog post model definition.
+ *
+ * @param {Sequelize} sequelize Sequelize instance.
+ * @param {DataTypes} dataTypes Possible data types object.
+ */
+const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
     'post',
     {
-        title: {type: DataTypes.STRING, validate: {notEmpty: true}},
-        message: {type: DataTypes.TEXT, validate: {notEmpty: true}}
+        title: {type: dataTypes.STRING, validate: {notEmpty: true}},
+        message: {type: dataTypes.TEXT, validate: {notEmpty: true}}
     }
 );
 

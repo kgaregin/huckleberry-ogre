@@ -1,7 +1,5 @@
-/**
- * Defines fetch status.
- */
-export enum FETCH_STATUS {
+/** Defines fetch status. */
+export enum EFetchStatus {
     NONE,
     PENDING,
     SUCCESS,
@@ -9,7 +7,7 @@ export enum FETCH_STATUS {
 }
 
 /** Defines fetch context. */
-export enum FETCH_CONTEXT {
+export enum EFetchContext {
     NONE,
     REQUEST_POSTS,
     SUBMIT_POST,

@@ -3,14 +3,29 @@ import {ErrorInfo} from 'react';
 import {Ghost} from "./Ghost";
 import {Paper, Typography, Divider} from '@material-ui/core';
 
-export interface IErrorBoundaryState {
+/**
+ * @prop {boolean} hasError True in case error occurred.
+ * @prop {Error} error Error object.
+ * @prop {ErrorInfo} errorInfo Additional info.
+ */
+interface IState {
     hasError: boolean;
     error?: Error;
     errorInfo?: ErrorInfo;
 }
 
-export class ErrorBoundary extends React.Component<{ children: JSX.Element }, IErrorBoundaryState> {
-    state: IErrorBoundaryState = {hasError: false};
+/**
+ * @prop {JSX.Element} children React children not provided by default.
+ */
+interface IProps {
+    children: JSX.Element;
+}
+
+/**
+ * This component will be rendered in case of render error in application.
+ */
+export class ErrorBoundary extends React.Component<IProps, IState> {
+    state: IState = {hasError: false};
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         // Display fallback UI

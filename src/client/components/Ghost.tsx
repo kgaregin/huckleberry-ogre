@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+/**
+ * Cute little ghost.
+ */
 export const Ghost = () => (
     <div className="container">
         <svg x="0px" y="0px" width="127.433px" height="132.743px" viewBox="0 0 127.433 132.743"

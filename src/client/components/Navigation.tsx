@@ -28,10 +28,11 @@ import {handleLocationChange} from '../core/utils/Utils';
 /**
  * Navigation component properties.
  */
-type IProps = RouteComponentProps<{ mode: EBlogViewMode }> & WithStyles<typeof styles>;
+interface IProps extends RouteComponentProps<{ mode: EBlogViewMode }>, WithStyles<typeof styles> {
+}
 
 /**
- * State.
+ * @prop {boolean} isDrawerOpen Drawer open flag.
  */
 interface IState {
     isDrawerOpen: boolean;
@@ -143,10 +144,7 @@ class NavigationComponent extends React.Component<IProps, IState> {
     }
 }
 
-interface TOwnProps extends RouteComponentProps<{ mode: EBlogViewMode }>, WithStyles<typeof styles> {
-}
+const WithRouter = withRouter<IProps>((props: IProps) => <NavigationComponent {...props}/>);
+const StyledWithRouter = withStyles(styles)(props => <WithRouter {...props}/>);
 
-const WithRouterConnectedComponent = withRouter<TOwnProps>((props: TOwnProps) => <NavigationComponent {...props}/>);
-const NavigationStyledConnectedWithRouter = withStyles(styles)(props => <WithRouterConnectedComponent {...props}/>);
-
-export {NavigationStyledConnectedWithRouter as Navigation};
+export {StyledWithRouter as Navigation};

@@ -3,7 +3,17 @@ import {MuiThemeProvider, withStyles, Grid, Paper, WithStyles} from "@material-u
 import {theme} from "../Theme";
 import {styles} from "../styles/components/GlobalLayout";
 
-class GlobalLayoutComponent extends React.Component<{children: JSX.Element} & WithStyles> {
+/**
+ * @prop {JSX.Element} children React children not provided by default.
+ */
+interface IProps {
+    children: JSX.Element;
+}
+
+/**
+ * First render layer component.
+ */
+class GlobalLayoutComponent extends React.Component<IProps & WithStyles> {
     render() {
         return (
             <MuiThemeProvider theme={theme}>

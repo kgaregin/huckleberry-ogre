@@ -1,20 +1,17 @@
 //ToDo: add proper typings for "dispatch: any" from redux-thunk
 import {Dispatch} from "redux";
-import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, ServiceUtils} from "../../core/utils/ServiceUtils";
+import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, get, post, put, remove} from "../../core/utils/ServiceUtils";
 import {EBlogViewMode} from "./Enums";
 import {IPost} from "../../../server/db/models/blog/post";
 import {handleLocationChange} from "../../core/utils/Utils";
-import {FETCH_CONTEXT} from "../../core/enums";
-
-/** Async request methods. */
-const {get, post, put, remove} = ServiceUtils;
+import {EFetchContext} from "../../core/enums";
 
 /**
  * Action types.
  */
 export const GET_BLOG_POSTS = 'GET_BLOG_POSTS';
 export const HANDLE_FORM_INPUT = 'HANDLE_FORM_INPUT';
-export const PREFILL_POST_EDIT_FORM = 'PREFILL_POST_EDIT_FORM';
+export const FILL_POST_EDIT_FORM = 'FILL_POST_EDIT_FORM';
 export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
 
 /**
@@ -23,7 +20,7 @@ export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
 export interface IBlogActions {
     requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch) => Promise<void>;
     handleFormInput: (fieldName: string, fieldValue: string) => {type: string; fieldName: string; fieldValue: string;};
-    prefillPostEditForm: (post: IPost) => {type: string; post: IPost};
+    fillPostEditForm: (post: IPost) => {type: string; post: IPost};
     clearPostEditForm: () => {type: string};
     submitBlogPost: (title: string, message: string, id?: number, mode?: EBlogViewMode) => (dispatch: Dispatch) => Promise<void>;
     removePostByID: (id: string) => (dispatch: Dispatch) => Promise<void>
@@ -31,177 +28,178 @@ export interface IBlogActions {
 
 /**
  * Receive all blog posts.
- * @returns {Object}
+ *
+ * @param {IPost[]} posts Blog posts.
  */
-export function getBlogPosts(posts: any) {
+export const getBlogPosts = (posts: Response) => {
     return {
         type: GET_BLOG_POSTS,
         posts
     }
-}
+};
 
 /**
  * Clear post form.
- * @returns {{type: string}}
  */
-export function clearPostEditForm() {
+export const clearPostEditForm = () => {
     return {
         type: CLEAR_POST_EDIT_FORM
     }
-}
+};
 
 /**
  * Submit blog post
- * @param {string} title
- * @param {string} message
- * @param {number} id
- * @param {EBlogViewMode} mode
- * @returns {Promise}
+ *
+ * @param {string} title Post title.
+ * @param {string} message Post message.
+ * @param {number} id Post identifier.
+ * @param {EBlogViewMode} mode Blog view mode.
  */
-export function submitBlogPost(title: string, message: string, id?: number, mode?: EBlogViewMode) {
+export const submitBlogPost = (title: string, message: string, id?: number, mode?: EBlogViewMode) => {
     return (dispatch: any) => {
-        dispatch(fetchPending(FETCH_CONTEXT.SUBMIT_POST));
+        dispatch(fetchPending(EFetchContext.SUBMIT_POST));
         const body = {
             id,
             title,
             message
         };
-        let action;
+        let request: Promise<Response>;
         switch (mode) {
             case EBlogViewMode.EDIT:
-                action = put('blog', body);
+                request = put('blog', body, {isPayloadGroomed: true});
                 break;
             case EBlogViewMode.CREATE:
             default:
-                action = post('blog', body);
+                request = post('blog', body, {isPayloadGroomed: true});
         }
-        return action
+        return request
             .then((responseValue: Response) => {
-                    dispatch(fetchSuccess(FETCH_CONTEXT.SUBMIT_POST, responseValue));
+                    dispatch(fetchSuccess(EFetchContext.SUBMIT_POST, responseValue));
                     dispatch(clearPostEditForm());
                     dispatch(requestBlogPosts()).then(() => {
                         handleLocationChange('/blog')
                     });
                 },
                 reason => {
-                    dispatch(fetchFail(FETCH_CONTEXT.SUBMIT_POST, reason))
+                    dispatch(fetchFail(EFetchContext.SUBMIT_POST, reason))
                 }
             );
     }
-}
+};
 
 /**
  * Submit blog post
- * @param {number} [id]
- * @param {string} [title]
- * @param {string} [message]
- * @returns {Promise}
+ *
+ * @param {number} [id] Post identifier.
+ * @param {string} [title] Post title.
+ * @param {string} [message] Post message.
  */
-export function requestBlogPosts(id?: number, title?: string, message?: string) {
+export const requestBlogPosts = (id?: number, title?: string, message?: string) => {
     return (dispatch: Dispatch) => {
-        dispatch(fetchPending(FETCH_CONTEXT.REQUEST_POSTS));
+        dispatch(fetchPending(EFetchContext.REQUEST_POSTS));
         const payload = {
             id,
             title,
             message
         };
-        return get('blog', payload)
+        return get('blog', payload, {isPayloadGroomed: true})
             .then(
                 (response) => {
-                    dispatch(fetchSuccess(FETCH_CONTEXT.REQUEST_POSTS));
+                    dispatch(fetchSuccess(EFetchContext.REQUEST_POSTS));
                     dispatch(getBlogPosts(response));
                 },
                 reason => {
-                    dispatch(fetchFail(FETCH_CONTEXT.REQUEST_POSTS, reason))
+                    dispatch(fetchFail(EFetchContext.REQUEST_POSTS, reason))
                 }
             );
     }
-}
+};
 
 /**
+ * Remove blog post.
  *
- * @param {string} id
- * @returns {Promise}
+ * @param {string} id Post identifier.
  */
-export function removePostByID(id: string) {
+export const removePostByID = (id: string) => {
     return (dispatch: any) => {
-        dispatch(fetchPending(FETCH_CONTEXT.REMOVE_POST));
+        dispatch(fetchPending(EFetchContext.REMOVE_POST));
         const body = {id};
-        return remove('blog', body)
+        return remove('blog', body, {isPayloadGroomed: true})
             .then(
                 () => {
                     dispatch(requestBlogPosts());
-                    dispatch(fetchSuccess(FETCH_CONTEXT.REMOVE_POST));
+                    dispatch(fetchSuccess(EFetchContext.REMOVE_POST));
                 },
                 reason => {
-                    dispatch(fetchFail(FETCH_CONTEXT.REMOVE_POST, reason))
+                    dispatch(fetchFail(EFetchContext.REMOVE_POST, reason))
                 }
             );
     }
-}
+};
 
 /**
- * Handles post edit.
- * @param {Partial<IPost>} post
+ * Handle post edit.
+ *
+ * @param {IPost} post
  */
-export function prefillPostEditForm(post: IPost) {
+export const fillPostEditForm = (post: IPost) => {
     return {
-        type: PREFILL_POST_EDIT_FORM,
+        type: FILL_POST_EDIT_FORM,
         post: post
     }
-}
+};
 
 /**
- * Handles form input events.
- * @param {string} fieldName
- * @param {string} fieldValue
- * @returns {Object}
+ * Handle form input events.
+ *
+ * @param {string} fieldName Name of field.
+ * @param {string} fieldValue Value.
  */
-export function handleFormInput(fieldName: string, fieldValue: string) {
+export const handleFormInput = (fieldName: string, fieldValue: string) => {
     return {
         type: HANDLE_FORM_INPUT,
         fieldName,
         fieldValue
     }
-}
+};
 
 /**
  * Handle fetch begin.
- * @param context
- * @returns {{type: string}}
+ *
+ * @param {EFetchContext} context Fetch context.
  */
-export function fetchPending(context: FETCH_CONTEXT) {
+export const fetchPending = (context: EFetchContext) => {
     return {
         type: FETCH_PENDING,
         context
     }
-}
+};
 
 /**
  * Handle fetch success.
- * @param context
- * @param {Response} [responseValue]
- * @returns {Object}
+ *
+ * @param {EFetchContext} context Fetch context.
+ * @param {Response} [responseValue] Response object.
  */
-export function fetchSuccess(context: FETCH_CONTEXT, responseValue?: any) {
+export const fetchSuccess = (context: EFetchContext, responseValue?: any) => {
     return {
         type: FETCH_SUCCESS,
         responseValue,
         context
     }
-}
+};
 
 /**
  * Handle fetch fail.
- * @param context
- * @param {string} reason
- * @returns {Object}
+ *
+ * @param {EFetchContext} context Fetch context.
+ * @param {string} reason Failure reason.
  */
-export function fetchFail(context: FETCH_CONTEXT, reason: string) {
+export const fetchFail = (context: EFetchContext, reason: string) => {
     return {
         type: FETCH_FAIL,
         context,
         reason
     }
-}
+};
 

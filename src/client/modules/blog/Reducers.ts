@@ -3,11 +3,11 @@ import {
     CLEAR_POST_EDIT_FORM,
     GET_BLOG_POSTS,
     HANDLE_FORM_INPUT,
-    PREFILL_POST_EDIT_FORM,
+    FILL_POST_EDIT_FORM,
 } from './Actions';
 import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS} from '../../core/utils/ServiceUtils';
 import {IBlogOwnProps} from './Blog';
-import {FETCH_CONTEXT, FETCH_STATUS} from "../../core/enums";
+import {EFetchContext, EFetchStatus} from "../../core/enums";
 
 /**
  * Initial blog state.
@@ -18,9 +18,8 @@ export const initBlogState: IBlogOwnProps = {
         title: '',
         message: ''
     },
-    fetchStatus: FETCH_STATUS.NONE,
-    fetchContext: FETCH_CONTEXT.NONE,
-    locationPathname: '/blog'
+    fetchStatus: EFetchStatus.NONE,
+    fetchContext: EFetchContext.NONE
 };
 
 /**
@@ -53,21 +52,21 @@ export const blogReducer: Reducer<IBlogOwnProps> = (state: IBlogOwnProps = initB
             return {
                 ...state,
                 fetchContext: action.context,
-                fetchStatus: FETCH_STATUS.PENDING
+                fetchStatus: EFetchStatus.PENDING
             };
         case FETCH_SUCCESS:
             return {
                 ...state,
                 fetchContext: action.context,
-                fetchStatus: FETCH_STATUS.SUCCESS
+                fetchStatus: EFetchStatus.SUCCESS
             };
         case FETCH_FAIL:
             return {
                 ...state,
                 fetchContext: action.context,
-                fetchStatus: FETCH_STATUS.FAIL
+                fetchStatus: EFetchStatus.FAIL
             };
-        case PREFILL_POST_EDIT_FORM:
+        case FILL_POST_EDIT_FORM:
             const {title, message} = action.post;
             return {
                 ...state,
