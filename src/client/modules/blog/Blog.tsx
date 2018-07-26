@@ -29,11 +29,10 @@ import {
 } from './Actions';
 import {connect} from 'react-redux';
 import {Dispatch, bindActionCreators} from 'redux';
-import {IAppState} from '../../core/reduxStore';
+import {handleLocationChange, IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models/blog/post';
-import {sortBy} from 'lodash';
-import {handleLocationChange} from '../../core/utils/Utils';
-import {EFetchContext, EFetchStatus} from '../../core/enums';
+import sortBy from 'lodash/sortBy';
+import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
 // import DropZone from 'react-dropzone';
 
@@ -56,14 +55,12 @@ interface IForm {
  *
  * {IPost[]} posts Array of posts from server.
  * {IForm} form Form fields set.
- * {EFetchStatus} fetchStatus Fetch status info.
- * {EFetchContext} fetchContext Fetch context info.
+ * {ERequestStatus} submitStatus Post submit status.
  */
 export interface IBlogOwnProps {
     posts: IPost[],
-    form: IForm,
-    fetchStatus: EFetchStatus,
-    fetchContext: EFetchContext
+    form: IForm
+    submitStatus: ERequestStatus;
 }
 
 /**
@@ -84,7 +81,6 @@ class BlogComponent extends Component<IProps> {
      */
     private handleSubmit = () => {
         const {
-            form: {title, message},
             actions: {submitBlogPost},
             match: {
                 params:
@@ -94,7 +90,7 @@ class BlogComponent extends Component<IProps> {
                     }
             }
         } = this.props;
-        submitBlogPost(title, message, id, mode);
+        submitBlogPost(id, mode);
     };
 
     /**
@@ -131,11 +127,10 @@ class BlogComponent extends Component<IProps> {
     renderPostEdit = () => {
         const {
             classes,
-            fetchStatus,
             form: {title, message},
-            actions: {handleFormInput}
+            actions: {handleFormInput},
+            submitStatus
         } = this.props;
-        const isFetchInProgress = fetchStatus === EFetchStatus.PENDING;
 
         return (
             <form className={classes.container} noValidate>
@@ -168,7 +163,7 @@ class BlogComponent extends Component<IProps> {
                     variant="raised"
                     color="primary"
                     className={classes.button}
-                    disabled={isFetchInProgress}
+                    disabled={submitStatus === ERequestStatus.PENDING}
                 >
                     {'Submit'}
                 </Button>

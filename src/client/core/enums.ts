@@ -1,16 +1,12 @@
-/** Defines fetch status. */
-export enum EFetchStatus {
+/** Defines request status. */
+export enum ERequestStatus {
     NONE,
     PENDING,
     SUCCESS,
     FAIL
 }
 
-/** Defines fetch context. */
-export enum EFetchContext {
-    NONE,
-    REQUEST_POSTS,
-    SUBMIT_POST,
-    UPDATE_POST,
-    REMOVE_POST
+/** Response types. */
+export enum EResponseType {
+    JSON
 }

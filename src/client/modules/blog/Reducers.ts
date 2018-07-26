@@ -3,11 +3,10 @@ import {
     CLEAR_POST_EDIT_FORM,
     GET_BLOG_POSTS,
     HANDLE_FORM_INPUT,
-    FILL_POST_EDIT_FORM,
+    FILL_POST_EDIT_FORM, SET_SUBMIT_STATUS,
 } from './Actions';
-import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS} from '../../core/utils/ServiceUtils';
 import {IBlogOwnProps} from './Blog';
-import {EFetchContext, EFetchStatus} from "../../core/enums";
+import {ERequestStatus} from "../../core/enums";
 
 /**
  * Initial blog state.
@@ -18,8 +17,7 @@ export const initBlogState: IBlogOwnProps = {
         title: '',
         message: ''
     },
-    fetchStatus: EFetchStatus.NONE,
-    fetchContext: EFetchContext.NONE
+    submitStatus: ERequestStatus.NONE,
 };
 
 /**
@@ -38,36 +36,18 @@ export const blogReducer: Reducer<IBlogOwnProps> = (state: IBlogOwnProps = initB
         case GET_BLOG_POSTS:
             return {
                 ...state,
-                posts: action.posts
+                posts: action.payload
             };
         case HANDLE_FORM_INPUT:
             return {
                 ...state,
                 form: {
                     ...state.form,
-                    [action.fieldName]: action.fieldValue,
+                    [action.payload.fieldName]: action.payload.fieldValue,
                 }
             };
-        case FETCH_PENDING:
-            return {
-                ...state,
-                fetchContext: action.context,
-                fetchStatus: EFetchStatus.PENDING
-            };
-        case FETCH_SUCCESS:
-            return {
-                ...state,
-                fetchContext: action.context,
-                fetchStatus: EFetchStatus.SUCCESS
-            };
-        case FETCH_FAIL:
-            return {
-                ...state,
-                fetchContext: action.context,
-                fetchStatus: EFetchStatus.FAIL
-            };
         case FILL_POST_EDIT_FORM:
-            const {title, message} = action.post;
+            const {title, message} = action.payload;
             return {
                 ...state,
                 form: {
@@ -75,6 +55,11 @@ export const blogReducer: Reducer<IBlogOwnProps> = (state: IBlogOwnProps = initB
                     title,
                     message
                 }
+            };
+        case SET_SUBMIT_STATUS:
+            return {
+                ...state,
+                submitStatus: action.payload
             };
         default:
             return state;

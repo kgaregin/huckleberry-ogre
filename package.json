@@ -1,6 +1,6 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "@types/history": "4.6.2",
     "@types/inert": "4.2.3",
     "@types/isomorphic-fetch": "0.0.34",
-    "@types/lodash": "4.14.112",
+    "@types/lodash": "4.14.113",
     "@types/react-dropzone": "4.2.0",
     "@types/react-router": "4.0.29",
     "@types/sequelize": "4.27.24",

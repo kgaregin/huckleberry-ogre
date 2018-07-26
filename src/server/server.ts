@@ -8,6 +8,8 @@ import {devServerPortNumber} from '../config';
 
 const server = new Hapi.Server();
 
+type TRoute = (server: Hapi.Server) => void;
+
 server.connection({port: devServerPortNumber, host: 'localhost', routes: { cors: true }});
 
 server.register(inert, (err) => {
@@ -18,7 +20,7 @@ server.register(inert, (err) => {
 
 server.path(path.join(__dirname, '../dist'));
 
-forEach(routes, (route) => {
+forEach(routes, (route: TRoute) => {
     route(server);
 });
 

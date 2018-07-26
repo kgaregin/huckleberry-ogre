@@ -23,7 +23,7 @@ import {RouteComponentProps, withRouter, Route, Switch, Link} from 'react-router
 import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
-import {handleLocationChange} from '../core/utils/Utils';
+import {handleLocationChange} from '../core/reduxStore';
 
 /**
  * Navigation component properties.

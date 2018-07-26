@@ -1,10 +1,10 @@
-//ToDo: add proper typings for "dispatch: any" from redux-thunk
-import {Dispatch} from "redux";
-import {FETCH_FAIL, FETCH_PENDING, FETCH_SUCCESS, get, post, put, remove} from "../../core/utils/ServiceUtils";
-import {EBlogViewMode} from "./Enums";
-import {IPost} from "../../../server/db/models/blog/post";
-import {handleLocationChange} from "../../core/utils/Utils";
-import {EFetchContext} from "../../core/enums";
+import {AnyAction} from 'redux';
+import {get, post, put, remove} from '../../core/utils/ServiceUtils';
+import {EBlogViewMode} from './Enums';
+import {IPost} from '../../../server/db/models/blog/post';
+import {IAsyncAction, removeEmptyFields} from '../../core/utils/Utils';
+import {ERequestStatus} from '../../core/enums';
+import {handleLocationChange} from '../../core/reduxStore';
 
 /**
  * Action types.
@@ -13,17 +13,18 @@ export const GET_BLOG_POSTS = 'GET_BLOG_POSTS';
 export const HANDLE_FORM_INPUT = 'HANDLE_FORM_INPUT';
 export const FILL_POST_EDIT_FORM = 'FILL_POST_EDIT_FORM';
 export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
+export const SET_SUBMIT_STATUS = 'SET_SUBMIT_STATUS';
 
 /**
  * Blog actions.
  */
 export interface IBlogActions {
-    requestBlogPosts: (id?: number, title?: string, message?: string) => (dispatch: Dispatch) => Promise<void>;
-    handleFormInput: (fieldName: string, fieldValue: string) => {type: string; fieldName: string; fieldValue: string;};
-    fillPostEditForm: (post: IPost) => {type: string; post: IPost};
-    clearPostEditForm: () => {type: string};
-    submitBlogPost: (title: string, message: string, id?: number, mode?: EBlogViewMode) => (dispatch: Dispatch) => Promise<void>;
-    removePostByID: (id: string) => (dispatch: Dispatch) => Promise<void>
+    requestBlogPosts: (id?: number, title?: string, message?: string) => IAsyncAction;
+    handleFormInput: (fieldName: string, fieldValue: string) => AnyAction;
+    fillPostEditForm: (post: IPost) => AnyAction;
+    clearPostEditForm: () => AnyAction;
+    submitBlogPost: (id?: number, mode?: EBlogViewMode) => IAsyncAction;
+    removePostByID: (id: string) => IAsyncAction;
 }
 
 /**
@@ -34,8 +35,8 @@ export interface IBlogActions {
 export const getBlogPosts = (posts: Response) => {
     return {
         type: GET_BLOG_POSTS,
-        posts
-    }
+        payload: posts
+    };
 };
 
 /**
@@ -44,47 +45,50 @@ export const getBlogPosts = (posts: Response) => {
 export const clearPostEditForm = () => {
     return {
         type: CLEAR_POST_EDIT_FORM
-    }
+    };
 };
 
 /**
  * Submit blog post
  *
- * @param {string} title Post title.
- * @param {string} message Post message.
- * @param {number} id Post identifier.
+ * @param {number} id Post being updated identifier.
  * @param {EBlogViewMode} mode Blog view mode.
  */
-export const submitBlogPost = (title: string, message: string, id?: number, mode?: EBlogViewMode) => {
-    return (dispatch: any) => {
-        dispatch(fetchPending(EFetchContext.SUBMIT_POST));
-        const body = {
-            id,
-            title,
-            message
-        };
+export const submitBlogPost = (id?: number, mode?: EBlogViewMode): IAsyncAction => {
+    return (dispatch, getState) => {
+        dispatch(setSubmitStatus(ERequestStatus.PENDING));
+        const {title, message} = getState().blogReducer.form;
         let request: Promise<Response>;
         switch (mode) {
             case EBlogViewMode.EDIT:
-                request = put('blog', body, {isPayloadGroomed: true});
+                request = put('blog', {
+                    id,
+                    title,
+                    message
+                });
                 break;
             case EBlogViewMode.CREATE:
             default:
-                request = post('blog', body, {isPayloadGroomed: true});
+                request = post('blog', {
+                    title,
+                    message
+                });
         }
         return request
             .then((responseValue: Response) => {
-                    dispatch(fetchSuccess(EFetchContext.SUBMIT_POST, responseValue));
+                    dispatch(setSubmitStatus(ERequestStatus.SUCCESS));
                     dispatch(clearPostEditForm());
                     dispatch(requestBlogPosts()).then(() => {
-                        handleLocationChange('/blog')
+                        handleLocationChange('/blog');
                     });
+                    return responseValue;
                 },
                 reason => {
-                    dispatch(fetchFail(EFetchContext.SUBMIT_POST, reason))
+                    dispatch(setSubmitStatus(ERequestStatus.FAIL));
+                    return reason;
                 }
             );
-    }
+    };
 };
 
 /**
@@ -94,25 +98,21 @@ export const submitBlogPost = (title: string, message: string, id?: number, mode
  * @param {string} [title] Post title.
  * @param {string} [message] Post message.
  */
-export const requestBlogPosts = (id?: number, title?: string, message?: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(fetchPending(EFetchContext.REQUEST_POSTS));
+export const requestBlogPosts = (id?: number, title?: string, message?: string): IAsyncAction => {
+    return (dispatch) => {
         const payload = {
             id,
             title,
             message
         };
-        return get('blog', payload, {isPayloadGroomed: true})
+        return get('blog', removeEmptyFields(payload))
             .then(
-                (response) => {
-                    dispatch(fetchSuccess(EFetchContext.REQUEST_POSTS));
+                response => {
                     dispatch(getBlogPosts(response));
-                },
-                reason => {
-                    dispatch(fetchFail(EFetchContext.REQUEST_POSTS, reason))
+                    return response;
                 }
             );
-    }
+    };
 };
 
 /**
@@ -120,21 +120,17 @@ export const requestBlogPosts = (id?: number, title?: string, message?: string) 
  *
  * @param {string} id Post identifier.
  */
-export const removePostByID = (id: string) => {
-    return (dispatch: any) => {
-        dispatch(fetchPending(EFetchContext.REMOVE_POST));
+export const removePostByID = (id: string): IAsyncAction => {
+    return (dispatch) => {
         const body = {id};
-        return remove('blog', body, {isPayloadGroomed: true})
+        return remove('blog', body)
             .then(
-                () => {
+                response => {
                     dispatch(requestBlogPosts());
-                    dispatch(fetchSuccess(EFetchContext.REMOVE_POST));
-                },
-                reason => {
-                    dispatch(fetchFail(EFetchContext.REMOVE_POST, reason))
+                    return response;
                 }
             );
-    }
+    };
 };
 
 /**
@@ -145,8 +141,10 @@ export const removePostByID = (id: string) => {
 export const fillPostEditForm = (post: IPost) => {
     return {
         type: FILL_POST_EDIT_FORM,
-        post: post
-    }
+        payload: {
+            post
+        }
+    };
 };
 
 /**
@@ -158,48 +156,19 @@ export const fillPostEditForm = (post: IPost) => {
 export const handleFormInput = (fieldName: string, fieldValue: string) => {
     return {
         type: HANDLE_FORM_INPUT,
-        fieldName,
-        fieldValue
-    }
+        payload: {
+            fieldName,
+            fieldValue
+        }
+    };
 };
 
 /**
- * Handle fetch begin.
+ * Set submit status.
  *
- * @param {EFetchContext} context Fetch context.
+ * @param {ERequestStatus} status Status.
  */
-export const fetchPending = (context: EFetchContext) => {
-    return {
-        type: FETCH_PENDING,
-        context
-    }
-};
-
-/**
- * Handle fetch success.
- *
- * @param {EFetchContext} context Fetch context.
- * @param {Response} [responseValue] Response object.
- */
-export const fetchSuccess = (context: EFetchContext, responseValue?: any) => {
-    return {
-        type: FETCH_SUCCESS,
-        responseValue,
-        context
-    }
-};
-
-/**
- * Handle fetch fail.
- *
- * @param {EFetchContext} context Fetch context.
- * @param {string} reason Failure reason.
- */
-export const fetchFail = (context: EFetchContext, reason: string) => {
-    return {
-        type: FETCH_FAIL,
-        context,
-        reason
-    }
-};
-
+const setSubmitStatus = (status: ERequestStatus) => ({
+    type: SET_SUBMIT_STATUS,
+    payload: status
+});
