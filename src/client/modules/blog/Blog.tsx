@@ -34,7 +34,7 @@ import {IPost} from '../../../server/db/models/blog/post';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
-import {theme} from '../../Theme';
+import {Editor, EditorState, DraftEditorCommand, RichUtils} from 'draft-js';
 
 /**
  * Form fields set.
@@ -69,10 +69,16 @@ interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMod
     actions: IBlogActions;
 }
 
-class BlogComponent extends Component<IProps> {
+class BlogComponent extends Component<IProps, { editorState: EditorState }> {
+
+    state = {
+        editorState: EditorState.createEmpty()
+    };
 
     componentWillMount() {
         this.props.actions.requestBlogPosts();
+        window.addEventListener('blur', () => false, true);
+        window.addEventListener('focus', ev => console.log(ev.currentTarget), true)
     }
 
     /**
@@ -120,6 +126,24 @@ class BlogComponent extends Component<IProps> {
         handleLocationChange(`/blog/edit/${post.id}`);
     };
 
+    private handleEditorChange = (newEditorState: EditorState) => {
+        console.log(newEditorState);
+        this.setState({editorState: newEditorState});
+    };
+
+    private handleKeyCommand = (command: DraftEditorCommand, editorState: EditorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            this.handleEditorChange(newState);
+            return 'handled';
+        }
+        return 'not-handled';
+    };
+
+    private onBoldClick = () => {
+        this.handleEditorChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
+    };
+
     /**
      * Edit view mode render method.
      */
@@ -131,51 +155,54 @@ class BlogComponent extends Component<IProps> {
             submitStatus
         } = this.props;
 
-        console.log(theme)
-
         return (
-            <form className={classes.container} noValidate>
-                <TextField
-                    placeholder="Got something new?"
-                    id="title"
-                    label="Title"
-                    className={classes.textField}
-                    value={title}
-                    onChange={event => handleFormInput('title', event.currentTarget.value)}
-                    margin="normal"
-                    fullWidth
-                    autoComplete="off"
-                />
-                <TextField
-                    placeholder="Go on and share it with friends!"
-                    id="message"
-                    label="Message"
-                    className={classes.textField}
-                    multiline
-                    fullWidth
-                    value={message}
-                    rows={'24'}
-                    onChange={event => handleFormInput('message', event.currentTarget.value)}
-                    margin="normal"
-                    type={'text'}
-                />
-                <Button
-                    onClick={this.handleSubmit}
-                    variant="raised"
-                    color="primary"
-                    className={classes.button}
-                    disabled={submitStatus === ERequestStatus.PENDING}
-                >
-                    {'Submit'}
-                </Button>
-                <Button
-                    variant="raised"
-                    color="primary"
-                    className={classes.button}
-                >
-                    {'Add images'}
-                </Button>
-            </form>
+            <Paper>
+                <form className={classes.container} noValidate>
+                    <TextField
+                        placeholder="Got something new?"
+                        id="title"
+                        label="Title"
+                        className={classes.textField}
+                        value={title}
+                        onChange={event => handleFormInput('title', event.currentTarget.value)}
+                        margin="normal"
+                        fullWidth
+                        autoComplete="off"
+                    />
+                    <TextField
+                        placeholder="Go on and share it with friends!"
+                        id="message"
+                        label="Message"
+                        className={classes.textField}
+                        multiline
+                        fullWidth
+                        value={message}
+                        rows={'24'}
+                        onChange={event => handleFormInput('message', event.currentTarget.value)}
+                        margin="normal"
+                        type={'text'}
+                    />
+                    <Grid item xs={12} className={classes.textField}>
+                        <Button variant="outlined" className={classes.button} onClick={this.onBoldClick}>
+                            <strong>Bold</strong>
+                        </Button>
+                        <Editor
+                            editorState={this.state.editorState}
+                            onChange={this.handleEditorChange}
+                            handleKeyCommand={this.handleKeyCommand}
+                        />
+                    </Grid>
+                    <Button
+                        onClick={this.handleSubmit}
+                        variant="raised"
+                        color="primary"
+                        className={classes.button}
+                        disabled={submitStatus === ERequestStatus.PENDING}
+                    >
+                        {'Submit'}
+                    </Button>
+                </form>
+            </Paper>
         );
     };
 
