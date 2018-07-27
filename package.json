@@ -1,6 +1,6 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
@@ -33,7 +33,6 @@
     "@types/inert": "4.2.3",
     "@types/isomorphic-fetch": "0.0.34",
     "@types/lodash": "4.14.113",
-    "@types/react-dropzone": "4.2.0",
     "@types/react-router": "4.0.29",
     "@types/sequelize": "4.27.24",
     "classnames": "2.2.6",
@@ -43,7 +42,6 @@
     "inert": "4.2.1",
     "isomorphic-fetch": "2.2.1",
     "lodash": "4.17.10",
-    "react-dropzone": "4.2.13",
     "react-router-dom": "4.3.1",
     "redux-thunk": "2.3.0",
     "sequelize": "4.38.0",

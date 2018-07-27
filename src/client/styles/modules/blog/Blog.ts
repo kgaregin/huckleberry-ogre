@@ -1,4 +1,5 @@
-import {StyleRulesCallback, Theme, createStyles} from "@material-ui/core";
+import {StyleRulesCallback, Theme, createStyles} from '@material-ui/core';
+import {StyleRules} from '@material-ui/core/styles';
 
 export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     container: {
@@ -47,5 +48,22 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         '&:hover': {
             color: theme.palette.secondary.dark
         }
+    },
+    dropZone: {
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: -1,
+        backgroundColor: 'rgba(0,0,0,.5)',
+        outline: '2px dashed black',
+        outlineOffset: '-80px',
+        transition: '.3s',
+
+        '&.active': {
+            visibility: 'visible',
+            pointerEvents: 'auto'
+        }
     }
-});
+} as StyleRules);

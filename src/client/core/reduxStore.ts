@@ -1,7 +1,7 @@
 import {combineReducers, createStore, applyMiddleware, compose, Store} from 'redux';
 import {blogReducer} from '../modules/blog/Reducers';
 import thunkMiddleware from 'redux-thunk';
-import {createHashHistory} from 'history';
+import {createHashHistory, History} from 'history';
 import {routerReducer, routerMiddleware, RouterState, push} from 'react-router-redux';
 import {IBlogOwnProps} from '../modules/blog/Blog';
 
@@ -22,7 +22,7 @@ const combinedReducers = combineReducers<IAppState>(
 const composeEnhancers = (window as Window & { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: Function }).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 /** Hash history. */
-export const history = createHashHistory();
+export const history: History = createHashHistory();
 
 const reactRouterReduxMiddleware = routerMiddleware(history);
 

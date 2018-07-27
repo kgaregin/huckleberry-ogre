@@ -34,10 +34,7 @@ import {IPost} from '../../../server/db/models/blog/post';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
-// import DropZone from 'react-dropzone';
-
-// const Dropzone = require('react-dropzone').default;
-// import * as Dropzone from 'react-dropzone';
+import {theme} from '../../Theme';
 
 /**
  * Form fields set.
@@ -65,6 +62,8 @@ export interface IBlogOwnProps {
 
 /**
  * Blog props.
+ *
+ * @prop {IBlogActions} actions Actions.
  */
 interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: number }>, WithStyles<typeof styles> {
     actions: IBlogActions;
@@ -98,7 +97,7 @@ class BlogComponent extends Component<IProps> {
      */
     private handleCreatePostButtonClick = () => {
         this.props.actions.clearPostEditForm();
-        handleLocationChange('/blog/CREATE');
+        handleLocationChange('/blog/create');
     };
 
     /**
@@ -118,7 +117,7 @@ class BlogComponent extends Component<IProps> {
     private handlePostEdit = (post: IPost) => {
         const {fillPostEditForm} = this.props.actions;
         fillPostEditForm(post);
-        handleLocationChange(`/blog/EDIT/${post.id}`);
+        handleLocationChange(`/blog/edit/${post.id}`);
     };
 
     /**
@@ -131,6 +130,8 @@ class BlogComponent extends Component<IProps> {
             actions: {handleFormInput},
             submitStatus
         } = this.props;
+
+        console.log(theme)
 
         return (
             <form className={classes.container} noValidate>
@@ -152,8 +153,8 @@ class BlogComponent extends Component<IProps> {
                     className={classes.textField}
                     multiline
                     fullWidth
-                    rows={'24'}
                     value={message}
+                    rows={'24'}
                     onChange={event => handleFormInput('message', event.currentTarget.value)}
                     margin="normal"
                     type={'text'}
@@ -253,8 +254,11 @@ type TStyleProps = WithStyles<typeof styles>;
 
 type TDispatchProps = { actions: IBlogActions }
 
-const Connected: React.ComponentClass<TStyleProps & TRouterProps> = connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps>(mapStateToProps, mapDispatchToProps)((props: IProps) => <BlogComponent {...props}/>);
-const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter((props: TStyleProps & TRouterProps) => <Connected {...props}/>);
-const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)((props: TStyleProps) => <WithRouterConnected {...props}/>);
+const Connected: React.ComponentClass<TStyleProps & TRouterProps> = connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps>(mapStateToProps, mapDispatchToProps)((props: IProps) =>
+    <BlogComponent {...props}/>);
+const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter((props: TStyleProps & TRouterProps) =>
+    <Connected {...props}/>);
+const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)((props: TStyleProps) =>
+    <WithRouterConnected {...props}/>);
 
 export {WithRouterConnectedStyled as Blog};

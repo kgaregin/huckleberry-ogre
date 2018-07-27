@@ -1,5 +1,5 @@
-import {StyleRulesCallback, Theme} from "@material-ui/core";
-import createStyles from '@material-ui/core/es/styles/createStyles';
+import {StyleRulesCallback, Theme, createStyles} from "@material-ui/core";
+import {StyleRules} from '@material-ui/core/styles';
 
 /** Menu width. */
 export const DRAWER_WIDTH = 240;
@@ -58,7 +58,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
 
     },
     drawerDocked: {
-
+        backgroundColor: theme.palette.background.paper
     },
     drawerHeader: {
         display: 'flex',
@@ -107,4 +107,4 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         width: '100%',
         padding: '0'
     }
-});
+} as StyleRules);
