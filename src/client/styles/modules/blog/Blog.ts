@@ -28,7 +28,12 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         boxSizing: 'border-box',
         marginBottom: '24px',
         wordWrap: 'break-word',
+        minHeight: '75vh',
+        whiteSpace: 'pre-wrap',
 
+        '& img': {
+            maxWidth: '100%'
+        },
         '&:last-of-type': {
             marginBottom: 'initial'
         }

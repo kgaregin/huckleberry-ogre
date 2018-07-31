@@ -1,8 +1,10 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {EBlogViewMode} from './Enums';
+import {EBlogViewMode, ETabIndex} from './Enums';
 import {withRouter, RouteComponentProps} from 'react-router-dom';
 import {
+    Tabs,
+    Tab,
     TextField,
     Button,
     Paper,
@@ -34,7 +36,7 @@ import {IPost} from '../../../server/db/models/blog/post';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
-import {theme} from '../../Theme';
+import parser from 'bbcode-to-react';
 
 /**
  * Form fields set.
@@ -69,7 +71,20 @@ interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMod
     actions: IBlogActions;
 }
 
-class BlogComponent extends Component<IProps> {
+/**
+ * Blog state.
+ *
+ * @prop {number} tabIndex Tab index.
+ */
+interface IState {
+    tabIndex: number;
+}
+
+class BlogComponent extends Component<IProps, IState> {
+
+    state: IState = {
+        tabIndex: 0
+    };
 
     componentWillMount() {
         this.props.actions.requestBlogPosts();
@@ -85,11 +100,11 @@ class BlogComponent extends Component<IProps> {
                 params:
                     {
                         mode,
-                        postID: id
+                        postID
                     }
             }
         } = this.props;
-        submitBlogPost(id, mode);
+        submitBlogPost(postID, mode);
     };
 
     /**
@@ -121,6 +136,16 @@ class BlogComponent extends Component<IProps> {
     };
 
     /**
+     * Tab change handler.
+     *
+     * @param {React.ChangeEvent<{}>} __ Event.
+     * @param {number} tabIndex New tab index.
+     */
+    private handleTabChange = (__: React.ChangeEvent<{}>, tabIndex: number) => {
+        this.setState({tabIndex});
+    };
+
+    /**
      * Edit view mode render method.
      */
     renderPostEdit = () => {
@@ -131,34 +156,59 @@ class BlogComponent extends Component<IProps> {
             submitStatus
         } = this.props;
 
-        console.log(theme)
+        const {tabIndex} = this.state;
 
         return (
-            <form className={classes.container} noValidate>
-                <TextField
-                    placeholder="Got something new?"
-                    id="title"
-                    label="Title"
-                    className={classes.textField}
-                    value={title}
-                    onChange={event => handleFormInput('title', event.currentTarget.value)}
-                    margin="normal"
-                    fullWidth
-                    autoComplete="off"
-                />
-                <TextField
-                    placeholder="Go on and share it with friends!"
-                    id="message"
-                    label="Message"
-                    className={classes.textField}
-                    multiline
-                    fullWidth
-                    value={message}
-                    rows={'24'}
-                    onChange={event => handleFormInput('message', event.currentTarget.value)}
-                    margin="normal"
-                    type={'text'}
-                />
+            <div className='text-center'>
+                <Tabs value={tabIndex} onChange={this.handleTabChange}>
+                    <Tab label="edit"/>
+                    <Tab label="preview"/>
+                </Tabs>
+                <Paper className={classes.postPaper}>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            {tabIndex === ETabIndex.EDIT &&
+                            <form className={classes.container} noValidate>
+                                <TextField
+                                    placeholder="Got something new?"
+                                    id="title"
+                                    label="Title"
+                                    className={classes.textField}
+                                    value={title}
+                                    onChange={event => handleFormInput('title', event.currentTarget.value)}
+                                    margin="normal"
+                                    fullWidth
+                                    autoComplete="off"
+                                />
+                                <TextField
+                                    placeholder="Go on and share it with friends!"
+                                    id="message"
+                                    label="Message"
+                                    className={classes.textField}
+                                    multiline
+                                    fullWidth
+                                    value={message}
+                                    rows={'28'}
+                                    onChange={event => handleFormInput('message', event.currentTarget.value)}
+                                    margin="normal"
+                                    type={'text'}
+                                />
+                            </form>}
+                            {tabIndex === ETabIndex.PREVIEW &&
+                                <div>
+                                    {title &&
+                                    <Typography variant="title" gutterBottom align={'center'}>
+                                        {title}
+                                    </Typography>}
+                                    {title && <Divider className={classes.postDivider}/>}
+                                    <Typography variant="body1" gutterBottom align={'left'}>
+                                        {parser.toReact(message)}
+                                    </Typography>
+                                </div>
+                            }
+                        </Grid>
+                    </Grid>
+                </Paper>
                 <Button
                     onClick={this.handleSubmit}
                     variant="raised"
@@ -168,14 +218,7 @@ class BlogComponent extends Component<IProps> {
                 >
                     {'Submit'}
                 </Button>
-                <Button
-                    variant="raised"
-                    color="primary"
-                    className={classes.button}
-                >
-                    {'Add images'}
-                </Button>
-            </form>
+            </div>
         );
     };
 
@@ -190,16 +233,17 @@ class BlogComponent extends Component<IProps> {
         return (
             <div>
                 {sortBy(posts, 'id').map(post =>
-                    post.title && post.message &&
+                    post.message &&
                     <Paper className={classes.postPaper} key={post.id}>
                         <Grid container>
                             <Grid item md={11} xs={12}>
+                                {post.title &&
                                 <Typography variant="title" gutterBottom align={'center'}>
                                     {post.title}
-                                </Typography>
-                                <Divider className={classes.postDivider}/>
+                                </Typography>}
+                                {post.title && <Divider className={classes.postDivider}/>}
                                 <Typography variant="body1" gutterBottom align={'left'}>
-                                    {post.message}
+                                    {parser.toReact(post.message)}
                                 </Typography>
                             </Grid>
                             <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>

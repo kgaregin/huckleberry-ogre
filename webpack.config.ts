@@ -29,10 +29,16 @@ module.exports = {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
         }, {
-            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+            test: /\.(eot|ttf|woff|woff2)$/,
             loader: 'url-loader',
             options: {
                 limit: 10000
+            }
+        }, {
+            test: /\.(png|jpg|gif|svg)$/,
+            loader: 'file-loader',
+            options: {
+                name: '[name]_[hash].[ext]'
             }
         }, {
             test: /\.ts|\.tsx$/,

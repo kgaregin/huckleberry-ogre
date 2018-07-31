@@ -7,6 +7,9 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
             color: "inherit",
             textDecoration: "none"
         },
+        '.text-center': {
+            textAlign: 'center'
+        },
         '.display-none-md-up': {
             [theme.breakpoints.up('md')]: {
                 display: 'none'

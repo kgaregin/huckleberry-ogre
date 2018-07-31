@@ -24,6 +24,7 @@ import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
 import {handleLocationChange} from '../core/reduxStore';
+import Samurai_Jack from '../assets/Samurai_Jack.png';
 
 /**
  * Navigation component properties.
@@ -134,6 +135,14 @@ class NavigationComponent extends React.Component<IProps, IState> {
                                     <Switch>
                                         <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
                                         <Route path="/blog/:mode?/:postID?" component={Blog}/>
+                                        <Route render={() => (
+                                            <div className='text-center'>
+                                                <h1>404 :\</h1>
+                                                <h3>This page is totally lost!</h3>
+                                                <img src={Samurai_Jack} alt=""/>
+                                            </div>
+                                        )}
+                                        />
                                     </Switch>
                                 </ErrorBoundary>
                             </Grid>

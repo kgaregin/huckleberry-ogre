@@ -141,9 +141,7 @@ export const removePostByID = (id: string): IAsyncAction => {
 export const fillPostEditForm = (post: IPost) => {
     return {
         type: FILL_POST_EDIT_FORM,
-        payload: {
-            post
-        }
+        payload: post
     };
 };
 
