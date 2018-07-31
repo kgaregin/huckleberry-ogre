@@ -1,8 +1,8 @@
 /** Defines viewing mode of blog component. */
 export enum EBlogViewMode {
-    READ = <any>'read',
-    CREATE = <any>'create',
-    EDIT = <any>'edit'
+    READ = 'read',
+    CREATE = 'create',
+    EDIT = 'edit'
 }
 
 /** Blog edit page view mode. */

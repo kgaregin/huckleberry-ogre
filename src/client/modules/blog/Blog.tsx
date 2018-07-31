@@ -67,7 +67,7 @@ export interface IBlogOwnProps {
  *
  * @prop {IBlogActions} actions Actions.
  */
-interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: number }>, WithStyles<typeof styles> {
+interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: string }>, WithStyles<typeof styles> {
     actions: IBlogActions;
 }
 
@@ -87,7 +87,7 @@ class BlogComponent extends Component<IProps, IState> {
     };
 
     componentWillMount() {
-        this.props.actions.requestBlogPosts();
+        this.props.actions.requestBlogPosts(undefined, this.props.match.params);
     }
 
     /**
@@ -104,7 +104,7 @@ class BlogComponent extends Component<IProps, IState> {
                     }
             }
         } = this.props;
-        submitBlogPost(postID, mode);
+        submitBlogPost(+postID, mode);
     };
 
     /**
@@ -118,21 +118,21 @@ class BlogComponent extends Component<IProps, IState> {
     /**
      * Remove post button click handler.
      *
-     * @param {string} postID Identifier of post being removed.
+     * @param {number} postID Identifier of post being removed.
      */
-    private handlePostRemove = (postID: string) => {
+    private handlePostRemove = (postID: number) => {
         this.props.actions.removePostByID(postID);
     };
 
     /**
      * Edit post button click handler.
      *
-     * @param {IPost} post Post to edit.
+     * @param {number} postID Post identifier.
      */
-    private handlePostEdit = (post: IPost) => {
+    private handlePostEdit = (postID: number) => {
         const {fillPostEditForm} = this.props.actions;
-        fillPostEditForm(post);
-        handleLocationChange(`/blog/edit/${post.id}`);
+        fillPostEditForm(postID);
+        handleLocationChange(`/blog/edit/${postID}`);
     };
 
     /**
@@ -249,13 +249,13 @@ class BlogComponent extends Component<IProps, IState> {
                             <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>
                             <Grid item md={1} xs={12} className={classes.postActions}>
                                 <IconButton
-                                    onClick={() => post.id && this.handlePostRemove(post.id.toString())}
+                                    onClick={() => post.id && this.handlePostRemove(post.id)}
                                     aria-label="Remove post"
                                 >
                                     <DeleteIcon className={classes.postActionButtonIcon}/>
                                 </IconButton>
                                 <IconButton
-                                    onClick={() => post.id && this.handlePostEdit(post)}
+                                    onClick={() => post.id && this.handlePostEdit(post.id)}
                                     aria-label="Edit post"
                                 >
                                     <BorderColorIcon className={classes.postActionButtonIcon}/>
@@ -293,7 +293,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     };
 };
 
-type TRouterProps = RouteComponentProps<{ mode: EBlogViewMode, postID: number }>;
+type TRouterProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 
 type TDispatchProps = { actions: IBlogActions }

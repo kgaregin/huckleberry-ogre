@@ -9,21 +9,5 @@
     ],
     "noEmit": true,
     "noErrorTruncation": true
-  },
-  "typeRoots": [
-    "node_modules/@types",
-    "node_modules"
-  ],
-  "types": [
-    "node",
-    "lodash",
-    "react",
-    "react-dom",
-    "react-redux",
-    "@material-ui/core",
-    "react-router-dom",
-    "redux",
-    "@material-ui/icons",
-    "react-scrollbar"
-  ]
+  }
 }

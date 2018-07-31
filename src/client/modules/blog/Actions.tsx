@@ -1,10 +1,10 @@
 import {AnyAction} from 'redux';
 import {get, post, put, remove} from '../../core/utils/ServiceUtils';
 import {EBlogViewMode} from './Enums';
-import {IPost} from '../../../server/db/models/blog/post';
-import {IAsyncAction, removeEmptyFields} from '../../core/utils/Utils';
+import {TAsyncAction, removeEmptyFields, TReturnVoidAction} from '../../core/utils/Utils';
 import {ERequestStatus} from '../../core/enums';
 import {handleLocationChange} from '../../core/reduxStore';
+import {getPost} from './BlogUtils';
 
 /**
  * Action types.
@@ -19,12 +19,15 @@ export const SET_SUBMIT_STATUS = 'SET_SUBMIT_STATUS';
  * Blog actions.
  */
 export interface IBlogActions {
-    requestBlogPosts: (id?: number, title?: string, message?: string) => IAsyncAction;
+    requestBlogPosts: (
+        searchBy?: { id?: number, title?: string, message?: string },
+        matchParams?: { mode?: EBlogViewMode, postID: string }
+    ) => TAsyncAction;
     handleFormInput: (fieldName: string, fieldValue: string) => AnyAction;
-    fillPostEditForm: (post: IPost) => AnyAction;
+    fillPostEditForm: (postID: number) => TReturnVoidAction;
     clearPostEditForm: () => AnyAction;
-    submitBlogPost: (id?: number, mode?: EBlogViewMode) => IAsyncAction;
-    removePostByID: (id: string) => IAsyncAction;
+    submitBlogPost: (id?: number, mode?: EBlogViewMode) => TAsyncAction;
+    removePostByID: (id: number) => TAsyncAction;
 }
 
 /**
@@ -54,7 +57,7 @@ export const clearPostEditForm = () => {
  * @param {number} id Post being updated identifier.
  * @param {EBlogViewMode} mode Blog view mode.
  */
-export const submitBlogPost = (id?: number, mode?: EBlogViewMode): IAsyncAction => {
+export const submitBlogPost = (id?: number, mode?: EBlogViewMode): TAsyncAction => {
     return (dispatch, getState) => {
         dispatch(setSubmitStatus(ERequestStatus.PENDING));
         const {title, message} = getState().blogReducer.form;
@@ -94,21 +97,22 @@ export const submitBlogPost = (id?: number, mode?: EBlogViewMode): IAsyncAction 
 /**
  * Submit blog post
  *
- * @param {number} [id] Post identifier.
- * @param {string} [title] Post title.
- * @param {string} [message] Post message.
+ * @param {number} [searchBy.id] Post identifier.
+ * @param {string} [searchBy.title] Post title.
+ * @param {string} [searchBy.message] Post message.
  */
-export const requestBlogPosts = (id?: number, title?: string, message?: string): IAsyncAction => {
+export const requestBlogPosts = (
+    searchBy?: { id?: number, title?: string, message?: string },
+    matchParams?: { mode?: EBlogViewMode, postID: string }
+): TAsyncAction => {
     return (dispatch) => {
-        const payload = {
-            id,
-            title,
-            message
-        };
-        return get('blog', removeEmptyFields(payload))
+        return get('blog', searchBy && removeEmptyFields(searchBy))
             .then(
                 response => {
                     dispatch(getBlogPosts(response));
+                    if (matchParams && matchParams.mode === EBlogViewMode.EDIT && matchParams.postID) {
+                        dispatch(fillPostEditForm(+matchParams.postID));
+                    }
                     return response;
                 }
             );
@@ -120,7 +124,7 @@ export const requestBlogPosts = (id?: number, title?: string, message?: string):
  *
  * @param {string} id Post identifier.
  */
-export const removePostByID = (id: string): IAsyncAction => {
+export const removePostByID = (id: number): TAsyncAction => {
     return (dispatch) => {
         const body = {id};
         return remove('blog', body)
@@ -136,12 +140,15 @@ export const removePostByID = (id: string): IAsyncAction => {
 /**
  * Handle post edit.
  *
- * @param {IPost} post
+ * @param {number} postID Post identifier.
  */
-export const fillPostEditForm = (post: IPost) => {
-    return {
-        type: FILL_POST_EDIT_FORM,
-        payload: post
+export const fillPostEditForm = (postID: number): TReturnVoidAction => {
+    return (dispatch, getState) => {
+        const post = getPost(getState().blogReducer.posts, postID);
+        post && dispatch({
+            type: FILL_POST_EDIT_FORM,
+            payload: post
+        });
     };
 };
 

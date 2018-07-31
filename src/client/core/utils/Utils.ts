@@ -7,8 +7,9 @@ import {ThunkAction} from 'redux-thunk';
 /** Running mode */
 export const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
 
-/** Common interface for typical async action. */
-export type IAsyncAction = ThunkAction<Promise<Response>, IAppState, void, AnyAction>;
+/** Common interfaces for typical thunk actions. */
+export type TAsyncAction = ThunkAction<Promise<Response>, IAppState, void, AnyAction>;
+export type TReturnVoidAction = ThunkAction<void, IAppState, void, AnyAction>;
 
 /**
  * Common interface for any collection.
