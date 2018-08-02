@@ -20,23 +20,16 @@ import {styles} from '../../styles/modules/blog/Blog';
 import ModeEditIcon from '@material-ui/icons/ModeEdit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
-import {
-    requestBlogPosts,
-    handleFormInput,
-    submitBlogPost,
-    removePostByID,
-    fillPostEditForm,
-    clearPostEditForm,
-    IBlogActions
-} from './Actions';
+import {BlogActions} from './Actions';
 import {connect} from 'react-redux';
-import {Dispatch, bindActionCreators} from 'redux';
+import {Action} from 'redux';
 import {handleLocationChange, IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models/blog/post';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
 import parser from 'bbcode-to-react';
+import {ThunkDispatch} from 'redux-thunk';
 
 /**
  * Form fields set.
@@ -68,7 +61,7 @@ export interface IBlogOwnProps {
  * @prop {IBlogActions} actions Actions.
  */
 interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: string }>, WithStyles<typeof styles> {
-    actions: IBlogActions;
+    actions: BlogActions;
 }
 
 /**
@@ -94,17 +87,8 @@ class BlogComponent extends Component<IProps, IState> {
      * Submit button handler.
      */
     private handleSubmit = () => {
-        const {
-            actions: {submitBlogPost},
-            match: {
-                params:
-                    {
-                        mode,
-                        postID
-                    }
-            }
-        } = this.props;
-        submitBlogPost(+postID, mode);
+        const {mode, postID} = this.props.match.params;
+        this.props.actions.submitBlogPost(+postID, mode);
     };
 
     /**
@@ -152,7 +136,6 @@ class BlogComponent extends Component<IProps, IState> {
         const {
             classes,
             form: {title, message},
-            actions: {handleFormInput},
             submitStatus
         } = this.props;
 
@@ -175,7 +158,7 @@ class BlogComponent extends Component<IProps, IState> {
                                     label="Title"
                                     className={classes.textField}
                                     value={title}
-                                    onChange={event => handleFormInput('title', event.currentTarget.value)}
+                                    onChange={event => this.props.actions.handleFormInput('title', event.currentTarget.value)}
                                     margin="normal"
                                     fullWidth
                                     autoComplete="off"
@@ -189,22 +172,22 @@ class BlogComponent extends Component<IProps, IState> {
                                     fullWidth
                                     value={message}
                                     rows={'28'}
-                                    onChange={event => handleFormInput('message', event.currentTarget.value)}
+                                    onChange={event => this.props.actions.handleFormInput('message', event.currentTarget.value)}
                                     margin="normal"
                                     type={'text'}
                                 />
                             </form>}
                             {tabIndex === ETabIndex.PREVIEW &&
-                                <div>
-                                    {title &&
-                                    <Typography variant="title" gutterBottom align={'center'}>
-                                        {title}
-                                    </Typography>}
-                                    {title && <Divider className={classes.postDivider}/>}
-                                    <Typography variant="body1" gutterBottom align={'left'}>
-                                        {parser.toReact(message)}
-                                    </Typography>
-                                </div>
+                            <div>
+                                {title &&
+                                <Typography variant="title" gutterBottom align={'center'}>
+                                    {title}
+                                </Typography>}
+                                {title && <Divider className={classes.postDivider}/>}
+                                <Typography variant="body1" gutterBottom align={'left'}>
+                                    {parser.toReact(message)}
+                                </Typography>
+                            </div>
                             }
                         </Grid>
                     </Grid>
@@ -280,29 +263,32 @@ class BlogComponent extends Component<IProps, IState> {
 
 const mapStateToProps = (state: IAppState) => state.blogReducer;
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
-        actions: bindActionCreators({
-            requestBlogPosts,
-            handleFormInput,
-            submitBlogPost,
-            removePostByID,
-            fillPostEditForm,
-            clearPostEditForm
-        }, dispatch)
+        actions: new BlogActions(dispatch)
     };
 };
 
 type TRouterProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 
-type TDispatchProps = { actions: IBlogActions }
+type TDispatchProps = { actions: BlogActions }
 
-const Connected: React.ComponentClass<TStyleProps & TRouterProps> = connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps>(mapStateToProps, mapDispatchToProps)((props: IProps) =>
-    <BlogComponent {...props}/>);
-const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter((props: TStyleProps & TRouterProps) =>
-    <Connected {...props}/>);
-const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)((props: TStyleProps) =>
-    <WithRouterConnected {...props}/>);
+const Connected: React.ComponentClass<TStyleProps & TRouterProps> =
+    connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps, IAppState>(
+        mapStateToProps,
+        mapDispatchToProps
+    )(
+        (props: IProps) =>
+            <BlogComponent {...props}/>
+    );
+const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter(
+    (props: TStyleProps & TRouterProps) =>
+        <Connected {...props}/>
+);
+const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)(
+    (props: TStyleProps) =>
+        <WithRouterConnected {...props}/>
+);
 
 export {WithRouterConnectedStyled as Blog};

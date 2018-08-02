@@ -1,4 +1,4 @@
-import {combineReducers, createStore, applyMiddleware, compose, Store, AnyAction, Unsubscribe} from 'redux';
+import {combineReducers, createStore, applyMiddleware, compose, Action} from 'redux';
 import {blogReducer} from '../modules/blog/Reducers';
 import thunkMiddleware, {ThunkDispatch} from 'redux-thunk';
 import {createHashHistory, History} from 'history';
@@ -6,7 +6,7 @@ import {connectRouter, routerMiddleware, push, RouterState} from 'connected-reac
 import {IBlogOwnProps} from '../modules/blog/Blog';
 import Route from 'route-parser';
 import {EBlogViewMode} from '../modules/blog/Enums';
-import {fillPostEditForm} from '../modules/blog/Actions';
+import {BlogActions} from '../modules/blog/Actions';
 
 /**
  * Combined reducers interface.
@@ -43,20 +43,13 @@ export interface IAppState extends ICombinedReducers {
     router: RouterState;
 }
 
-/** Redux store adaptation. */
-interface IStore extends Store<any> {
-    dispatch: ThunkDispatch<IAppState, void, AnyAction>;
-    getState(): IAppState;
-    subscribe(listener: () => void): Unsubscribe;
-}
-
 /**
  * Main redux store.
  */
-export const store: IStore = createStore(
+export const store = createStore(
     connectRouter(history)(combinedReducers),
     composeEnhancers(
-        applyMiddleware(
+        applyMiddleware<ThunkDispatch<IAppState, void, Action>>(
             thunkMiddleware,
             reactRouterReduxMiddleware
         )
@@ -78,9 +71,11 @@ export const handleLocationChange = (newLocation: string) => {
 history.listen(location => {
     const blogPageRoute = new Route('/blog/(:mode)/(:postID)');
     const blogPageRouteMatch = blogPageRoute.match(location.pathname);
+    const blogActions = new BlogActions(store.dispatch);
+
     if (blogPageRouteMatch &&
         blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
         blogPageRouteMatch.postID !== undefined) {
-        store.dispatch(fillPostEditForm(+blogPageRouteMatch.postID));
+        blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
     }
 });

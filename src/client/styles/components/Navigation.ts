@@ -1,4 +1,4 @@
-import {StyleRulesCallback, Theme, createStyles} from "@material-ui/core";
+import {StyleRulesCallback, Theme, createStyles} from '@material-ui/core';
 import {StyleRules} from '@material-ui/core/styles';
 
 /** Menu width. */

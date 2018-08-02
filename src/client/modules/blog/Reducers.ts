@@ -6,7 +6,7 @@ import {
     FILL_POST_EDIT_FORM, SET_SUBMIT_STATUS,
 } from './Actions';
 import {IBlogOwnProps} from './Blog';
-import {ERequestStatus} from "../../core/enums";
+import {ERequestStatus} from '../../core/enums';
 
 /**
  * Initial blog state.
