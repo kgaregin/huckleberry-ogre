@@ -16,5 +16,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "noEmitOnError": false
-  }
+  },
+  "include": ["../client"],
+  "exclude": ["../server"]
 }

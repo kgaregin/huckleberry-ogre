@@ -2,32 +2,34 @@
 import * as Hapi from 'hapi';
 import * as routes from './routes';
 import * as inert from 'inert';
-import * as path from 'path';
 import {forEach} from 'lodash';
 import {devServerPortNumber} from '../config';
 
-const server = new Hapi.Server();
-
 type TRoute = (server: Hapi.Server) => void;
 
-server.connection({port: devServerPortNumber, host: 'localhost', routes: { cors: true }});
-
-server.register(inert, (err) => {
-    if (err) {
-        throw err;
+export const server = new Hapi.Server({
+    port: devServerPortNumber,
+    host: 'localhost',
+    routes: {
+        cors: true
     }
 });
 
-server.path(path.join(__dirname, '../dist'));
+// server.path(path.join(__dirname, '../dist'));
 
-forEach(routes, (route: TRoute) => {
-    route(server);
+const start = async () => {
+    await server.start();
+    console.log(`Server running at: ${server.info.uri}`);
+};
+
+server.register(inert).then(() => {
+    forEach(routes, (route: TRoute) => {
+        route(server);
+    });
+    start();
+    }, err => console.log(err)
+);
+
+process.on('unhandledRejection', (err) => {
+    console.log(err);
 });
-
-server.start((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log(`Server running at: ${server.info && server.info.uri}`);
-});
-

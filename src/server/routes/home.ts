@@ -1,20 +1,33 @@
-import {Server} from 'hapi';
+import {Server, ServerRoute} from 'hapi';
+import * as path from 'path';
 
-const HomeRoute = (server: Server) => {
-    server.route({
+const routes: ServerRoute[] = [
+    {
         method: 'GET',
         path: '/',
-        handler: function (__, reply) {
-            reply.file('index.html');
+        options: {
+            files: {
+                relativeTo: path.join(__dirname, '../../dist')
+            }
+        },
+        handler: function (__, handler) {
+            return handler.file('./index.html');
         }
-    });
-    server.route({
+    },
+    {
         method: 'GET',
         path: '/{filename}',
-        handler: function (request, reply) {
-            reply.file(request.params.filename);
+        options: {
+            files: {
+                relativeTo: path.join(__dirname, '../files')
+            }
+        },
+        handler: function (request, handler) {
+            return handler.file(request.params.filename);
         }
-    });
-};
+    }
+];
+
+const HomeRoute = (server: Server) => server.route(routes);
 
 export {HomeRoute};
