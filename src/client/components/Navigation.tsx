@@ -25,6 +25,7 @@ import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
 import {handleLocationChange} from '../core/reduxStore';
 import Samurai_Jack from '../assets/Samurai_Jack.png';
+import {Notification} from '../modules/notification/Notification';
 
 /**
  * Navigation component properties.
@@ -147,6 +148,7 @@ class NavigationComponent extends React.Component<IProps, IState> {
                                 </ErrorBoundary>
                             </Grid>
                         </Grid>
+                        <Notification/>
                     </main>
                 </div>
             </div>);

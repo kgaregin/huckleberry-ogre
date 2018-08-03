@@ -5,13 +5,13 @@ import {
     HANDLE_FORM_INPUT,
     FILL_POST_EDIT_FORM, SET_SUBMIT_STATUS,
 } from './Actions';
-import {IBlogOwnProps} from './Blog';
+import {IBlogStateProps} from './Blog';
 import {ERequestStatus} from '../../core/enums';
 
 /**
  * Initial blog state.
  */
-export const initBlogState: IBlogOwnProps = {
+export const initBlogState: IBlogStateProps = {
     posts: [],
     form: {
         title: '',
@@ -23,7 +23,7 @@ export const initBlogState: IBlogOwnProps = {
 /**
  * Blog reducer.
  */
-export const blogReducer: Reducer<IBlogOwnProps> = (state: IBlogOwnProps = initBlogState, action) => {
+export const blogState: Reducer<IBlogStateProps> = (state: IBlogStateProps = initBlogState, action) => {
     switch (action.type) {
         case CLEAR_POST_EDIT_FORM:
             return {

@@ -1,26 +1,30 @@
 import {combineReducers, createStore, applyMiddleware, compose, Action} from 'redux';
-import {blogReducer} from '../modules/blog/Reducers';
+import {blogState} from '../modules/blog/Reducers';
 import thunkMiddleware, {ThunkDispatch} from 'redux-thunk';
 import {createHashHistory, History} from 'history';
 import {connectRouter, routerMiddleware, push, RouterState} from 'connected-react-router';
-import {IBlogOwnProps} from '../modules/blog/Blog';
+import {IBlogStateProps} from '../modules/blog/Blog';
 import Route from 'route-parser';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {BlogActions} from '../modules/blog/Actions';
+import {INotificationStateProps} from '../modules/notification/Notification';
+import {notificationState} from '../modules/notification/Reducers';
 
 /**
  * Combined reducers interface.
  *
- * @param {IBlogOwnProps} Blog part of app state.
+ * @param {IBlogStateProps} Blog part of app state.
  */
 export interface ICombinedReducers {
-    blogReducer: IBlogOwnProps;
+    blogState: IBlogStateProps;
+    notificationState: INotificationStateProps;
 }
 
 /** Combined reducers. */
 const combinedReducers = combineReducers<ICombinedReducers>(
     {
-        blogReducer
+        blogState,
+        notificationState
     }
 );
 

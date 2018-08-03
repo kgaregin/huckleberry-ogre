@@ -16,7 +16,7 @@ import {
     withStyles,
     StyledComponentProps
 } from '@material-ui/core';
-import {styles} from '../../styles/modules/blog/Blog';
+import {styles} from '../../styles/modules/Blog';
 import ModeEditIcon from '@material-ui/icons/ModeEdit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
@@ -49,7 +49,7 @@ interface IForm {
  * {IForm} form Form fields set.
  * {ERequestStatus} submitStatus Post submit status.
  */
-export interface IBlogOwnProps {
+export interface IBlogStateProps {
     posts: IPost[],
     form: IForm
     submitStatus: ERequestStatus;
@@ -60,7 +60,7 @@ export interface IBlogOwnProps {
  *
  * @prop {IBlogActions} actions Actions.
  */
-interface IProps extends IBlogOwnProps, RouteComponentProps<{ mode: EBlogViewMode, postID: string }>, WithStyles<typeof styles> {
+interface IProps extends IBlogStateProps, RouteComponentProps<{ mode: EBlogViewMode, postID: string }>, WithStyles<typeof styles> {
     actions: BlogActions;
 }
 
@@ -261,7 +261,7 @@ class BlogComponent extends Component<IProps, IState> {
     }
 }
 
-const mapStateToProps = (state: IAppState) => state.blogReducer;
+const mapStateToProps = (state: IAppState) => state.blogState;
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
@@ -275,7 +275,7 @@ type TStyleProps = WithStyles<typeof styles>;
 type TDispatchProps = { actions: BlogActions }
 
 const Connected: React.ComponentClass<TStyleProps & TRouterProps> =
-    connect<IBlogOwnProps, TDispatchProps, TStyleProps & TRouterProps, IAppState>(
+    connect<IBlogStateProps, TDispatchProps, TStyleProps & TRouterProps, IAppState>(
         mapStateToProps,
         mapDispatchToProps
     )(

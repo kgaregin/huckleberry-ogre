@@ -1,7 +1,8 @@
 import 'typeface-roboto';
 import * as React from 'react';
 import {render} from 'react-dom';
-import {GlobalLayout, Navigation} from './components';
+import {GlobalLayout} from './components/GlobalLayout';
+import {Navigation} from './components/Navigation';
 import {store, history} from './core/reduxStore';
 import {Provider} from 'react-redux';
 import {ConnectedRouter} from 'connected-react-router';

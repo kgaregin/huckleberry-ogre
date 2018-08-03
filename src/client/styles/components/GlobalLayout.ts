@@ -18,6 +18,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     },
     mainPaper: {
         width: '100%',
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
     },
     dropZone: {
         position: 'fixed',

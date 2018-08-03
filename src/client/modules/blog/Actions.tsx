@@ -6,6 +6,8 @@ import {ERequestStatus} from '../../core/enums';
 import {handleLocationChange, IAppState} from '../../core/reduxStore';
 import {getPost} from './BlogUtils';
 import {ThunkDispatch} from 'redux-thunk';
+import {NotificationActions} from '../notification/Actions';
+import {ENotificationVariant} from '../notification/Notification';
 
 /**
  * Action types.
@@ -49,7 +51,7 @@ export class BlogActions {
     submitBlogPost = (id?: number, mode?: EBlogViewMode) => this.dispatch(
         (__, getState) => {
             this.setSubmitStatus(ERequestStatus.PENDING);
-            const {title, message} = getState().blogReducer.form;
+            const {title, message} = getState().blogState.form;
             let request: Promise<Response>;
             switch (mode) {
                 case EBlogViewMode.EDIT:
@@ -67,13 +69,16 @@ export class BlogActions {
                     });
             }
             return request
-                .then((responseValue: Response) => {
+                .then(() => {
                         this.setSubmitStatus(ERequestStatus.SUCCESS);
                         this.clearPostEditForm();
                         this.requestBlogPosts().then(() => {
                             handleLocationChange('/blog');
                         });
-                        return responseValue;
+                        NotificationActions.show({
+                            message: 'Post created',
+                            variant: ENotificationVariant.SUCCESS
+                        });
                     },
                     reason => {
                         this.setSubmitStatus(ERequestStatus.FAIL);
@@ -133,7 +138,7 @@ export class BlogActions {
      */
     fillPostEditForm = (postID: number) => this.dispatch(
         (dispatch, getState) => {
-            const post = getPost(getState().blogReducer.posts, postID);
+            const post = getPost(getState().blogState.posts, postID);
             post && dispatch({
                 type: FILL_POST_EDIT_FORM,
                 payload: post

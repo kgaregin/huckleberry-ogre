@@ -51,7 +51,7 @@ module.exports = {
         }]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
+        new CleanWebpackPlugin(['src/dist']),
         new HtmlWebpackPlugin({
             title: 'Huckleberry Ogre welcomes you, stranger!',
             template: 'index_template.ejs'

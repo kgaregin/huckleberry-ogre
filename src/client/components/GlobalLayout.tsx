@@ -41,8 +41,8 @@ class GlobalLayoutComponent extends React.Component<IProps & WithStyles, IState>
             document.addEventListener(eventType, event => event.preventDefault());
         });
         history.listen(event => {
-            const dragAndDropPaths = [`/blog/${EBlogViewMode.CREATE}`, `/blog/${EBlogViewMode.EDIT}`];
-            this.setState({isDropZoneEnabled: dragAndDropPaths.some(path => event.pathname.indexOf(path) !== -1)});
+            const enabledPaths = [`/blog/${EBlogViewMode.CREATE}`, `/blog/${EBlogViewMode.EDIT}`];
+            this.setState({isDropZoneEnabled: enabledPaths.some(path => event.pathname.indexOf(path) !== -1)});
         });
     }
 
