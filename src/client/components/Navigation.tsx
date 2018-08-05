@@ -102,7 +102,8 @@ class NavigationComponent extends React.Component<IProps, IState> {
                                 <MenuIcon/>
                             </IconButton>
                             <Typography variant="title"
-                                        className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}>
+                                        className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}
+                            >
                                 <Link to="/" onClick={this.handleDrawerClose}>
                                     {'Huckleberry Ogre Home'}
                                 </Link>
@@ -134,7 +135,13 @@ class NavigationComponent extends React.Component<IProps, IState> {
                             <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
                                 <ErrorBoundary>
                                     <Switch>
-                                        <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
+                                        <Route exact path="/" render={() => 
+                                            <div>
+                                                <h1>Main page under construction</h1>
+                                                <img src="http://localhost:3001/rest/blog/image" alt=""/>
+                                            </div>
+                                            
+                                        }/>
                                         <Route path="/blog/:mode?/:postID?" component={Blog}/>
                                         <Route render={() => (
                                             <div className='text-center'>

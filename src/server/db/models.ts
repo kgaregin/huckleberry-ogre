@@ -23,7 +23,7 @@ export interface IPost {
  * @param {Sequelize} sequelize Sequelize instance.
  * @param {DataTypes} dataTypes Possible data types object.
  */
-const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
+export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
     'post',
     {
         title: {type: dataTypes.STRING, validate: {notEmpty: true}},
@@ -31,4 +31,16 @@ const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.defi
     }
 );
 
-export {PostModel};
+/**
+ * File model definition.
+ * ToDo: add hash field to search for duplicates.
+ *
+ * @param {Sequelize} sequelize Sequelize instance.
+ * @param {DataTypes} dataTypes Possible data types object.
+ */
+export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
+    'file',
+    {
+        name: {type: dataTypes.STRING, validate: {notEmpty: true}}
+    }
+);

@@ -1,4 +1,4 @@
-import {IPost} from '../../../server/db/models/blog/post';
+import {IPost} from '../../../server/db/models';
 import find from 'lodash/find';
 
 /**

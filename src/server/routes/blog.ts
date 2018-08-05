@@ -1,7 +1,8 @@
 import {Server, ServerRoute} from 'hapi';
-import {PostActions} from '../db/actions/blog/post';
+import {FileActions, PostActions} from '../db/actions';
 import {isString} from 'lodash';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const routes: ServerRoute[] = [
     {
@@ -25,6 +26,29 @@ const routes: ServerRoute[] = [
         },
         handler: (__, handler) => {
             return handler.file('./Samurai_Jack.png');
+        }
+    },
+    {
+        method: 'POST',
+        path: '/rest/blog/save',
+        handler: request => {
+            //ToDo: connect with front.
+            const queryParams = request.query;
+            queryParams;
+
+            return new Promise((resolve, reject) => {
+                fs.appendFile(`./src/server/files/images/${request.params.filename}`, 'data to append', 'utf8', err => {
+                    const saveError = new Error("can't save file");
+
+                    err && reject(saveError);
+                    FileActions.newFile(request.params.filename)
+                        .then(
+                            () => resolve(JSON.stringify('file saved')),
+                            () => reject(saveError)
+                        )
+                });
+            });
+
         }
     },
     {

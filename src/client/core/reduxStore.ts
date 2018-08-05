@@ -66,7 +66,7 @@ export const store = createStore(
  * @param {string} newLocation Location relative path.
  */
 export const handleLocationChange = (newLocation: string) => {
-    history.location.pathname !== newLocation && store.dispatch(push(newLocation));
+    store.dispatch(push(newLocation));
 };
 
 /**
@@ -77,6 +77,9 @@ history.listen(location => {
     const blogPageRouteMatch = blogPageRoute.match(location.pathname);
     const blogActions = new BlogActions(store.dispatch);
 
+    if (location.pathname === '/blog') {
+        blogActions.requestBlogPosts();
+    }
     if (blogPageRouteMatch &&
         blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
         blogPageRouteMatch.postID !== undefined) {

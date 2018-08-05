@@ -24,7 +24,7 @@ import {BlogActions} from './Actions';
 import {connect} from 'react-redux';
 import {Action} from 'redux';
 import {handleLocationChange, IAppState} from '../../core/reduxStore';
-import {IPost} from '../../../server/db/models/blog/post';
+import {IPost} from '../../../server/db/models';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
