@@ -3,7 +3,8 @@ import {
     CLEAR_POST_EDIT_FORM,
     GET_BLOG_POSTS,
     HANDLE_FORM_INPUT,
-    FILL_POST_EDIT_FORM, SET_SUBMIT_STATUS,
+    FILL_POST_EDIT_FORM,
+    SET_SUBMIT_STATUS,
 } from './Actions';
 import {IBlogStateProps} from './Blog';
 import {ERequestStatus} from '../../core/enums';

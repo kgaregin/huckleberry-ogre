@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Component} from 'react';
 import {EBlogViewMode, ETabIndex} from './Enums';
-import {withRouter, RouteComponentProps} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 import {
     Tabs,
     Tab,
@@ -13,15 +13,12 @@ import {
     Grid,
     IconButton,
     WithStyles,
-    withStyles,
-    StyledComponentProps
 } from '@material-ui/core';
 import {styles} from '../../styles/modules/Blog';
 import ModeEditIcon from '@material-ui/icons/ModeEdit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {BlogActions} from './Actions';
-import {connect} from 'react-redux';
 import {Action} from 'redux';
 import {handleLocationChange, IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models';
@@ -30,6 +27,7 @@ import {ERequestStatus} from '../../core/enums';
 import * as classNames from 'classnames';
 import parser from 'bbcode-to-react';
 import {ThunkDispatch} from 'redux-thunk';
+import {HOC} from '../../core/utils/HOC';
 
 /**
  * Form fields set.
@@ -57,12 +55,8 @@ export interface IBlogStateProps {
 
 /**
  * Blog props.
- *
- * @prop {IBlogActions} actions Actions.
  */
-interface IProps extends IBlogStateProps, RouteComponentProps<{ mode: EBlogViewMode, postID: string }>, WithStyles<typeof styles> {
-    actions: BlogActions;
-}
+type TProps = IBlogStateProps & TRouteProps & TStyleProps & TDispatchProps;
 
 /**
  * Blog state.
@@ -73,7 +67,7 @@ interface IState {
     tabIndex: number;
 }
 
-class BlogComponent extends Component<IProps, IState> {
+class BlogComponent extends Component<TProps, IState> {
 
     state: IState = {
         tabIndex: 0
@@ -269,26 +263,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) =>
     };
 };
 
-type TRouterProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
+type TDispatchProps = { actions: BlogActions }
+type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 
-type TDispatchProps = { actions: BlogActions }
-
-const Connected: React.ComponentClass<TStyleProps & TRouterProps> =
-    connect<IBlogStateProps, TDispatchProps, TStyleProps & TRouterProps, IAppState>(
-        mapStateToProps,
-        mapDispatchToProps
-    )(
-        (props: IProps) =>
-            <BlogComponent {...props}/>
-    );
-const WithRouterConnected: React.ComponentClass<TStyleProps> = withRouter(
-    (props: TStyleProps & TRouterProps) =>
-        <Connected {...props}/>
-);
-const WithRouterConnectedStyled: React.ComponentType<StyledComponentProps> = withStyles(styles)(
-    (props: TStyleProps) =>
-        <WithRouterConnected {...props}/>
-);
-
-export {WithRouterConnectedStyled as Blog};
+export const Blog = HOC<IBlogStateProps, TDispatchProps, TStyleProps, TRouteProps>(BlogComponent, {
+    mapStateToProps,
+    mapDispatchToProps,
+    styles,
+    isWithRouter: true
+});

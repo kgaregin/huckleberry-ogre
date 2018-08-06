@@ -9,6 +9,9 @@ import {EBlogViewMode} from '../modules/blog/Enums';
 import {BlogActions} from '../modules/blog/Actions';
 import {INotificationStateProps} from '../modules/notification/Notification';
 import {notificationState} from '../modules/notification/Reducers';
+import {dropZoneState} from '../modules/dropZone/Reducers';
+import {DropZoneActions} from '../modules/dropZone/Actions';
+import {IDropZoneStateProps} from '../modules/dropZone/DropZone';
 
 /**
  * Combined reducers interface.
@@ -18,12 +21,14 @@ import {notificationState} from '../modules/notification/Reducers';
 export interface ICombinedReducers {
     blogState: IBlogStateProps;
     notificationState: INotificationStateProps;
+    dropZoneState: IDropZoneStateProps;
 }
 
 /** Combined reducers. */
 const combinedReducers = combineReducers<ICombinedReducers>(
     {
         blogState,
+        dropZoneState,
         notificationState
     }
 );
@@ -76,6 +81,11 @@ history.listen(location => {
     const blogPageRoute = new Route('/blog/(:mode)/(:postID)');
     const blogPageRouteMatch = blogPageRoute.match(location.pathname);
     const blogActions = new BlogActions(store.dispatch);
+    const dropZoneActions = new DropZoneActions(store.dispatch);
+    const enabledPaths = [`/blog/${EBlogViewMode.CREATE}`, `/blog/${EBlogViewMode.EDIT}`];
+    const isDropZoneEnabled = enabledPaths.some(path => location.pathname.indexOf(path) !== -1);
+
+    isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
 
     if (location.pathname === '/blog') {
         blogActions.requestBlogPosts();
@@ -86,3 +96,9 @@ history.listen(location => {
         blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
     }
 });
+
+
+// history.listen(event => {
+//
+//     this.setState({isDropZoneEnabled: });
+// });

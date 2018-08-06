@@ -4,7 +4,7 @@ import {EBlogViewMode} from './Enums';
 import {removeEmptyFields} from '../../core/utils/Utils';
 import {ERequestStatus} from '../../core/enums';
 import {handleLocationChange, IAppState} from '../../core/reduxStore';
-import {getPost} from './BlogUtils';
+import {getPost} from './Utils';
 import {ThunkDispatch} from 'redux-thunk';
 import {NotificationActions} from '../notification/Actions';
 import {ENotificationVariant} from '../notification/Notification';

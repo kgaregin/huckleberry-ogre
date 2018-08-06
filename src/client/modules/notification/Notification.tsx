@@ -1,13 +1,13 @@
 import * as React from 'react';
-import {SnackbarContent, Snackbar, WithStyles, withStyles, StyledComponentProps} from '@material-ui/core';
+import {SnackbarContent, Snackbar, WithStyles} from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
 import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import {IAppState} from '../../core/reduxStore';
 import {NotificationActions} from './Actions';
-import {connect} from 'react-redux';
 import {styles} from '../../styles/modules/Notification';
+import {HOC} from '../../core/utils/HOC';
+import {IAppState} from '../../core/reduxStore';
 
 /**
  * @prop {boolean} show Rendering flag.
@@ -64,8 +64,8 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
         return (
             <Snackbar
                 anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
+                    vertical: 'top',
+                    horizontal: 'center',
                 }}
                 onClose={NotificationActions.close}
                 open={show}
@@ -81,10 +81,11 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
 
 const mapStateToProps = (state: IAppState) => state.notificationState;
 
-const NotificationComponentConnected = connect<INotificationStateProps, {}, TStyleProps, IAppState>(mapStateToProps)(
-    (props: INotificationStateProps & TStyleProps) => <NotificationComponent {...props}/>
-);
-
-export const Notification: React.ComponentType<StyledComponentProps> = withStyles(styles)(
-    (props: TStyleProps) => <NotificationComponentConnected {...props}/>
+export const Notification = HOC<INotificationStateProps, {}, TStyleProps, {}>(
+    NotificationComponent,
+    {
+        mapStateToProps,
+        mapDispatchToProps: null,
+        styles
+    }
 );
