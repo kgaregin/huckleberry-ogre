@@ -12,26 +12,28 @@ import {
     ListItemIcon,
     ListItemText,
     WithStyles,
-    withStyles,
 } from '@material-ui/core';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
 import * as classNames from 'classnames';
-import {RouteComponentProps, withRouter, Route, Switch, Link} from 'react-router-dom';
+import {RouteComponentProps, Route, Switch, Link} from 'react-router-dom';
 import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
-import {handleLocationChange} from '../core/reduxStore';
+import {handleLocationChange, IAppState} from '../core/reduxStore';
 import Samurai_Jack from '../assets/Samurai_Jack.png';
 import {Notification} from '../modules/notification/Notification';
+import {BlogActions} from "../modules/blog/Actions";
+import {HOC} from "../core/utils/HOC";
+import {ThunkDispatch} from 'redux-thunk';
+import {Action} from 'redux';
 
 /**
  * Navigation component properties.
  */
-interface IProps extends RouteComponentProps<{ mode: EBlogViewMode }>, WithStyles<typeof styles> {
-}
+type TProps = TDispatchProps & TRouteProps & TStyleProps;
 
 /**
  * @prop {boolean} isDrawerOpen Drawer open flag.
@@ -43,7 +45,14 @@ interface IState {
 /**
  * Navigation component.
  */
-class NavigationComponent extends React.Component<IProps, IState> {
+class NavigationComponent extends React.Component<TProps, IState> {
+
+    constructor(props: TProps){
+        super(props);
+        const {blogActions} = this.props;
+        blogActions.requestBlogPosts();
+    }
+
     state: IState = {
         isDrawerOpen: false,
     };
@@ -162,7 +171,21 @@ class NavigationComponent extends React.Component<IProps, IState> {
     }
 }
 
-const WithRouter = withRouter<IProps>((props: IProps) => <NavigationComponent {...props}/>);
-const StyledWithRouter = withStyles(styles)(props => <WithRouter {...props}/>);
+const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
+    return {
+        blogActions: new BlogActions(dispatch)
+    };
+};
 
-export {StyledWithRouter as Navigation};
+type TDispatchProps = { blogActions: BlogActions }
+type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
+type TStyleProps = WithStyles<typeof styles>;
+
+export const Navigation = HOC<{}, TDispatchProps, TStyleProps, TRouteProps>(
+    NavigationComponent,
+    {
+    mapStateToProps: null,
+    mapDispatchToProps,
+    styles,
+    isWithRouter: true
+});

@@ -59,8 +59,8 @@ export const store = createStore(
     connectRouter(history)(combinedReducers),
     composeEnhancers(
         applyMiddleware<ThunkDispatch<IAppState, void, Action>>(
-            thunkMiddleware,
-            reactRouterReduxMiddleware
+            reactRouterReduxMiddleware,
+            thunkMiddleware
         )
     )
 );
@@ -71,6 +71,14 @@ export const store = createStore(
  * @param {string} newLocation Location relative path.
  */
 export const handleLocationChange = (newLocation: string) => {
+    // const blogActions = new BlogActions(store.dispatch);
+    //
+    // if (newLocation === '/blog') {
+    //     blogActions.requestBlogPosts().then(() => {
+    //         store.dispatch(push(newLocation));
+    //         return;
+    //     })
+    // }
     store.dispatch(push(newLocation));
 };
 
@@ -78,23 +86,27 @@ export const handleLocationChange = (newLocation: string) => {
  * History change listener.
  */
 history.listen(location => {
+    location;
     const blogPageRoute = new Route('/blog/(:mode)/(:postID)');
     const blogPageRouteMatch = blogPageRoute.match(location.pathname);
     const blogActions = new BlogActions(store.dispatch);
     const dropZoneActions = new DropZoneActions(store.dispatch);
     const enabledPaths = [`/blog/${EBlogViewMode.CREATE}`, `/blog/${EBlogViewMode.EDIT}`];
     const isDropZoneEnabled = enabledPaths.some(path => location.pathname.indexOf(path) !== -1);
-
+    blogPageRouteMatch;
+    blogActions;
+    dropZoneActions;
+    isDropZoneEnabled;
     isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
-
-    if (location.pathname === '/blog') {
-        blogActions.requestBlogPosts();
-    }
-    if (blogPageRouteMatch &&
-        blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
-        blogPageRouteMatch.postID !== undefined) {
-        blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
-    }
+    //
+    // if (location.pathname === '/blog') {
+    //     blogActions.requestBlogPosts();
+    // }
+    // if (blogPageRouteMatch &&
+    //     blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
+    //     blogPageRouteMatch.postID !== undefined) {
+    //     blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
+    // }
 });
 
 

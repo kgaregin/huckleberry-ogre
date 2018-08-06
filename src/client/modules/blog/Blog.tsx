@@ -73,10 +73,6 @@ class BlogComponent extends Component<TProps, IState> {
         tabIndex: 0
     };
 
-    componentWillMount() {
-        this.props.actions.requestBlogPosts(undefined, this.props.match.params);
-    }
-
     /**
      * Submit button handler.
      */
