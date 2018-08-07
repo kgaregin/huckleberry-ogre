@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {WithStyles, Modal} from '@material-ui/core';
-import {styles} from '../../styles/components/DropZone';
-import * as classNames from 'classnames';
+import {styles} from '../../styles/modules/DropZone';
 import {HOC} from '../../core/utils/HOC';
 import {IAppState} from '../../core/reduxStore';
 import {DropZoneActions} from './Actions';
@@ -31,23 +30,17 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
         return (
             isDropZoneEnabled ?
                 (
-                    <div
-                        onDragLeave={actions.handleDragLeave}
-                        onDrop={actions.hide}
-                        className={classNames(classes.dropZoneBackground, {active: isDropZoneActive})}
+                    <Modal
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                        open={isDropZoneActive}
+                        onClose={actions.hide}
+                        onDrop={actions.handleDrop}
                     >
-                        <Modal
-                            aria-labelledby="simple-modal-title"
-                            aria-describedby="simple-modal-description"
-                            open={isDropZoneActive}
-                            onClose={actions.hide}
-                            onDrop={actions.handleDrop}
-                        >
-                            <div className={classes.paper}>
-                                {'my text'}
-                            </div>
-                        </Modal>
-                    </div>
+                        <div id="dropZone" className={classes.paper}>
+                            {'my text'}
+                        </div>
+                    </Modal>
                 ) : null
         );
     }

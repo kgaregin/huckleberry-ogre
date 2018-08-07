@@ -30,8 +30,6 @@ import {HOC} from '../core/utils/HOC';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {DropZoneActions} from '../modules/dropZone/Actions';
-import RouteParser from 'route-parser';
-import {Location, Action as HistoryAction} from 'history';
 
 /**
  * Navigation component properties.
@@ -52,33 +50,6 @@ class NavigationComponent extends React.Component<TProps, IState> {
 
     state: IState = {
         isDrawerOpen: false,
-    };
-
-    constructor(props: TProps) {
-        super(props);
-        const {history} = this.props;
-        this.handleLocationChange(history.location, history.action);
-        history.listen((location, action) => this.handleLocationChange(location, action));
-    }
-
-    handleLocationChange = (location: Location, __: HistoryAction) => {
-        const {blogActions, dropZoneActions} = this.props;
-        const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
-        const blogPageRouteMatch = blogPageRoute.match(location.pathname);
-        let isDropZoneEnabled = false;
-
-        if (blogPageRouteMatch){
-            blogActions.requestBlogPosts().then(() => {
-                if (blogPageRouteMatch.mode === EBlogViewMode.EDIT && blogPageRouteMatch.postID) {
-                    blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
-                }
-            });
-            if (blogPageRouteMatch.mode === EBlogViewMode.EDIT || blogPageRouteMatch.mode === EBlogViewMode.CREATE) {
-                isDropZoneEnabled = true;
-            }
-        }
-
-        isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
     };
 
     handleDrawerOpen = () => {

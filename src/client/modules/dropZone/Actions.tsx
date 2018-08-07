@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Action} from 'redux';
 import {IAppState} from '../../core/reduxStore';
 import {ThunkDispatch} from 'redux-thunk';
+import {isInsideElement} from './Utils';
 
 /**
  * Action types.
@@ -21,22 +22,38 @@ export class DropZoneActions {
     /**
      * Show DropZone.
      */
-    show = () => this.dispatch({type: DROP_ZONE_SHOW});
+    show = () => this.dispatch((dispatch, getState) => {
+            const {isDropZoneActive, isDropZoneEnabled} = getState().dropZoneState;
+            !isDropZoneActive && isDropZoneEnabled && dispatch({type: DROP_ZONE_SHOW});
+        }
+    );
 
     /**
      * Hide DropZone.
      */
-    hide = () => this.dispatch({type: DROP_ZONE_HIDE});
+    hide = () => this.dispatch((dispatch, getState) => (
+            getState().dropZoneState.isDropZoneActive && dispatch({type: DROP_ZONE_HIDE})
+        )
+    );
 
     /**
      * Enable DropZone.
      */
-    enable = () => this.dispatch({type: DROP_ZONE_ENABLE});
+    enable = () => this.dispatch((dispatch, getState) => (
+            !getState().dropZoneState.isDropZoneEnabled && dispatch({type: DROP_ZONE_ENABLE})
+        )
+    );
 
     /**
      * Disable DropZone.
      */
-    disable = () => this.dispatch({type: DROP_ZONE_DISABLE});
+    disable = () => this.dispatch((dispatch, getState) => {
+            if (getState().dropZoneState.isDropZoneEnabled) {
+                dispatch({type: DROP_ZONE_DISABLE});
+            }
+            this.hide();
+        }
+    );
 
     /**
      * Drop event handler.
@@ -44,13 +61,17 @@ export class DropZoneActions {
      * @param {DragEvent<HTMLDivElement>} event Event.
      */
     handleDrop = (event: React.DragEvent<HTMLDivElement>) => this.dispatch(() => {
-        console.log(event.dataTransfer.files);
+        if (isInsideElement(event, 'div#dropZone')) {
+            console.log(event.dataTransfer.files);
+        } else {
+            this.hide();
+        }
     });
 
     /**
      * Drag enter handler.
      */
-    handleDragEnter = () => {
+    handleDragEnter = (__: React.DragEvent<HTMLDivElement>) => {
         this.show();
     };
 

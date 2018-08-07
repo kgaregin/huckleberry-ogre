@@ -19,6 +19,18 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         right: '40px',
         bottom: '40px',
     },
+    actionPanel: {
+        width: 'calc(100% - 32px)',
+        textAlign: 'left',
+        backgroundColor: theme.palette.grey[50],
+        padding: '4px 8px',
+        boxShadow: 'black 0px 0px 5px -5px',
+        borderRadius: '4px',
+        border: `1px solid ${theme.palette.grey[400]}`,
+    },
+    actionPanelIcon: {
+      marginLeft: '5px'
+    },
     postDivider: {
         width: '90%',
         margin: '16px auto',

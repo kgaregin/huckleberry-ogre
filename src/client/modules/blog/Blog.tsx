@@ -28,6 +28,8 @@ import * as classNames from 'classnames';
 import parser from 'bbcode-to-react';
 import {ThunkDispatch} from 'redux-thunk';
 import {HOC} from '../../core/utils/HOC';
+import AddAPhoto from '@material-ui/icons/AddAPhoto';
+import {DropZoneActions} from '../dropZone/Actions';
 
 /**
  * Form fields set.
@@ -78,14 +80,14 @@ class BlogComponent extends Component<TProps, IState> {
      */
     handleSubmit = () => {
         const {mode, postID} = this.props.match.params;
-        this.props.actions.submitBlogPost(+postID, mode);
+        this.props.blogActions.submitBlogPost(+postID, mode);
     };
 
     /**
      * Create post button click handler.
      */
     handleCreatePostButtonClick = () => {
-        this.props.actions.clearPostEditForm();
+        this.props.blogActions.clearPostEditForm();
         handleLocationChange('/blog/create');
     };
 
@@ -95,7 +97,7 @@ class BlogComponent extends Component<TProps, IState> {
      * @param {number} postID Identifier of post being removed.
      */
     handlePostRemove = (postID: number) => {
-        this.props.actions.removePostByID(postID);
+        this.props.blogActions.removePostByID(postID);
     };
 
     /**
@@ -104,8 +106,7 @@ class BlogComponent extends Component<TProps, IState> {
      * @param {number} postID Post identifier.
      */
     handlePostEdit = (postID: number) => {
-        const {fillPostEditForm} = this.props.actions;
-        fillPostEditForm(postID);
+        this.props.blogActions.fillPostEditForm(postID);
         handleLocationChange(`/blog/edit/${postID}`);
     };
 
@@ -126,7 +127,9 @@ class BlogComponent extends Component<TProps, IState> {
         const {
             classes,
             form: {title, message},
-            submitStatus
+            submitStatus,
+            blogActions,
+            dropZoneActions
         } = this.props;
 
         const {tabIndex} = this.state;
@@ -148,7 +151,7 @@ class BlogComponent extends Component<TProps, IState> {
                                     label="Title"
                                     className={classes.textField}
                                     value={title}
-                                    onChange={event => this.props.actions.handleFormInput('title', event.currentTarget.value)}
+                                    onChange={event => blogActions.handleFormInput('title', event.currentTarget.value)}
                                     margin="normal"
                                     fullWidth
                                     autoComplete="off"
@@ -161,11 +164,21 @@ class BlogComponent extends Component<TProps, IState> {
                                     multiline
                                     fullWidth
                                     value={message}
-                                    rows={'28'}
-                                    onChange={event => this.props.actions.handleFormInput('message', event.currentTarget.value)}
+                                    rows={'25'}
+                                    onChange={event => blogActions.handleFormInput('message', event.currentTarget.value)}
                                     margin="normal"
                                     type={'text'}
                                 />
+                                <div className={classes.actionPanel}>
+                                    <Button
+                                        variant="outlined"
+                                        component="span"
+                                        onClick={dropZoneActions.show}
+                                    >
+                                        {'Add image'}
+                                        <AddAPhoto className={classes.actionPanelIcon}/>
+                                    </Button>
+                                </div>
                             </form>}
                             {tabIndex === ETabIndex.PREVIEW &&
                             <div>
@@ -255,11 +268,12 @@ const mapStateToProps = (state: IAppState) => state.blogState;
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
-        actions: new BlogActions(dispatch)
+        blogActions: new BlogActions(dispatch),
+        dropZoneActions: new DropZoneActions(dispatch)
     };
 };
 
-type TDispatchProps = { actions: BlogActions }
+type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions }
 type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 
