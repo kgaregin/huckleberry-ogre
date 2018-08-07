@@ -29,7 +29,7 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         border: `1px solid ${theme.palette.grey[400]}`,
     },
     actionPanelIcon: {
-      marginLeft: '5px'
+        marginLeft: '5px'
     },
     postDivider: {
         width: '90%',
@@ -81,6 +81,17 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         '&.active': {
             visibility: 'visible',
             pointerEvents: 'auto'
+        }
+    },
+    progress: {
+        width: '100%',
+        textAlign: 'center',
+        transform: 'scale3d(1,0,1)',
+        transition: '.3s',
+
+        '&.active': {
+            transform: 'scale3d(1,1,1)',
+            marginBottom: '20px',
         }
     }
 } as StyleRules);

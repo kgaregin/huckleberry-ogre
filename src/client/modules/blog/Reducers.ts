@@ -4,7 +4,7 @@ import {
     GET_BLOG_POSTS,
     HANDLE_FORM_INPUT,
     FILL_POST_EDIT_FORM,
-    SET_SUBMIT_STATUS,
+    SET_REQUEST_STATUS,
 } from './Actions';
 import {IBlogStateProps} from './Blog';
 import {ERequestStatus} from '../../core/enums';
@@ -19,6 +19,7 @@ export const initBlogState: IBlogStateProps = {
         message: ''
     },
     submitStatus: ERequestStatus.NONE,
+    requestPostsStatus: ERequestStatus.NONE
 };
 
 /**
@@ -57,10 +58,11 @@ export const blogState: Reducer<IBlogStateProps> = (state: IBlogStateProps = ini
                     message
                 }
             };
-        case SET_SUBMIT_STATUS:
+        case SET_REQUEST_STATUS:
+            const {status, propertyName} = action.payload;
             return {
                 ...state,
-                submitStatus: action.payload
+                [propertyName]: status
             };
         default:
             return state;

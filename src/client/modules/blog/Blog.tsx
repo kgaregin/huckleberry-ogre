@@ -30,6 +30,7 @@ import {ThunkDispatch} from 'redux-thunk';
 import {HOC} from '../../core/utils/HOC';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import {DropZoneActions} from '../dropZone/Actions';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 /**
  * Form fields set.
@@ -48,11 +49,13 @@ interface IForm {
  * {IPost[]} posts Array of posts from server.
  * {IForm} form Form fields set.
  * {ERequestStatus} submitStatus Post submit status.
+ * {ERequestStatus} requestPostsStatus Posts request status.
  */
 export interface IBlogStateProps {
     posts: IPost[],
     form: IForm
     submitStatus: ERequestStatus;
+    requestPostsStatus: ERequestStatus;
 }
 
 /**
@@ -210,7 +213,7 @@ class BlogComponent extends Component<TProps, IState> {
 
     render() {
         const mode = this.props.match.params.mode || EBlogViewMode.READ;
-        const {classes, posts} = this.props;
+        const {classes, posts, requestPostsStatus} = this.props;
 
         if (mode === EBlogViewMode.CREATE || mode === EBlogViewMode.EDIT) {
             return this.renderPostEdit();
@@ -218,6 +221,10 @@ class BlogComponent extends Component<TProps, IState> {
 
         return (
             <div>
+                <div
+                    className={classNames(classes.progress, {['active']: requestPostsStatus === ERequestStatus.PENDING})}>
+                    <LinearProgress />
+                </div>
                 {sortBy(posts, 'id').map(post =>
                     post.message &&
                     <Paper className={classes.postPaper} key={post.id}>

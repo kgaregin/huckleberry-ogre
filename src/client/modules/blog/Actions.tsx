@@ -8,6 +8,7 @@ import {getPost} from './Utils';
 import {ThunkDispatch} from 'redux-thunk';
 import {NotificationActions} from '../notification/Actions';
 import {ENotificationVariant} from '../notification/Notification';
+import {IBlogStateProps} from "./Blog";
 
 /**
  * Action types.
@@ -16,7 +17,7 @@ export const GET_BLOG_POSTS = 'GET_BLOG_POSTS';
 export const HANDLE_FORM_INPUT = 'HANDLE_FORM_INPUT';
 export const FILL_POST_EDIT_FORM = 'FILL_POST_EDIT_FORM';
 export const CLEAR_POST_EDIT_FORM = 'CLEAR_POST_EDIT_FORM';
-export const SET_SUBMIT_STATUS = 'SET_SUBMIT_STATUS';
+export const SET_REQUEST_STATUS = 'SET_REQUEST_STATUS';
 
 /**
  * Blog actions.
@@ -55,7 +56,7 @@ export class BlogActions {
             let request: Promise<Response>;
             let notificationMessage: string;
 
-            this.setSubmitStatus(ERequestStatus.PENDING);
+            this.setRequestStatus(ERequestStatus.PENDING, 'submitStatus');
 
             switch (mode) {
                 case EBlogViewMode.EDIT:
@@ -78,7 +79,7 @@ export class BlogActions {
             return request
                 .then(
                     () => {
-                        this.setSubmitStatus(ERequestStatus.SUCCESS);
+                        this.setRequestStatus(ERequestStatus.SUCCESS, 'submitStatus');
                         this.clearPostEditForm();
                         handleLocationChange('/blog');
                         notificationActions.show({
@@ -88,7 +89,7 @@ export class BlogActions {
                     },
                     reason => {
                         notificationMessage = 'Submit failed';
-                        this.setSubmitStatus(ERequestStatus.FAIL);
+                        this.setRequestStatus(ERequestStatus.FAIL, 'submitStatus');
                         notificationActions.show({
                             message: notificationMessage,
                             variant: ENotificationVariant.ERROR
@@ -111,15 +112,27 @@ export class BlogActions {
         searchBy?: { id?: number, title?: string, message?: string },
         matchParams?: { mode?: EBlogViewMode, postID: string }
     ) => this.dispatch(
-        () => {
+        dispatch => {
+            const notificationActions = new NotificationActions(dispatch);
+            this.setRequestStatus(ERequestStatus.PENDING, 'requestPostsStatus');
+
             return get('blog', searchBy && removeEmptyFields(searchBy))
                 .then(
                     response => {
                         this.getBlogPosts(response);
+                        this.setRequestStatus(ERequestStatus.SUCCESS, 'requestPostsStatus');
                         if (matchParams && matchParams.mode === EBlogViewMode.EDIT && matchParams.postID) {
                             this.fillPostEditForm(+matchParams.postID);
                         }
                         return response;
+                    },
+                    reason => {
+                        this.setRequestStatus(ERequestStatus.FAIL, 'requestPostsStatus');
+                        notificationActions.show({
+                            message: 'Request failed',
+                            variant: ENotificationVariant.ERROR
+                        });
+                        return reason;
                     }
                 );
         }
@@ -176,10 +189,14 @@ export class BlogActions {
      * Set submit status.
      *
      * @param {ERequestStatus} status Status.
+     * @param {string} propertyName Name of property to set.
      */
-    setSubmitStatus = (status: ERequestStatus) => this.dispatch({
-        type: SET_SUBMIT_STATUS,
-        payload: status
+    setRequestStatus = (status: ERequestStatus, propertyName: keyof IBlogStateProps) => this.dispatch({
+        type: SET_REQUEST_STATUS,
+        payload: {
+            status,
+            propertyName
+        }
     });
 
 }
