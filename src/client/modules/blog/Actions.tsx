@@ -49,12 +49,17 @@ export class BlogActions {
      * @param {EBlogViewMode} mode Blog view mode.
      */
     submitBlogPost = (id?: number, mode?: EBlogViewMode) => this.dispatch(
-        (__, getState) => {
-            this.setSubmitStatus(ERequestStatus.PENDING);
+        (dispatch, getState) => {
+            const notificationActions = new NotificationActions(dispatch);
             const {title, message} = getState().blogState.form;
             let request: Promise<Response>;
+            let notificationMessage: string;
+
+            this.setSubmitStatus(ERequestStatus.PENDING);
+
             switch (mode) {
                 case EBlogViewMode.EDIT:
+                    notificationMessage = 'Post updated';
                     request = put('blog', {
                         id,
                         title,
@@ -63,25 +68,32 @@ export class BlogActions {
                     break;
                 case EBlogViewMode.CREATE:
                 default:
+                    notificationMessage = 'Post created';
                     request = post('blog', {
                         title,
                         message
                     });
             }
+
             return request
-                .then(() => {
+                .then(
+                    () => {
                         this.setSubmitStatus(ERequestStatus.SUCCESS);
                         this.clearPostEditForm();
-                        this.requestBlogPosts().then(() => {
-                            handleLocationChange('/blog');
-                        });
-                        NotificationActions.show({
-                            message: 'Post created',
+                        handleLocationChange('/blog');
+                        notificationActions.show({
+                            message: notificationMessage,
                             variant: ENotificationVariant.SUCCESS
                         });
                     },
                     reason => {
+                        notificationMessage = 'Submit failed';
                         this.setSubmitStatus(ERequestStatus.FAIL);
+                        notificationActions.show({
+                            message: notificationMessage,
+                            variant: ENotificationVariant.ERROR
+                        });
+
                         return reason;
                     }
                 );
@@ -165,7 +177,7 @@ export class BlogActions {
      *
      * @param {ERequestStatus} status Status.
      */
-    private setSubmitStatus = (status: ERequestStatus) => this.dispatch({
+    setSubmitStatus = (status: ERequestStatus) => this.dispatch({
         type: SET_SUBMIT_STATUS,
         payload: status
     });

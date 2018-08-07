@@ -1,5 +1,7 @@
-import {store} from '../../core/reduxStore';
+import {IAppState} from '../../core/reduxStore';
 import {ENotificationVariant} from './Notification';
+import {ThunkDispatch} from 'redux-thunk';
+import {Action} from 'redux';
 
 /**
  * Action types.
@@ -22,14 +24,15 @@ interface INotification {
  * Blog actions.
  */
 export class NotificationActions {
-
+    constructor(private dispatch: ThunkDispatch<IAppState, void, Action>) {
+    }
     /**
      * Show notification.
      *
      * @param {string} message Message.
      * @param {ENotificationVariant} [variant] Notification variant.
      */
-    static show = ({message, variant}: INotification) => store.dispatch({
+    show = ({message, variant}: INotification) => this.dispatch({
         type: NOTIFICATION_SHOW,
         payload: {message, variant: variant || ENotificationVariant.INFO}
     });
@@ -37,6 +40,6 @@ export class NotificationActions {
     /**
      * Close notification.
      */
-    static close = () => store.dispatch({type: NOTIFICATION_CLOSE});
+    close = () => this.dispatch({type: NOTIFICATION_CLOSE});
 
 }

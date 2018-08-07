@@ -8,6 +8,8 @@ import {NotificationActions} from './Actions';
 import {styles} from '../../styles/modules/Notification';
 import {HOC} from '../../core/utils/HOC';
 import {IAppState} from '../../core/reduxStore';
+import {ThunkDispatch} from 'redux-thunk';
+import {Action} from 'redux';
 
 /**
  * @prop {boolean} show Rendering flag.
@@ -35,7 +37,7 @@ type TStyleProps = WithStyles<typeof styles>;
 /**
  * Notification component class.
  */
-class NotificationComponent extends React.Component<INotificationStateProps & TStyleProps> {
+class NotificationComponent extends React.Component<INotificationStateProps & TStyleProps & TDispatchProps> {
 
     /**
      * Message renderer.
@@ -59,7 +61,7 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
     };
 
     render() {
-        const {show, classes, variant} = this.props;
+        const {show, classes, variant, actions} = this.props;
 
         return (
             <Snackbar
@@ -67,7 +69,7 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
                     vertical: 'top',
                     horizontal: 'center',
                 }}
-                onClose={NotificationActions.close}
+                onClose={actions.close}
                 open={show}
             >
                 <SnackbarContent
@@ -81,11 +83,19 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
 
 const mapStateToProps = (state: IAppState) => state.notificationState;
 
-export const Notification = HOC<INotificationStateProps, {}, TStyleProps, {}>(
+const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
+    return {
+        actions: new NotificationActions(dispatch)
+    };
+};
+
+type TDispatchProps = { actions: NotificationActions };
+
+export const Notification = HOC<INotificationStateProps, TDispatchProps, TStyleProps, {}>(
     NotificationComponent,
     {
         mapStateToProps,
-        mapDispatchToProps: null,
+        mapDispatchToProps,
         styles
     }
 );

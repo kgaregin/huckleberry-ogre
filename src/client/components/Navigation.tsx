@@ -25,10 +25,13 @@ import {ErrorBoundary} from './ErrorBoundary';
 import {handleLocationChange, IAppState} from '../core/reduxStore';
 import Samurai_Jack from '../assets/Samurai_Jack.png';
 import {Notification} from '../modules/notification/Notification';
-import {BlogActions} from "../modules/blog/Actions";
-import {HOC} from "../core/utils/HOC";
+import {BlogActions} from '../modules/blog/Actions';
+import {HOC} from '../core/utils/HOC';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
+import {DropZoneActions} from '../modules/dropZone/Actions';
+import RouteParser from 'route-parser';
+import {Location, Action as HistoryAction} from 'history';
 
 /**
  * Navigation component properties.
@@ -47,30 +50,51 @@ interface IState {
  */
 class NavigationComponent extends React.Component<TProps, IState> {
 
-    constructor(props: TProps){
-        super(props);
-        const {blogActions} = this.props;
-        blogActions.requestBlogPosts();
-    }
-
     state: IState = {
         isDrawerOpen: false,
     };
 
-    private handleDrawerOpen = () => {
+    constructor(props: TProps) {
+        super(props);
+        const {history} = this.props;
+        this.handleLocationChange(history.location, history.action);
+        history.listen((location, action) => this.handleLocationChange(location, action));
+    }
+
+    handleLocationChange = (location: Location, __: HistoryAction) => {
+        const {blogActions, dropZoneActions} = this.props;
+        const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
+        const blogPageRouteMatch = blogPageRoute.match(location.pathname);
+        let isDropZoneEnabled = false;
+
+        if (blogPageRouteMatch){
+            blogActions.requestBlogPosts().then(() => {
+                if (blogPageRouteMatch.mode === EBlogViewMode.EDIT && blogPageRouteMatch.postID) {
+                    blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
+                }
+            });
+            if (blogPageRouteMatch.mode === EBlogViewMode.EDIT || blogPageRouteMatch.mode === EBlogViewMode.CREATE) {
+                isDropZoneEnabled = true;
+            }
+        }
+
+        isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
+    };
+
+    handleDrawerOpen = () => {
         this.setState({isDrawerOpen: true});
     };
 
-    private handleDrawerClose = () => {
+    handleDrawerClose = () => {
         this.setState({isDrawerOpen: false});
     };
 
-    private handleListItemClick = (to: string = '/') => {
+    handleListItemClick = (to: string = '/') => {
         this.handleDrawerClose();
         handleLocationChange(to);
     };
 
-    private getNavigationList = () => {
+    getNavigationList = () => {
         const {classes} = this.props;
 
         return (
@@ -144,12 +168,12 @@ class NavigationComponent extends React.Component<TProps, IState> {
                             <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
                                 <ErrorBoundary>
                                     <Switch>
-                                        <Route exact path="/" render={() => 
+                                        <Route exact path="/" render={() =>
                                             <div>
                                                 <h1>Main page under construction</h1>
                                                 <img src="http://localhost:3001/rest/blog/image" alt=""/>
                                             </div>
-                                            
+
                                         }/>
                                         <Route path="/blog/:mode?/:postID?" component={Blog}/>
                                         <Route render={() => (
@@ -173,19 +197,20 @@ class NavigationComponent extends React.Component<TProps, IState> {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
-        blogActions: new BlogActions(dispatch)
+        blogActions: new BlogActions(dispatch),
+        dropZoneActions: new DropZoneActions(dispatch)
     };
 };
 
-type TDispatchProps = { blogActions: BlogActions }
+type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions }
 type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 
 export const Navigation = HOC<{}, TDispatchProps, TStyleProps, TRouteProps>(
     NavigationComponent,
     {
-    mapStateToProps: null,
-    mapDispatchToProps,
-    styles,
-    isWithRouter: true
-});
+        mapStateToProps: null,
+        mapDispatchToProps,
+        styles,
+        isWithRouter: true
+    });

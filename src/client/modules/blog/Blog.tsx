@@ -76,7 +76,7 @@ class BlogComponent extends Component<TProps, IState> {
     /**
      * Submit button handler.
      */
-    private handleSubmit = () => {
+    handleSubmit = () => {
         const {mode, postID} = this.props.match.params;
         this.props.actions.submitBlogPost(+postID, mode);
     };
@@ -84,7 +84,7 @@ class BlogComponent extends Component<TProps, IState> {
     /**
      * Create post button click handler.
      */
-    private handleCreatePostButtonClick = () => {
+    handleCreatePostButtonClick = () => {
         this.props.actions.clearPostEditForm();
         handleLocationChange('/blog/create');
     };
@@ -94,7 +94,7 @@ class BlogComponent extends Component<TProps, IState> {
      *
      * @param {number} postID Identifier of post being removed.
      */
-    private handlePostRemove = (postID: number) => {
+    handlePostRemove = (postID: number) => {
         this.props.actions.removePostByID(postID);
     };
 
@@ -103,7 +103,7 @@ class BlogComponent extends Component<TProps, IState> {
      *
      * @param {number} postID Post identifier.
      */
-    private handlePostEdit = (postID: number) => {
+    handlePostEdit = (postID: number) => {
         const {fillPostEditForm} = this.props.actions;
         fillPostEditForm(postID);
         handleLocationChange(`/blog/edit/${postID}`);
@@ -115,7 +115,7 @@ class BlogComponent extends Component<TProps, IState> {
      * @param {React.ChangeEvent<{}>} __ Event.
      * @param {number} tabIndex New tab index.
      */
-    private handleTabChange = (__: React.ChangeEvent<{}>, tabIndex: number) => {
+    handleTabChange = (__: React.ChangeEvent<{}>, tabIndex: number) => {
         this.setState({tabIndex});
     };
 

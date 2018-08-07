@@ -4,13 +4,9 @@ import thunkMiddleware, {ThunkDispatch} from 'redux-thunk';
 import {createHashHistory, History} from 'history';
 import {connectRouter, routerMiddleware, push, RouterState} from 'connected-react-router';
 import {IBlogStateProps} from '../modules/blog/Blog';
-import Route from 'route-parser';
-import {EBlogViewMode} from '../modules/blog/Enums';
-import {BlogActions} from '../modules/blog/Actions';
 import {INotificationStateProps} from '../modules/notification/Notification';
 import {notificationState} from '../modules/notification/Reducers';
 import {dropZoneState} from '../modules/dropZone/Reducers';
-import {DropZoneActions} from '../modules/dropZone/Actions';
 import {IDropZoneStateProps} from '../modules/dropZone/DropZone';
 
 /**
@@ -68,49 +64,8 @@ export const store = createStore(
 /**
  * Handle redirect on new location for react-router.
  *
- * @param {string} newLocation Location relative path.
+ * @param {string} newLocation Location relative path (hash part).
  */
 export const handleLocationChange = (newLocation: string) => {
-    // const blogActions = new BlogActions(store.dispatch);
-    //
-    // if (newLocation === '/blog') {
-    //     blogActions.requestBlogPosts().then(() => {
-    //         store.dispatch(push(newLocation));
-    //         return;
-    //     })
-    // }
     store.dispatch(push(newLocation));
 };
-
-/**
- * History change listener.
- */
-history.listen(location => {
-    location;
-    const blogPageRoute = new Route('/blog/(:mode)/(:postID)');
-    const blogPageRouteMatch = blogPageRoute.match(location.pathname);
-    const blogActions = new BlogActions(store.dispatch);
-    const dropZoneActions = new DropZoneActions(store.dispatch);
-    const enabledPaths = [`/blog/${EBlogViewMode.CREATE}`, `/blog/${EBlogViewMode.EDIT}`];
-    const isDropZoneEnabled = enabledPaths.some(path => location.pathname.indexOf(path) !== -1);
-    blogPageRouteMatch;
-    blogActions;
-    dropZoneActions;
-    isDropZoneEnabled;
-    isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
-    //
-    // if (location.pathname === '/blog') {
-    //     blogActions.requestBlogPosts();
-    // }
-    // if (blogPageRouteMatch &&
-    //     blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
-    //     blogPageRouteMatch.postID !== undefined) {
-    //     blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
-    // }
-});
-
-
-// history.listen(event => {
-//
-//     this.setState({isDropZoneEnabled: });
-// });

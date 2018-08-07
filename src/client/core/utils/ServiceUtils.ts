@@ -44,7 +44,10 @@ class ServiceUtils {
             case EResponseType.JSON:
                 result = result.then(
                     response => response.json(),
-                    reason => console.log(reason)
+                    reason => {
+                        console.log(reason);
+                        return reason;
+                    }
                 );
         }
         return result;
