@@ -23,7 +23,7 @@ interface IProps extends TStyleProps, TDispatchProps, TRouteProps{
 }
 
 /**
- * First render layer component.
+ * First layer component.
  */
 class GlobalLayoutComponent extends React.Component<IProps> {
 

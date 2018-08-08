@@ -17,5 +17,5 @@ export const preventDefaultDragNDropEvents = () => {
  * @param {string} selector Element selector.
  */
 export const isInsideElement = (event: React.MouseEvent<any>, selector: string): boolean => (
-    !!(event.target instanceof HTMLDivElement && event.target.closest(selector))
+    !!(event.target instanceof Element && event.target.closest(selector))
 );

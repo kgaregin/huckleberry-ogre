@@ -60,8 +60,8 @@ export class DropZoneActions {
      *
      * @param {DragEvent<HTMLDivElement>} event Event.
      */
-    handleDrop = (event: React.DragEvent<HTMLDivElement>) => this.dispatch(() => {
-        if (isInsideElement(event, 'div#dropZone')) {
+    handleDrop = (event: React.DragEvent<Element>) => this.dispatch(() => {
+        if (isInsideElement(event, '#dropZone')) {
             console.log(event.dataTransfer.files);
         } else {
             this.hide();
