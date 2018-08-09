@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 import {DB_CONNECTION_OPTIONS} from './config';
 import {PostModel, FileModel} from './models'
 

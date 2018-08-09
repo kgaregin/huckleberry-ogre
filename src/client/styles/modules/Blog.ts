@@ -2,14 +2,8 @@ import {StyleRulesCallback, Theme, createStyles} from '@material-ui/core';
 import {StyleRules} from '@material-ui/core/styles';
 
 export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
-    },
-    textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+    form: {
+        padding: `0 ${theme.spacing.unit}`
     },
     button: {
         margin: theme.spacing.unit,
@@ -20,13 +14,21 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         bottom: '40px',
     },
     actionPanel: {
-        width: 'calc(100% - 32px)',
+        width: '100%',
         textAlign: 'left',
-        backgroundColor: theme.palette.grey[50],
-        padding: '4px 8px',
-        boxShadow: 'black 0px 0px 5px -5px',
-        borderRadius: '4px',
-        border: `1px solid ${theme.palette.grey[400]}`,
+        marginTop: '16px',
+
+        '&:hover hr': {
+            borderStyle: 'solid'
+        }
+    },
+    actionPanelButton: {
+        '&:hover':{
+            filter: 'drop-shadow(3px 3px 2px rgb(1, 1, 1, 0.3))',
+            fontWeight: 600,
+            backgroundColor: 'initial',
+            textDecoration: 'initial',
+        }
     },
     actionPanelIcon: {
         marginLeft: '5px'

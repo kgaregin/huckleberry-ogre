@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {Component} from 'react';
 import {EBlogViewMode, ETabIndex} from './Enums';
 import {RouteComponentProps} from 'react-router-dom';
@@ -24,7 +24,7 @@ import {handleLocationChange, IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import parser from 'bbcode-to-react';
 import {ThunkDispatch} from 'redux-thunk';
 import {HOC} from '../../core/utils/HOC';
@@ -147,7 +147,7 @@ class BlogComponent extends Component<TProps, IState> {
                     <Grid container>
                         <Grid item xs={12}>
                             {tabIndex === ETabIndex.EDIT &&
-                            <form className={classes.container} noValidate>
+                            <form className={classes.form} noValidate>
                                 <TextField
                                     placeholder="Got something new?"
                                     id="title"
@@ -159,11 +159,24 @@ class BlogComponent extends Component<TProps, IState> {
                                     fullWidth
                                     autoComplete="off"
                                 />
+                                <div className={classes.actionPanel}>
+                                    <Button
+                                        variant="text"
+                                        component="span"
+                                        onClick={dropZoneActions.show}
+                                        size='small'
+                                        className={classes.actionPanelButton}
+                                    >
+                                        {'Add image'}
+                                        <AddAPhoto className={classes.actionPanelIcon}/>
+                                    </Button>
+                                    <hr className='margin-top-0 margin-bottom-2'/>
+                                </div>
                                 <TextField
                                     placeholder="Go on and share it with friends!"
                                     id="message"
                                     label="Message"
-                                    className={classes.textField}
+                                    className='margin-top-0'
                                     multiline
                                     fullWidth
                                     value={message}
@@ -172,16 +185,6 @@ class BlogComponent extends Component<TProps, IState> {
                                     margin="normal"
                                     type={'text'}
                                 />
-                                <div className={classes.actionPanel}>
-                                    <Button
-                                        variant="outlined"
-                                        component="span"
-                                        onClick={dropZoneActions.show}
-                                    >
-                                        {'Add image'}
-                                        <AddAPhoto className={classes.actionPanelIcon}/>
-                                    </Button>
-                                </div>
                             </form>}
                             {tabIndex === ETabIndex.PREVIEW &&
                             <div>

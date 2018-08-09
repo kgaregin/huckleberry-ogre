@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import {Action} from 'redux';
 import {IAppState} from '../../core/reduxStore';
 import {ThunkDispatch} from 'redux-thunk';
-import {isInsideElement} from './Utils';
+import forEach from 'lodash/forEach';
+import {post} from '../../core/utils/ServiceUtils';
 
 /**
  * Action types.
@@ -55,17 +56,12 @@ export class DropZoneActions {
         }
     );
 
-    /**
-     * Drop event handler.
-     *
-     * @param {DragEvent<HTMLDivElement>} event Event.
-     */
-    handleDrop = (event: React.DragEvent<Element>) => this.dispatch(() => {
-        if (isInsideElement(event, '#dropZone')) {
-            console.log(event.dataTransfer.files);
-        } else {
-            this.hide();
-        }
+    uploadFiles = (files: FileList) => this.dispatch(() => {
+        forEach(files, file => {
+            const formData = new FormData();
+            formData.append('file', file, file.name);
+            post('file/save', formData, {noWrap: true})
+        })
     });
 
     /**

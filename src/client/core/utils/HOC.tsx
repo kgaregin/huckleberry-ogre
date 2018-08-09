@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {MapStateToPropsParam, MapDispatchToPropsParam} from 'react-redux';
 import {IAppState} from '../reduxStore';
 import {StyleRulesCallback, StyleRules, withStyles} from '@material-ui/core/styles';

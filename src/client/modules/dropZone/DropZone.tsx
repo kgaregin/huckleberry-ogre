@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
     WithStyles,
     Modal,
@@ -22,7 +22,7 @@ import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {isInsideElement} from './Utils';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 /**
  * DropZone state.
@@ -79,9 +79,17 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
         this.setState({tabIndex});
     };
 
-    handleKeyPress = (event: React.KeyboardEvent) => {
+    // ToDo: jsDocs!
+    handleUrlKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
+            // ToDo: add support for urls
             console.log('process url');
+        }
+    };
+
+    handleModalKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            this.props.actions.hide();
         }
     };
 
@@ -105,11 +113,18 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
 
     handleDrop = (event: React.DragEvent<Element>) => {
         this.setState({dragPosition: EDragPosition.OUTSIDE});
-        this.props.actions.handleDrop(event);
+        if (isInsideElement(event, '#dropZone')) {
+            this.handleUploadFiles(event.dataTransfer.files);
+        }
     };
 
     handleFilesInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.files);
+        this.handleUploadFiles(event.target.files);
+    };
+
+    handleUploadFiles = (files: FileList) => {
+        this.props.actions.uploadFiles(files);
+        this.setState({tabIndex: EModalTabIndex.GALLERY});
     };
 
     render() {
@@ -125,6 +140,7 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                         open={isDropZoneActive}
                         onClose={actions.hide}
                         onDrop={this.handleDrop}
+                        onKeyPress={this.handleModalKeyPress}
                     >
                         <div className={classes.paper}>
                             <AppBar position="absolute" color="default" className={classes.modalAppBar}>
@@ -145,11 +161,14 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                         <TextField
                                             id='urlInput'
                                             InputProps={{
-                                                startAdornment: <InputAdornment
-                                                    position="start">{'Enter URL:'}</InputAdornment>,
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        {'Enter URL:'}
+                                                    </InputAdornment>
+                                                ),
                                             }}
                                             fullWidth
-                                            onKeyPress={this.handleKeyPress}
+                                            onKeyPress={this.handleUrlKeyPress}
                                             className='margin-bottom-2'
                                         />
                                         <div
@@ -167,13 +186,12 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                                     size='small'
                                                     color="default"
                                                     className='margin-left-1'
-                                                    onClick={()=> this.filesInput.click()}
+                                                    onClick={() => this.filesInput.click()}
                                                 >
                                                     {'upload'}
                                                     <CloudUploadIcon className='margin-left-1'/>
                                                 </Button>
                                                 <input
-                                                    accept="image/*"
                                                     className={classes.filesInput}
                                                     id="filesInput"
                                                     multiple
@@ -189,7 +207,7 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                     <Card className={classes.card}>
                                         <CardMedia
                                             className={classes.cardMedia}
-                                            image="http://localhost:3001/rest/blog/image"
+                                            image="http://localhost:3001/rest/file/Samurai_Jack.png"
                                             title="Samurai Jack"
                                         />
                                         <CardContent>

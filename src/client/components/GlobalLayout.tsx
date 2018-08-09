@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {MuiThemeProvider, Grid, Paper, WithStyles} from '@material-ui/core';
 import {theme} from '../Theme';
 import {styles} from '../styles/components/GlobalLayout';

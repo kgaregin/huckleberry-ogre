@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {SnackbarContent, Snackbar, WithStyles} from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';

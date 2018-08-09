@@ -26,6 +26,7 @@ server.register(inert).then(() => {
     forEach(routes, (route: TRoute) => {
         route(server);
     });
+
     start();
     }, err => console.log(err)
 );

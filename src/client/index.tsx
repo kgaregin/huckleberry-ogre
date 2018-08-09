@@ -1,5 +1,5 @@
 import 'typeface-roboto';
-import * as React from 'react';
+import React from 'react';
 import {render} from 'react-dom';
 import {GlobalLayout} from './components/GlobalLayout';
 import {Navigation} from './components/Navigation';

@@ -15,6 +15,30 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
                 display: 'none'
             }
         },
+        '.margin-top-0': {
+            marginTop: 0
+        },
+        '.margin-right-0': {
+            marginRight: 0
+        },
+        '.margin-bottom-0': {
+            marginBottom: 0
+        },
+        '.margin-left-0': {
+            marginLeft: 0
+        },
+        '.margin-top-1': {
+            marginTop: theme.spacing.unit
+        },
+        '.margin-right-1': {
+            marginRight: theme.spacing.unit
+        },
+        '.margin-bottom-1': {
+            marginBottom: theme.spacing.unit
+        },
+        '.margin-left-1': {
+            marginLeft: theme.spacing.unit
+        },
         '.margin-top-2': {
             marginTop: theme.spacing.unit * 2
         },
@@ -27,9 +51,6 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         '.margin-left-2': {
             marginLeft: theme.spacing.unit * 2
         },
-        '.margin-left-1': {
-            marginLeft: theme.spacing.unit
-        }
     },
     mainPaper: {
         width: '100%',

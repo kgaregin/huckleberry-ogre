@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
     AppBar,
     IconButton,
@@ -17,7 +17,7 @@ import BorderColorIcon from '@material-ui/icons/BorderColor';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import {RouteComponentProps, Route, Switch, Link} from 'react-router-dom';
 import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
@@ -142,7 +142,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
                                         <Route exact path="/" render={() =>
                                             <div>
                                                 <h1>Main page under construction</h1>
-                                                <img src="http://localhost:3001/rest/blog/image" alt=""/>
+                                                <img src="http://localhost:3001/rest/files/Samurai_Jack.png" alt=""/>
                                             </div>
 
                                         }/>

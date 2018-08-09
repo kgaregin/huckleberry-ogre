@@ -1,4 +1,5 @@
 import {HomeRoute} from './home';
 import {BlogRoute} from './blog';
+import {FilesRoute} from './files';
 
-export {HomeRoute, BlogRoute};
+export {HomeRoute, BlogRoute, FilesRoute};

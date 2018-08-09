@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {ErrorInfo} from 'react';
 import {Ghost} from './Ghost';
 import {Paper, Typography, Divider} from '@material-ui/core';

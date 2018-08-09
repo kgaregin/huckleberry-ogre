@@ -8,12 +8,25 @@ const SERVER_ADDRESS = IS_DEVELOPMENT ? `http://localhost:${devServerPortNumber}
 const REST = 'rest/';
 
 /**
+ * RequestInit parameters of fetch second argument.
+ *
+ * @prop {any} headers Request headers.
+ */
+interface IRequestSettings {
+    headers?: any;
+}
+
+/**
  * Options of request methods
  *
- * @prop {EResponseType} responseType If set, corresponding handler will be applied to response.
+ * @prop {EResponseType} [responseType] If set, corresponding handler will be applied to response.
+ * @prop {boolean} [noWrap] If true, request body object won't be wrapped with JSON.stringify.
+ * @prop {IRequestSettings} [requestSettings] RequestInit parameters of fetch second argument.
  */
 interface IRequestMethodOptions {
     responseType?: EResponseType;
+    noWrap?: boolean;
+    requestSettings?: IRequestSettings;
 }
 
 /**
@@ -35,11 +48,13 @@ class ServiceUtils {
         options?: IRequestMethodOptions
     ): Promise<Response> => {
         const defaultOptions: IRequestMethodOptions = {
-            responseType: EResponseType.JSON
+            responseType: EResponseType.JSON,
+            noWrap: false,
+            requestSettings: {}
         };
-        const {responseType} = {...defaultOptions, ...options} as IRequestMethodOptions;
+        const {responseType, noWrap, requestSettings} = {...defaultOptions, ...options} as IRequestMethodOptions;
         const REQUEST_URL = `${SERVER_ADDRESS}${REST}${requestURL}${method === 'get' && !isEmpty(body) ? `?payload=${body}` : ''}`;
-        let result = fetch(REQUEST_URL, method === 'get' ? {method} : {method, body: JSON.stringify(body)});
+        let result = fetch(REQUEST_URL, method === 'get' ? {method} : {method, body: noWrap ? body : JSON.stringify(body), ...requestSettings});
         switch (responseType) {
             case EResponseType.JSON:
                 result = result.then(

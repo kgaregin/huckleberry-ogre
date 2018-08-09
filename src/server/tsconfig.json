@@ -1,20 +1,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "pretty": true,
-    "noEmit": true,
-    "strict": true,
+    "module": "commonjs",
     "experimentalDecorators": true,
     "target": "ES5",
-    "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowSyntheticDefaultImports": true,
-    "typeRoots": ["../../node_modules/@types"]
+    "typeRoots": [
+      "../../node_modules/@types"
+    ]
   },
-  "include": ["../server"],
-  "exclude": ["../client"]
+  "include": [
+    "../server"
+  ],
+  "exclude": [
+    "../client"
+  ]
 }
