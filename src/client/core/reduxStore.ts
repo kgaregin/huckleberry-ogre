@@ -1,7 +1,7 @@
 import {combineReducers, createStore, applyMiddleware, compose, Action} from 'redux';
 import {blogState} from '../modules/blog/Reducers';
 import thunkMiddleware, {ThunkDispatch} from 'redux-thunk';
-import {createHashHistory, History} from 'history';
+import {createBrowserHistory, History} from 'history';
 import {connectRouter, routerMiddleware, push, RouterState} from 'connected-react-router';
 import {IBlogStateProps} from '../modules/blog/Blog';
 import {INotificationStateProps} from '../modules/notification/Notification';
@@ -33,7 +33,7 @@ const combinedReducers = combineReducers<ICombinedReducers>(
 const composeEnhancers = (window as Window & { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: Function }).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 /** Hash history. */
-export const history: History = createHashHistory();
+export const history: History = createBrowserHistory();
 
 /** Router middleware for store. */
 const reactRouterReduxMiddleware = routerMiddleware(history);

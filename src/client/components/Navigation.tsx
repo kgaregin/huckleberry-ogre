@@ -142,7 +142,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
                                         <Route exact path="/" render={() =>
                                             <div>
                                                 <h1>Main page under construction</h1>
-                                                <img src="http://localhost:3001/rest/files/Samurai_Jack.png" alt=""/>
+                                                <img src="http://localhost:3001/rest/file/Samurai_Jack.png" alt=""/>
                                             </div>
 
                                         }/>

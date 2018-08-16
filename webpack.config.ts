@@ -1,22 +1,19 @@
-const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+import * as webpack from 'webpack';
+import * as path from 'path';
+import * as HtmlWebpackPlugin from 'html-webpack-plugin';
+import * as CleanWebpackPlugin from 'clean-webpack-plugin';
+import * as CopyWebpackPlugin from 'copy-webpack-plugin';
 
-module.exports = {
+const webpackConfiguration: webpack.Configuration = {
+    mode: 'development',
     entry: './src/client/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'src/dist'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     devtool: 'source-map',
-    devServer: {
-        contentBase: './',
-        port: 8080,
-        hot: true
-    },
     resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json']
     },
     module: {
@@ -51,15 +48,21 @@ module.exports = {
         }]
     },
     plugins: [
-        new CleanWebpackPlugin(['src/dist']),
+        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             title: 'Huckleberry Ogre welcomes you, stranger!',
             template: 'index_template.ejs'
         }),
         new webpack.HotModuleReplacementPlugin(),
+        new CopyWebpackPlugin([
+            {from: 'node_modules/react/umd/react.development.js', to: 'react.development.js'},
+            {from: 'node_modules/react-dom/umd/react-dom.development.js', to: 'react-dom.development.js'},
+        ])
     ],
     externals: {
         'react': 'React',
         'react-dom': 'ReactDOM'
     }
 };
+
+module.exports = webpackConfiguration;

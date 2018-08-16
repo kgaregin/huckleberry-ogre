@@ -15,8 +15,6 @@ export const server = new Hapi.Server({
     }
 });
 
-// server.path(path.join(__dirname, '../dist'));
-
 const start = async () => {
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
