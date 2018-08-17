@@ -20,8 +20,8 @@ const routes: ServerRoute[] = [
             const fileName = pathVariable && pathVariable.substring(pathVariable.lastIndexOf('/') + 1);
             let response: symbol | ResponseObject = handler.continue;
 
-            if (request.path.indexOf('rest') === -1) {
-                if (isFileExist(fileName)) {
+            if (request.path.indexOf('/rest') !== 0) {
+                if (fileName && isFileExist(fileName)) {
                     response = handler.file(`./${fileName}`);
                 } else {
                     response = handler.file('./index.html');

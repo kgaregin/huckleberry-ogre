@@ -32,15 +32,31 @@ export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequeli
 );
 
 /**
+ * Fields of file model.
+ *
+ * @prop {number} id Unique identifier.
+ * @prop {string} name Name.
+ * @prop {string} uuid Uuid.
+ * @prop {string} hash Hash.
+ */
+export interface IFile {
+    id: number;
+    name: string;
+    uuid: string;
+    hash: string;
+}
+
+/**
  * File model definition.
- * ToDo: add hash field to search for duplicates.
  *
  * @param {Sequelize} sequelize Sequelize instance.
  * @param {DataTypes} dataTypes Possible data types object.
  */
-export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
+export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<IFile, Partial<IFile>>(
     'file',
     {
-        name: {type: dataTypes.STRING, validate: {notEmpty: true}}
+        name: {type: dataTypes.STRING, validate: {notEmpty: true}},
+        uuid: {type: dataTypes.STRING, validate: {notEmpty: true}},
+        hash: {type: dataTypes.STRING, validate: {notEmpty: true}}
     }
 );

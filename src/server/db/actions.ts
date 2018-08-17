@@ -1,6 +1,7 @@
 import {isString} from 'lodash';
 import {Files, Posts} from './db';
 import {RequestQuery} from 'hapi';
+import {IFile} from './models';
 
 export class PostActions {
 
@@ -18,21 +19,18 @@ export class PostActions {
         return Posts.destroy({where: {id: `${id}`}});
     }
 
-    public static updatePost({id, title, message}: {id: number, title: string, message: string}) {
+    public static updatePost({id, title, message}: { id: number, title: string, message: string }) {
         return Posts.update({id, title, message}, {where: {id}});
     }
 }
 
 export class FileActions {
 
-    public static getAllFiles(queryParams: RequestQuery | string) {
-        const findFileOptions = !isString(queryParams) && queryParams.payload ? JSON.parse(`${queryParams.payload}`) : {};
-        return Files.findAll({where: findFileOptions});
-    }
+    public static getFile = (findFileOptions: Partial<IFile>) => Files.findOne({where: findFileOptions});
 
-    public static newFile(fileName: RequestQuery | string) {
+    public static newFile(uuid: string, fileName: RequestQuery | string, fileHash: string) {
         const name = `${fileName}`;
-        return Files.create({name});
+        return Files.create({uuid, name, hash: fileHash});
     }
 
     public static deleteFile(id: RequestQuery | string) {
