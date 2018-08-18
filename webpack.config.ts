@@ -5,6 +5,9 @@ import * as CleanWebpackPlugin from 'clean-webpack-plugin';
 import * as CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const webpackConfiguration: webpack.Configuration = {
+    stats:{
+        colors: true
+    },
     mode: 'development',
     entry: './src/client/index.tsx',
     output: {

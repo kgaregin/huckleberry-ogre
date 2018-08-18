@@ -15,6 +15,11 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
                 display: 'none'
             }
         },
+        '.text-ellipsis': {
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap'
+        },
         '.margin-top-0': {
             marginTop: 0
         },

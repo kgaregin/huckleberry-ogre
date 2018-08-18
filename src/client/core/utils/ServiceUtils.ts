@@ -41,12 +41,12 @@ class ServiceUtils {
      * @param {any} [body] Request body.
      * @param {IRequestMethodOptions} [options] Additional options.
      */
-    private static genericRequest = (
+    private static genericRequest = <TResponse>(
         method: 'get' | 'post' | 'put' | 'delete',
         requestURL: string,
         body?: any,
         options?: IRequestMethodOptions
-    ): Promise<Response> => {
+    ): Promise<TResponse> => {
         const defaultOptions: IRequestMethodOptions = {
             responseType: EResponseType.JSON,
             noWrap: false,
@@ -54,10 +54,14 @@ class ServiceUtils {
         };
         const {responseType, noWrap, requestSettings} = {...defaultOptions, ...options} as IRequestMethodOptions;
         const REQUEST_URL = `${SERVER_ADDRESS}${REST}${requestURL}${method === 'get' && !isEmpty(body) ? `?payload=${body}` : ''}`;
-        let result = fetch(REQUEST_URL, method === 'get' ? {method} : {method, body: noWrap ? body : JSON.stringify(body), ...requestSettings});
+        let result: Promise<any> = fetch(REQUEST_URL, method === 'get' ? {method} : {
+            method,
+            body: noWrap ? body : JSON.stringify(body), ...requestSettings
+        });
         switch (responseType) {
+            default:
             case EResponseType.JSON:
-                result = result.then(
+                result = result.then<TResponse>(
                     response => response.json(),
                     reason => {
                         console.log(reason);
@@ -71,10 +75,10 @@ class ServiceUtils {
     /**
      * Main request methods.
      */
-    public static get = (REST_URL: string, body?: Object, options?: IRequestMethodOptions) => ServiceUtils.genericRequest('get', REST_URL, body, options);
-    public static post = (REST_URL: string, body?: Object, options?: IRequestMethodOptions) => ServiceUtils.genericRequest('post', REST_URL, body, options);
-    public static put = (REST_URL: string, body?: Object, options?: IRequestMethodOptions) => ServiceUtils.genericRequest('put', REST_URL, body, options);
-    public static remove = (REST_URL: string, body?: Object, options?: IRequestMethodOptions) => ServiceUtils.genericRequest('delete', REST_URL, body, options);
+    public static get = <TResponse>(REST_URL: string, body?: any, options?: IRequestMethodOptions) => ServiceUtils.genericRequest<TResponse>('get', REST_URL, body, options);
+    public static post = <TResponse>(REST_URL: string, body?: any, options?: IRequestMethodOptions) => ServiceUtils.genericRequest<TResponse>('post', REST_URL, body, options);
+    public static put = <TResponse>(REST_URL: string, body?: any, options?: IRequestMethodOptions) => ServiceUtils.genericRequest<TResponse>('put', REST_URL, body, options);
+    public static remove = <TResponse>(REST_URL: string, body?: any, options?: IRequestMethodOptions) => ServiceUtils.genericRequest<TResponse>('delete', REST_URL, body, options);
 
 }
 

@@ -17,15 +17,16 @@ export const server = new Hapi.Server({
 
 const start = async () => {
     await server.start();
-    console.log(`Server running at: ${server.info.uri}`);
+    const cyanString = '\x1b[36m%s\x1b[0m';
+    console.log(cyanString, `\nServer running at: ${server.info.uri}\n`);
 };
 
 server.register(inert).then(() => {
-    forEach(routes, (route: TRoute) => {
-        route(server);
-    });
+        forEach(routes, (route: TRoute) => {
+            route(server);
+        });
 
-    start();
+        start();
     }, err => console.log(err)
 );
 

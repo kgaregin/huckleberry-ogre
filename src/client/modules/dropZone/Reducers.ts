@@ -4,8 +4,10 @@ import {
     DROP_ZONE_HIDE,
     DROP_ZONE_ENABLE,
     DROP_ZONE_DISABLE,
+    DROP_ZONE_MODAL_TAB_CHANGE,
+    DROP_ZONE_GET_ALL_FILES,
 } from './Actions';
-import {IDropZoneStateProps} from './DropZone';
+import {EModalTabIndex, IDropZoneStateProps} from './DropZone';
 
 /**
  * Initial DropZone state.
@@ -13,6 +15,8 @@ import {IDropZoneStateProps} from './DropZone';
 export const initDropZoneState: IDropZoneStateProps = {
     isDropZoneActive: false,
     isDropZoneEnabled: false,
+    tabIndex: EModalTabIndex.UPLOAD,
+    files: []
 };
 
 /**
@@ -39,6 +43,16 @@ export const dropZoneState: Reducer<IDropZoneStateProps> = (state: IDropZoneStat
             return {
                 ...state,
                 isDropZoneEnabled: false
+            };
+        case DROP_ZONE_MODAL_TAB_CHANGE:
+            return {
+                ...state,
+                tabIndex: action.payload
+            };
+        case DROP_ZONE_GET_ALL_FILES:
+            return {
+                ...state,
+                files: action.payload
             };
         default:
             return state;

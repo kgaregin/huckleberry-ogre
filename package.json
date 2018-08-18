@@ -1,6 +1,6 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
@@ -54,6 +54,7 @@
     "route-parser": "0.0.5",
     "sequelize": "4.38.0",
     "sqlite3": "4.0.2",
+    "ts-node": "7.0.1",
     "typeface-roboto": "0.0.35"
   },
   "devDependencies": {

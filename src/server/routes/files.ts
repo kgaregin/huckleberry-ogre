@@ -1,4 +1,4 @@
-import {Server, ServerRoute} from 'hapi';
+import {Server, ServerRoute, ResponseObject} from 'hapi';
 import {FileActions} from '../db/actions';
 import * as path from 'path';
 import {isEmpty} from 'lodash';
@@ -10,6 +10,7 @@ const rename = promisify(fsRename);
 const readFile = promisify(fsReadFile);
 
 const filesDirectory = path.join(__dirname, '../files');
+const noop = () => {};
 
 const routes: ServerRoute[] = [
     {
@@ -30,6 +31,20 @@ const routes: ServerRoute[] = [
                     } else {
                         return handler.continue;
                     }
+                });
+        }
+    },
+    {
+        method: 'GET',
+        path: '/rest/db/files/all',
+        handler: (__, handler) => {
+            return FileActions.getAllFiles()
+                .then(entries => {
+                    if (!isEmpty(entries)) {
+                        return handler.response(JSON.stringify(entries));
+                    }
+
+                    return handler.continue;
                 });
         }
     },
@@ -60,8 +75,8 @@ const routes: ServerRoute[] = [
                     fileHash = crypto.createHash('sha256').update(file).digest('hex');
                     return FileActions.getFile({hash: fileHash});
                 })
-                .then(entriesFound => {
-                    if (isEmpty(entriesFound)) {
+                .then(entry => {
+                    if (isEmpty(entry)) {
                         const makeFileEntry = (uuid: string, fileName: string, fileHash: string, fileExtension?: string) =>
                             FileActions.newFile(`${uuid}${fileExtension ? `.${fileExtension}` : ''}`, fileName, fileHash)
                                 .then(
@@ -77,14 +92,36 @@ const routes: ServerRoute[] = [
                             return makeFileEntry(uuid, fileName, fileHash);
                         }
                     } else {
-                        unlink(savedFilePath, () => {
-                        });
-                        return entriesFound[0];
+                        unlink(savedFilePath, noop);
+                        return JSON.stringify(entry);
                     }
                 })
                 .catch(() => saveError);
         }
+    },
+    {
+        method: 'DELETE',
+        path: '/rest/file/{id}',
+        handler: (request, handler) => {
+            const error = new Error('can\'t delete file');
+            const id = +request.params.id;
+            if (id) {
+                return FileActions.getFile({id}).then<ResponseObject | number>(entry => {
+                    if (!isEmpty(entry)) {
+                        const filePath = `${filesDirectory}/${entry.uuid}`;
 
+                        unlink(filePath, noop);
+
+                        return FileActions.deleteFile(id)
+                    } else {
+                        return handler.response(error);
+                    }
+                })
+
+            } else {
+                return handler.response(error);
+            }
+        }
     },
 ];
 

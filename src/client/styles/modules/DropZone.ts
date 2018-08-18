@@ -16,18 +16,31 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     },
     modalContent: {
         position: 'absolute',
-        top: '0',
+        top: '48px',
         right: '0',
         bottom: '0',
         left: '0',
-        padding: '66px 16px 16px',
+        padding: '18px 16px 16px',
         boxSizing: 'border-box',
 
+        '&.gallery': {
+            overflow: 'hidden',
+            overflowY: 'scroll'
+        }
     },
     card: {
         width: '200px',
         display: 'inline-block',
         margin: '8px 8px',
+    },
+    cardContent: {
+        padding: '8px 24px 0',
+        boxSizing: 'border-box',
+        maxHeight: '48px',
+        overflow: 'ellipsis',
+    },
+    cardActions: {
+        padding: '0 12px 8px'
     },
     cardMedia: {
         paddingTop: '52%',

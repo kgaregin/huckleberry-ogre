@@ -23,26 +23,29 @@ import {Action} from 'redux';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {isInsideElement} from './Utils';
 import classNames from 'classnames';
+import {IFile} from '../../../server/db/models';
 
 /**
  * DropZone state.
  *
  * @prop {boolean} isDropZoneActive Becomes true on drag start.
  * @prop {boolean} isDropZoneEnabled Enabled only on predefined paths.
+ * @prop {EModalTabIndex} tabIndex Tab index.
+ * @prop {IFile[]} files File list from db.
  */
 export interface IDropZoneStateProps {
     isDropZoneActive: boolean;
     isDropZoneEnabled: boolean;
+    tabIndex: EModalTabIndex;
+    files: IFile[]
 }
 
 /**
  * State.
  *
- * @prop {EModalTabIndex} tabIndex Tab index.
  * @prop {EDragPosition} dragPosition Drag object position relative to dropZone.
  */
 interface IState {
-    tabIndex: EModalTabIndex;
     dragPosition: EDragPosition;
 }
 
@@ -51,7 +54,7 @@ enum EDragPosition {
     OUTSIDE
 }
 
-enum EModalTabIndex {
+export enum EModalTabIndex {
     UPLOAD,
     GALLERY
 }
@@ -62,22 +65,11 @@ enum EModalTabIndex {
 class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProps & TDispatchProps, IState> {
 
     state: IState = {
-        tabIndex: EModalTabIndex.UPLOAD,
         dragPosition: EDragPosition.OUTSIDE
     };
 
     dropZone: HTMLDivElement;
     filesInput: HTMLInputElement;
-
-    /**
-     * Tab change handler.
-     *
-     * @param {React.ChangeEvent<{}>} __ Event.
-     * @param {EModalTabIndex} tabIndex New tab index.
-     */
-    handleTabChange = (__: React.ChangeEvent<{}>, tabIndex: EModalTabIndex) => {
-        this.setState({tabIndex});
-    };
 
     // ToDo: jsDocs!
     handleUrlKeyPress = (event: React.KeyboardEvent) => {
@@ -99,7 +91,7 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
         }
     };
 
-    handleDragLeave = (__: React.DragEvent<Element>) => {
+    handleDragLeave = () => {
         this.setState({dragPosition: EDragPosition.OUTSIDE});
     };
 
@@ -123,13 +115,18 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
     };
 
     handleUploadFiles = (files: FileList) => {
-        this.props.actions.uploadFiles(files);
-        this.setState({tabIndex: EModalTabIndex.GALLERY});
+        const {uploadFiles} = this.props.actions;
+
+        uploadFiles(files);
+    };
+
+    handleFilesDelete = (files: number[]) => {
+      this.props.actions.deleteFiles(files);
     };
 
     render() {
-        const {isDropZoneActive, isDropZoneEnabled, actions, classes} = this.props;
-        const {tabIndex, dragPosition} = this.state;
+        const {isDropZoneActive, isDropZoneEnabled, actions, classes, tabIndex, files} = this.props;
+        const {dragPosition} = this.state;
 
         return (
             isDropZoneEnabled ?
@@ -141,12 +138,13 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                         onClose={actions.hide}
                         onDrop={this.handleDrop}
                         onKeyPress={this.handleModalKeyPress}
+                        onDragEnter={actions.handleDragEnter}
                     >
                         <div className={classes.paper}>
                             <AppBar position="absolute" color="default" className={classes.modalAppBar}>
                                 <Tabs
                                     value={tabIndex}
-                                    onChange={this.handleTabChange}
+                                    onChange={actions.handleTabChange}
                                     indicatorColor="primary"
                                     textColor="primary"
                                     fullWidth
@@ -155,7 +153,12 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                     <Tab label="gallery"/>
                                 </Tabs>
                             </AppBar>
-                            <div className={classes.modalContent}>
+                            <div
+                                className={classNames(
+                                    classes.modalContent,
+                                    {'gallery': tabIndex === EModalTabIndex.GALLERY})
+                                }
+                            >
                                 {tabIndex === EModalTabIndex.UPLOAD && (
                                     <div className={classes.uploadTab}>
                                         <TextField
@@ -178,8 +181,11 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                             onDragLeave={this.handleDragLeave}
                                             ref={this.dropZoneRef}
                                         >
-                                            <Typography className={classes.dropZoneDescription} color='primary'
-                                                        variant='subheading'>
+                                            <Typography
+                                                className={classes.dropZoneDescription}
+                                                color='primary'
+                                                variant='subheading'
+                                            >
                                                 {'Drop files here or'}
                                                 <Button
                                                     variant="contained"
@@ -203,28 +209,38 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                         </div>
                                     </div>
                                 )}
-                                {tabIndex === EModalTabIndex.GALLERY && (
-                                    <Card className={classes.card}>
+                                {tabIndex === EModalTabIndex.GALLERY &&
+                                files.map(file => (
+                                    <Card className={classes.card} key={file.id}>
                                         <CardMedia
                                             className={classes.cardMedia}
-                                            image="http://localhost:3001/rest/file/Samurai_Jack.png"
-                                            title="Samurai Jack"
+                                            image={`http://localhost:3001/rest/file/${file.id}`}
                                         />
-                                        <CardContent>
-                                            <Typography component="p">
-                                                filename
+                                        <CardContent className={classes.cardContent}>
+                                            <Typography
+                                                component="p"
+                                                className="text-ellipsis"
+                                                title={file.name}
+                                            >
+                                                {file.name}
                                             </Typography>
                                         </CardContent>
-                                        <CardActions>
-                                            <Button size="small" color="primary">
+                                        <CardActions className={classes.cardActions}>
+                                            <Button
+                                                size="small"
+                                                color="primary"
+                                                onClick={() => this.handleFilesDelete([file.id])}
+                                            >
                                                 Delete
                                             </Button>
                                             <Button size="small" color="primary">
                                                 Add
                                             </Button>
                                         </CardActions>
-                                    </Card>)}
+                                    </Card>)
+                                )}
                             </div>
+                            {/* ToDo: add modal with fullscreen file preview */}
                         </div>
                     </Modal>
                 ) : null

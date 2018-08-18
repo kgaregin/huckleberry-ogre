@@ -9,6 +9,7 @@ import {ThunkDispatch} from 'redux-thunk';
 import {NotificationActions} from '../notification/Actions';
 import {ENotificationVariant} from '../notification/Notification';
 import {IBlogStateProps} from "./Blog";
+import {IPost} from "../../../server/db/models";
 
 /**
  * Action types.
@@ -31,7 +32,7 @@ export class BlogActions {
      *
      * @param {IPost[]} posts Blog posts.
      */
-    getBlogPosts = (posts: Response) => this.dispatch({
+    getBlogPosts = (posts: IPost[]) => this.dispatch({
         type: GET_BLOG_POSTS,
         payload: posts
     });
@@ -53,7 +54,7 @@ export class BlogActions {
         (dispatch, getState) => {
             const notificationActions = new NotificationActions(dispatch);
             const {title, message} = getState().blogState.form;
-            let request: Promise<Response>;
+            let request: Promise<IPost>;
             let notificationMessage: string;
 
             this.setRequestStatus(ERequestStatus.PENDING, 'submitStatus');
@@ -61,7 +62,7 @@ export class BlogActions {
             switch (mode) {
                 case EBlogViewMode.EDIT:
                     notificationMessage = 'Post updated';
-                    request = put('blog', {
+                    request = put<IPost>('blog', {
                         id,
                         title,
                         message
@@ -70,7 +71,7 @@ export class BlogActions {
                 case EBlogViewMode.CREATE:
                 default:
                     notificationMessage = 'Post created';
-                    request = post('blog', {
+                    request = post<IPost>('blog', {
                         title,
                         message
                     });
@@ -116,7 +117,7 @@ export class BlogActions {
             const notificationActions = new NotificationActions(dispatch);
             this.setRequestStatus(ERequestStatus.PENDING, 'requestPostsStatus');
 
-            return get('blog', searchBy && removeEmptyFields(searchBy))
+            return get<IPost[]>('blog', searchBy && removeEmptyFields(searchBy))
                 .then(
                     response => {
                         this.getBlogPosts(response);

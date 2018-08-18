@@ -28,13 +28,15 @@ export class FileActions {
 
     public static getFile = (findFileOptions: Partial<IFile>) => Files.findOne({where: findFileOptions});
 
+    public static getAllFiles = () => Files.all();
+
     public static newFile(uuid: string, fileName: RequestQuery | string, fileHash: string) {
         const name = `${fileName}`;
         return Files.create({uuid, name, hash: fileHash});
     }
 
-    public static deleteFile(id: RequestQuery | string) {
-        return Files.destroy({where: {id: `${id}`}});
+    public static deleteFile(id: number) {
+        return Files.destroy({where: {id}});
     }
 }
 

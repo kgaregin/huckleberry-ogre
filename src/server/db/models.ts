@@ -1,20 +1,27 @@
 import {Sequelize, DataTypes} from 'sequelize';
 
 /**
- * Blog post model.
+ * Common field set for any model.
  *
- * {number} id Unique identifier of post.
- * {string} title Heading of post.
- * {string} message Body of post.
+ * {number} id Unique identifier
  * {string} createdAt Creation timestamp.
  * {string} updatedAt Last update timestamp.
  */
-export interface IPost {
+interface IModelCommonFields {
     id?: number,
-    title?: string,
-    message?: string,
     createdAt?: string,
     updatedAt?: string
+}
+
+/**
+ * Blog post model.
+ *
+ * {string} title Heading of post.
+ * {string} message Body of post.
+ */
+export interface IPost extends IModelCommonFields {
+    title?: string,
+    message?: string,
 }
 
 /**
@@ -23,7 +30,7 @@ export interface IPost {
  * @param {Sequelize} sequelize Sequelize instance.
  * @param {DataTypes} dataTypes Possible data types object.
  */
-export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define(
+export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<IPost, IPost>(
     'post',
     {
         title: {type: dataTypes.STRING, validate: {notEmpty: true}},
@@ -34,13 +41,11 @@ export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequeli
 /**
  * Fields of file model.
  *
- * @prop {number} id Unique identifier.
  * @prop {string} name Name.
  * @prop {string} uuid Uuid.
  * @prop {string} hash Hash.
  */
-export interface IFile {
-    id: number;
+export interface IFile extends IModelCommonFields {
     name: string;
     uuid: string;
     hash: string;
@@ -56,7 +61,7 @@ export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequeli
     'file',
     {
         name: {type: dataTypes.STRING, validate: {notEmpty: true}},
-        uuid: {type: dataTypes.STRING, validate: {notEmpty: true}},
+        uuid: {type: dataTypes.UUID, validate: {notEmpty: true}},
         hash: {type: dataTypes.STRING, validate: {notEmpty: true}}
     }
 );

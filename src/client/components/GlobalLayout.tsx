@@ -65,7 +65,7 @@ class GlobalLayoutComponent extends React.Component<IProps> {
             <MuiThemeProvider theme={theme}>
                 <div>
                     <DropZone/>
-                    <Grid container onDragEnter={dropZoneActions.show}>
+                    <Grid container onDragEnter={dropZoneActions.handleDragEnter}>
                         <Paper className={classes.mainPaper} square>
                             {children}
                         </Paper>
