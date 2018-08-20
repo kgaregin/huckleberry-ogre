@@ -52,19 +52,31 @@ class NavigationComponent extends React.Component<TProps, IState> {
         isDrawerOpen: false,
     };
 
+    /**
+     * Drawer open handler.
+     */
     handleDrawerOpen = () => {
         this.setState({isDrawerOpen: true});
     };
 
+    /**
+     * Drawer close handler.
+     */
     handleDrawerClose = () => {
         this.setState({isDrawerOpen: false});
     };
 
+    /**
+     * Menu link click handler.
+     */
     handleListItemClick = (to: string = '/') => {
         this.handleDrawerClose();
         handleLocationChange(to);
     };
 
+    /**
+     * Menu list rendering.
+     */
     getNavigationList = () => {
         const {classes} = this.props;
 
@@ -139,13 +151,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
                             <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
                                 <ErrorBoundary>
                                     <Switch>
-                                        <Route exact path="/" render={() =>
-                                            <div>
-                                                <h1>Main page under construction</h1>
-                                                <img src="http://localhost:3001/rest/file/1" alt=""/>
-                                            </div>
-
-                                        }/>
+                                        <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
                                         <Route path="/blog/:mode?/:postID?" component={Blog}/>
                                         <Route render={() => (
                                             <div className='text-center'>
@@ -162,7 +168,8 @@ class NavigationComponent extends React.Component<TProps, IState> {
                         <Notification/>
                     </main>
                 </div>
-            </div>);
+            </div>
+        );
     }
 }
 

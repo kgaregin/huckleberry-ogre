@@ -1,42 +1,35 @@
-import {isString} from 'lodash';
 import {Files, Posts} from './db';
-import {RequestQuery} from 'hapi';
-import {IFile} from './models';
+import {IFile, IPost} from './models';
 
+/**
+ * Actions set for Post model.
+ */
 export class PostActions {
 
-    public static getAllPosts(queryParams: RequestQuery | string) {
-        const findPostOptions = !isString(queryParams) && queryParams.payload ? JSON.parse(`${queryParams.payload}`) : {};
-        return Posts.findAll({where: findPostOptions});
-    }
+    public static getAllPosts = (findPostOptions: Partial<IPost>) => Posts.findAll({where: findPostOptions});
 
-    public static newPost(post: RequestQuery | string) {
-        const {title, message} = JSON.parse(`${post}`);
-        return Posts.create({title, message});
-    }
+    public static newPost = (post: Partial<IPost>) => Posts.create(post);
 
-    public static deletePost(id: RequestQuery | string) {
-        return Posts.destroy({where: {id: `${id}`}});
-    }
+    public static deletePost = (id: number) => Posts.destroy({where: {id}});
 
-    public static updatePost({id, title, message}: { id: number, title: string, message: string }) {
-        return Posts.update({id, title, message}, {where: {id}});
-    }
+    public static updatePost = (post: Partial<IPost>) => Posts.update(post, {where: {id: post.id}});
 }
 
+/**
+ * Actions set for File model.
+ */
 export class FileActions {
 
     public static getFile = (findFileOptions: Partial<IFile>) => Files.findOne({where: findFileOptions});
 
     public static getAllFiles = () => Files.all();
 
-    public static newFile(uuid: string, fileName: RequestQuery | string, fileHash: string) {
-        const name = `${fileName}`;
-        return Files.create({uuid, name, hash: fileHash});
-    }
+    public static newFile = (uuid: string, fileName: string, fileHash: string) => Files.create({
+        uuid,
+        name: fileName,
+        hash: fileHash
+    });
 
-    public static deleteFile(id: number) {
-        return Files.destroy({where: {id}});
-    }
+    public static deleteFile = (id: number) => Files.destroy({where: {id}});
 }
 

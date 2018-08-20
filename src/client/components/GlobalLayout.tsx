@@ -11,14 +11,14 @@ import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import RouteParser from 'route-parser';
-import {Location, Action as HistoryAction} from 'history';
+import {Location} from 'history';
 import {BlogActions} from '../modules/blog/Actions';
 import {RouteComponentProps} from 'react-router-dom';
 
 /**
  * @prop {JSX.Element} children React children not provided by default.
  */
-interface IProps extends TStyleProps, TDispatchProps, TRouteProps{
+interface IProps extends TStyleProps, TDispatchProps, TRouteProps {
     children: JSX.Element;
 }
 
@@ -30,17 +30,26 @@ class GlobalLayoutComponent extends React.Component<IProps> {
     constructor(props: IProps) {
         super(props);
         const {history} = this.props;
-        this.handleLocationChange(history.location, history.action);
-        history.listen((location, action) => this.handleLocationChange(location, action));
+        this.handleLocationChange(history.location);
+        history.listen(location => this.handleLocationChange(location));
     }
 
-    handleLocationChange = (location: Location, __: HistoryAction) => {
+    componentWillMount() {
+        preventDefaultDragNDropEvents();
+    }
+
+    /**
+     * Location change handler.
+     *
+     * @param {Location} location Location object.
+     */
+    handleLocationChange = (location: Location) => {
         const {blogActions, dropZoneActions} = this.props;
         const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
         const blogPageRouteMatch = blogPageRoute.match(location.pathname);
         let isDropZoneEnabled = false;
 
-        if (blogPageRouteMatch){
+        if (blogPageRouteMatch) {
             blogActions.requestBlogPosts().then(() => {
                 if (blogPageRouteMatch.mode === EBlogViewMode.EDIT && blogPageRouteMatch.postID) {
                     blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
@@ -53,10 +62,6 @@ class GlobalLayoutComponent extends React.Component<IProps> {
 
         isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();
     };
-
-    componentWillMount() {
-        preventDefaultDragNDropEvents();
-    }
 
     render() {
         const {classes, children, dropZoneActions} = this.props;

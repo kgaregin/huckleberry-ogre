@@ -1,11 +1,14 @@
 import {Server, ServerRoute, ResponseObject} from 'hapi';
 import {memoize} from 'lodash';
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
 
 const distDirectory = path.join(__dirname, '../../../dist');
 const isFileExist = memoize(fileName => fs.existsSync(`${distDirectory}\\${fileName}`));
 
+/**
+ * Home routes configuration.
+ */
 const routes: ServerRoute[] = [
     {
         method: 'GET',

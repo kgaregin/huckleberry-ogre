@@ -28,14 +28,12 @@ export class ErrorBoundary extends React.Component<IProps, IState> {
     state: IState = {hasError: false};
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        // Display fallback UI
         this.setState({
                 hasError: true,
                 error: error,
                 errorInfo: errorInfo
             }
         );
-        // You can also log the error to an error reporting service
         console.log(error, errorInfo)
     }
 
@@ -43,14 +41,14 @@ export class ErrorBoundary extends React.Component<IProps, IState> {
         const {children} = this.props;
         const {hasError, error, errorInfo} = this.state;
         if (hasError) {
-            // You can render any custom fallback UI
+
             return (
-                <Paper style={{padding: '16px', margin: '16px', textAlign: 'center'}}>
-                    <Typography variant="title" style={{marginBottom: '16px'}}>Something went wrong.</Typography>
+                <Paper className="margin-2 padding-2 text-center">
+                    <Typography variant="title" className="margin-bottom-2">Something went wrong.</Typography>
                     <Ghost/>
-                    <Typography variant="subheading" style={{textAlign: 'left'}}>{error && error.toString()}</Typography>
-                    <Divider style={{margin: '8px 0'}}/>
-                    <Typography variant="subheading" style={{textAlign: 'left'}}>{errorInfo && errorInfo.componentStack}</Typography>
+                    <Typography variant="subheading" className="text-left">{error && error.toString()}</Typography>
+                    <Divider className="margin-top-1 margin-bottom-1 margin-left-0 margin-right-0"/>
+                    <Typography variant="subheading" className="text-left">{errorInfo && errorInfo.componentStack}</Typography>
                 </Paper>
             );
         }

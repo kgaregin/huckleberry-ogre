@@ -116,10 +116,10 @@ class BlogComponent extends Component<TProps, IState> {
     /**
      * Tab change handler.
      *
-     * @param {React.ChangeEvent<{}>} __ Event.
+     * @param {ChangeEvent} __ Event.
      * @param {number} tabIndex New tab index.
      */
-    handleTabChange = (__: React.ChangeEvent<{}>, tabIndex: number) => {
+    handleTabChange = (__: React.ChangeEvent, tabIndex: number) => {
         this.setState({tabIndex});
     };
 

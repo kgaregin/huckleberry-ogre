@@ -62,7 +62,7 @@ export const store = createStore(
 );
 
 /**
- * Handle redirect on new location for react-router.
+ * Handles new location of history.
  *
  * @param {string} newLocation Location relative path (hash part).
  */

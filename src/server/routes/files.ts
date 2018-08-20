@@ -1,10 +1,10 @@
 import {Server, ServerRoute, ResponseObject} from 'hapi';
 import {FileActions} from '../db/actions';
-import * as path from 'path';
+import path from 'path';
 import {isEmpty} from 'lodash';
 import {rename as fsRename, readFile as fsReadFile, unlink} from 'fs';
 import {promisify} from 'util';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 const rename = promisify(fsRename);
 const readFile = promisify(fsReadFile);
@@ -12,6 +12,22 @@ const readFile = promisify(fsReadFile);
 const filesDirectory = path.join(__dirname, '../files');
 const noop = () => {};
 
+/**
+ * Payload in case of file output.
+ *
+ * @prop {string} [file.filename] Filename.
+ * @prop {string} [file.path] Path to locally saved file.
+ */
+interface IFilePayload {
+    file?: {
+        filename: string;
+        path: string;
+    }
+}
+
+/**
+ * File manager routes configuration.
+ */
 const routes: ServerRoute[] = [
     {
         method: 'GET',
@@ -60,8 +76,7 @@ const routes: ServerRoute[] = [
             }
         },
         handler: request => {
-            //ToDo: find proper typings for files.
-            const payload: any = request.payload;
+            const payload: IFilePayload = request.payload as object;
             const file = payload && payload.file;
             const fileName = file && file.filename;
             const savedFilePath = file && file.path;

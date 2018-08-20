@@ -1,11 +1,11 @@
-import * as webpack from 'webpack';
-import * as path from 'path';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-import * as CleanWebpackPlugin from 'clean-webpack-plugin';
-import * as CopyWebpackPlugin from 'copy-webpack-plugin';
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CleanWebpackPlugin from 'clean-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const webpackConfiguration: webpack.Configuration = {
-    stats:{
+    stats: {
         colors: true
     },
     mode: 'development',
@@ -17,7 +17,9 @@ const webpackConfiguration: webpack.Configuration = {
     },
     devtool: 'source-map',
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        //ToDo: investigate, why this is not enough to resolve imports that are relative to src directory
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
     module: {
         rules: [{

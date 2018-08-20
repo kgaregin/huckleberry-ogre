@@ -8,12 +8,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "strictPropertyInitialization": false,
-    "noEmitOnError": false,
-    "esModuleInterop": true
+    "noEmitOnError": false
   },
-  "include": [
-    "../client"
-  ],
   "exclude": [
     "../server"
   ]

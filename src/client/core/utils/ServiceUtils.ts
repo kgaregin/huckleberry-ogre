@@ -1,10 +1,10 @@
 import {IS_DEVELOPMENT} from './Utils';
 import isEmpty from 'lodash/isEmpty';
-import {devServerPortNumber} from '../../../config';
+import {SERVER_PORT} from '../../../config';
 import {EResponseType} from '../enums';
 
 /** Parts of url on server requests. */
-const SERVER_ADDRESS = IS_DEVELOPMENT ? `http://localhost:${devServerPortNumber}/` : '/';
+const SERVER_ADDRESS = IS_DEVELOPMENT ? `http://localhost:${SERVER_PORT}/` : '/';
 const REST = 'rest/';
 
 /**

@@ -49,11 +49,17 @@ interface IState {
     dragPosition: EDragPosition;
 }
 
+/**
+ * Drag item position relative to #dropZone.
+ */
 enum EDragPosition {
     INSIDE,
     OUTSIDE
 }
 
+/**
+ * Tab index of modal window.
+ */
 export enum EModalTabIndex {
     UPLOAD,
     GALLERY
@@ -68,10 +74,17 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
         dragPosition: EDragPosition.OUTSIDE
     };
 
+    /**
+     * Refs.
+     */
     dropZone: HTMLDivElement;
     filesInput: HTMLInputElement;
 
-    // ToDo: jsDocs!
+    /**
+     * Handles key press on url input field.
+     *
+     * @param {KeyboardEvent} event Keyboard press event.
+     */
     handleUrlKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
             // ToDo: add support for urls
@@ -79,49 +92,92 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
         }
     };
 
+    /**
+     * Handles key press on whole modal and overlay.
+     *
+     * @param {KeyboardEvent} event Keyboard press event.
+     */
     handleModalKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Escape') {
             this.props.actions.hide();
         }
     };
 
-    handleDragEnter = (event: React.DragEvent<Element>) => {
+    /**
+     * Handles drag enter event.
+     *
+     * @param {DragEvent} event Drag enter event.
+     */
+    handleDragEnter = (event: React.DragEvent) => {
         if (isInsideElement(event, '#dropZone')) {
             this.setState({dragPosition: EDragPosition.INSIDE});
         }
     };
 
+    /**
+     * Handles drag leave event.
+     */
     handleDragLeave = () => {
         this.setState({dragPosition: EDragPosition.OUTSIDE});
     };
 
+    /**
+     * Save dropZone element ref.
+     *
+     * @param {HTMLDivElement} ref Element ref.
+     */
     dropZoneRef = (ref: HTMLDivElement) => {
         this.dropZone = ref;
     };
 
+    /**
+     * Save files input element ref.
+     *
+     * @param {HTMLInputElement} ref Element ref.
+     */
     filesInputRef = (ref: HTMLInputElement) => {
         this.filesInput = ref;
     };
 
-    handleDrop = (event: React.DragEvent<Element>) => {
+    /**
+     * Handles item drop event.
+     *
+     * @param {DragEvent} event Drop event.
+     */
+    handleDrop = (event: React.DragEvent) => {
         this.setState({dragPosition: EDragPosition.OUTSIDE});
         if (isInsideElement(event, '#dropZone')) {
             this.handleUploadFiles(event.dataTransfer.files);
         }
     };
 
+    /**
+     * Handles files change event on files input element.
+     *
+     * @param {ChangeEvent} event Change event.
+     */
     handleFilesInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.handleUploadFiles(event.target.files);
     };
 
+    /**
+     * Files upload handler.
+     *
+     * @param {FileList} files Files array.
+     */
     handleUploadFiles = (files: FileList) => {
         const {uploadFiles} = this.props.actions;
 
         uploadFiles(files);
     };
 
-    handleFilesDelete = (files: number[]) => {
-      this.props.actions.deleteFiles(files);
+    /**
+     * Files delete handler.
+     *
+     * @param {number} identifiers Identifiers array.
+     */
+    handleFilesDelete = (identifiers: number[]) => {
+        this.props.actions.deleteFiles(identifiers);
     };
 
     render() {

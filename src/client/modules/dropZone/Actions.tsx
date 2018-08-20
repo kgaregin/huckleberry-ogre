@@ -129,7 +129,7 @@ export class DropZoneActions {
     /**
      * Modal tab change handler.
      *
-     * @param {React.ChangeEvent} __ Change event.
+     * @param {ChangeEvent} __ Change event.
      * @param {EModalTabIndex} tabIndex Tab index.
      */
     handleTabChange = (__: React.ChangeEvent, tabIndex: EModalTabIndex) => {

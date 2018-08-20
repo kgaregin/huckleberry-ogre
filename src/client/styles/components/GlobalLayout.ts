@@ -7,18 +7,33 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
             color: 'inherit',
             textDecoration: 'none'
         },
-        '.text-center': {
-            textAlign: 'center'
-        },
         '.display-none-md-up': {
             [theme.breakpoints.up('md')]: {
                 display: 'none'
             }
         },
+        '.text-center': {
+            textAlign: 'center'
+        },
+        '.text-left': {
+            textAlign: 'left'
+        },
+        '.text-right': {
+            textAlign: 'right'
+        },
         '.text-ellipsis': {
             textOverflow: 'ellipsis',
             overflow: 'hidden',
             whiteSpace: 'nowrap'
+        },
+        '.margin-0': {
+            margin: 0
+        },
+        '.margin-1': {
+            margin: theme.spacing.unit
+        },
+        '.margin-2': {
+            margin: theme.spacing.unit * 2
         },
         '.margin-top-0': {
             marginTop: 0
@@ -55,6 +70,51 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         },
         '.margin-left-2': {
             marginLeft: theme.spacing.unit * 2
+        },
+        '.padding-0': {
+            padding: 0
+        },
+        '.padding-1': {
+            padding: theme.spacing.unit
+        },
+        '.padding-2': {
+            padding: theme.spacing.unit * 2
+        },
+        '.padding-top-0': {
+            paddingTop: 0
+        },
+        '.padding-right-0': {
+            paddingRight: 0
+        },
+        '.padding-bottom-0': {
+            paddingBottom: 0
+        },
+        '.padding-left-0': {
+            paddingLeft: 0
+        },
+        '.padding-top-1': {
+            paddingTop: theme.spacing.unit
+        },
+        '.padding-right-1': {
+            paddingRight: theme.spacing.unit
+        },
+        '.padding-bottom-1': {
+            paddingBottom: theme.spacing.unit
+        },
+        '.padding-left-1': {
+            paddingLeft: theme.spacing.unit
+        },
+        '.padding-top-2': {
+            paddingTop: theme.spacing.unit * 2
+        },
+        '.padding-right-2': {
+            paddingRight: theme.spacing.unit * 2
+        },
+        '.padding-bottom-2': {
+            paddingBottom: theme.spacing.unit * 2
+        },
+        '.padding-left-2': {
+            paddingLeft: theme.spacing.unit * 2
         },
     },
     mainPaper: {
