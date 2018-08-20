@@ -1,6 +1,6 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.7.5",
+  "version": "1.8.0",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
