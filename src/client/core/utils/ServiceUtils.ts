@@ -2,6 +2,7 @@ import {IS_DEVELOPMENT} from './Utils';
 import isEmpty from 'lodash/isEmpty';
 import {SERVER_PORT} from '../../../config';
 import {EResponseType} from '../enums';
+import {Omit} from '@material-ui/core'
 
 /** Parts of url on server requests. */
 const SERVER_ADDRESS = IS_DEVELOPMENT ? `http://localhost:${SERVER_PORT}/` : '/';
@@ -12,8 +13,8 @@ const REST = 'rest/';
  *
  * @prop {any} headers Request headers.
  */
-interface IRequestSettings {
-    headers?: any;
+type TRequestSettings = Omit<RequestInit, 'body' | 'method'> & {
+    signal?: any
 }
 
 /**
@@ -21,12 +22,12 @@ interface IRequestSettings {
  *
  * @prop {EResponseType} [responseType] If set, corresponding handler will be applied to response.
  * @prop {boolean} [noWrap] If true, request body object won't be wrapped with JSON.stringify.
- * @prop {IRequestSettings} [requestSettings] RequestInit parameters of fetch second argument.
+ * @prop {TRequestSettings} [requestSettings] RequestInit parameters of fetch second argument.
  */
 interface IRequestMethodOptions {
     responseType?: EResponseType;
     noWrap?: boolean;
-    requestSettings?: IRequestSettings;
+    requestSettings?: TRequestSettings;
 }
 
 /**

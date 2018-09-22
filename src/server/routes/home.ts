@@ -36,6 +36,4 @@ const routes: ServerRoute[] = [
     }
 ];
 
-const HomeRoute = (server: Server) => server.route(routes);
-
-export {HomeRoute};
+export const HomeRoute = (server: Server) => server.route(routes);

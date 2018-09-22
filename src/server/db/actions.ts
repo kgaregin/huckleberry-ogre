@@ -1,5 +1,5 @@
-import {Files, Posts} from './db';
-import {IFile, IPost} from './models';
+import {Files, Posts, Users} from './db';
+import {IFile, IPost, IUser} from './models';
 
 /**
  * Actions set for Post model.
@@ -33,3 +33,17 @@ export class FileActions {
     public static deleteFile = (id: number) => Files.destroy({where: {id}});
 }
 
+
+/**
+ * Actions set for User model.
+ */
+export class UserActions {
+
+    public static getUser = (findUserOptions?: Partial<IUser>) => Users.findOne({where: findUserOptions});
+
+    public static getAllUsers = () => Users.all();
+
+    public static newUser = (createUserOptions: Partial<IUser>) => Users.create(createUserOptions);
+
+    public static deleteUser = (searchParameters: Partial<IUser>) => Users.destroy({where: searchParameters});
+}

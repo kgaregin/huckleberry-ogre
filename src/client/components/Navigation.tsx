@@ -14,6 +14,7 @@ import {
     WithStyles,
 } from '@material-ui/core';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
@@ -22,7 +23,7 @@ import {RouteComponentProps, Route, Switch, Link} from 'react-router-dom';
 import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
-import {handleLocationChange, IAppState} from '../core/reduxStore';
+import {navigateTo, IAppState} from '../core/reduxStore';
 import Samurai_Jack from '../assets/Samurai_Jack.png';
 import {Notification} from '../modules/notification/Notification';
 import {BlogActions} from '../modules/blog/Actions';
@@ -30,6 +31,7 @@ import {HOC} from '../core/utils/HOC';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {DropZoneActions} from '../modules/dropZone/Actions';
+import {LoginActions} from '../modules/login/Actions';
 
 /**
  * Navigation component properties.
@@ -69,9 +71,9 @@ class NavigationComponent extends React.Component<TProps, IState> {
     /**
      * Menu link click handler.
      */
-    handleListItemClick = (to: string = '/') => {
+    handleListItemClick = (newLocation: string = '/') => {
         this.handleDrawerClose();
-        handleLocationChange(to);
+        navigateTo(newLocation);
     };
 
     /**
@@ -97,7 +99,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
     };
 
     render() {
-        const {classes} = this.props;
+        const {classes, loginActions} = this.props;
         const {isDrawerOpen} = this.state;
         const mainClassName = classNames(classes.content, {
                 [classes.contentShift]: isDrawerOpen
@@ -124,7 +126,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
                                     {'Huckleberry Ogre Home'}
                                 </Link>
                             </Typography>
-                            {/*<Button color="contrast">Login</Button>*/}
+                            <IconButton onClick={loginActions.handleLoginWithGoogle}><AccountCircleIcon/></IconButton>
                         </Toolbar>
                     </AppBar>
                     <Drawer
@@ -176,11 +178,12 @@ class NavigationComponent extends React.Component<TProps, IState> {
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
         blogActions: new BlogActions(dispatch),
-        dropZoneActions: new DropZoneActions(dispatch)
+        dropZoneActions: new DropZoneActions(dispatch),
+        loginActions: new LoginActions(dispatch)
     };
 };
 
-type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions }
+type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions, loginActions: LoginActions }
 type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 

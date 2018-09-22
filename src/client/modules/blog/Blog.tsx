@@ -20,7 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {BlogActions} from './Actions';
 import {Action} from 'redux';
-import {handleLocationChange, IAppState} from '../../core/reduxStore';
+import {navigateTo, IAppState} from '../../core/reduxStore';
 import {IPost} from '../../../server/db/models';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
@@ -91,7 +91,7 @@ class BlogComponent extends Component<TProps, IState> {
      */
     handleCreatePostButtonClick = () => {
         this.props.blogActions.clearPostEditForm();
-        handleLocationChange('/blog/create');
+        navigateTo('/blog/create');
     };
 
     /**
@@ -110,7 +110,7 @@ class BlogComponent extends Component<TProps, IState> {
      */
     handlePostEdit = (postID: number) => {
         this.props.blogActions.fillPostEditForm(postID);
-        handleLocationChange(`/blog/edit/${postID}`);
+        navigateTo(`/blog/edit/${postID}`);
     };
 
     /**

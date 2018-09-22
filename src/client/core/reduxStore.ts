@@ -62,10 +62,10 @@ export const store = createStore(
 );
 
 /**
- * Handles new location of history.
+ * Navigate to given location.
  *
- * @param {string} newLocation Location relative path (hash part).
+ * @param {string} newLocation Location relative path.
  */
-export const handleLocationChange = (newLocation: string) => {
+export const navigateTo = (newLocation: string) => {
     store.dispatch(push(newLocation));
 };

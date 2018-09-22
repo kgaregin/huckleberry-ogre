@@ -5,7 +5,7 @@ import {styles} from '../styles/components/GlobalLayout';
 import {preventDefaultDragNDropEvents} from '../modules/dropZone/Utils';
 import {DropZone} from '../modules/dropZone/DropZone';
 import {HOC} from '../core/utils/HOC';
-import {IAppState} from '../core/reduxStore';
+import {IAppState, navigateTo} from '../core/reduxStore';
 import {DropZoneActions} from '../modules/dropZone/Actions';
 import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
@@ -14,6 +14,8 @@ import RouteParser from 'route-parser';
 import {Location} from 'history';
 import {BlogActions} from '../modules/blog/Actions';
 import {RouteComponentProps} from 'react-router-dom';
+import {get as getCookie, erase as removeCookie} from 'browser-cookies';
+import {Base64} from 'js-base64';
 
 /**
  * @prop {JSX.Element} children React children not provided by default.
@@ -47,7 +49,22 @@ class GlobalLayoutComponent extends React.Component<IProps> {
         const {blogActions, dropZoneActions} = this.props;
         const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
         const blogPageRouteMatch = blogPageRoute.match(location.pathname);
+        const newLocation = getCookie('redirectTo');
+        const user = getCookie('user');
         let isDropZoneEnabled = false;
+
+        if (user) {
+            //toDo: handle user info.
+            console.log(JSON.parse(Base64.decode(user)));
+        }
+
+        if (newLocation) {
+            //toDo: find out why cookie doesn't deletes if path is not given...
+            //toDo: find other approach, this way is too dangerous :\
+            removeCookie('redirectTo', {path: 'rest/login'});
+            navigateTo(Base64.decode(newLocation));
+        }
+
 
         if (blogPageRouteMatch) {
             blogActions.requestBlogPosts().then(() => {

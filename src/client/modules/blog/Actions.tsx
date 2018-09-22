@@ -3,7 +3,7 @@ import {get, post, put, remove} from '../../core/utils/ServiceUtils';
 import {EBlogViewMode} from './Enums';
 import {removeEmptyFields} from '../../core/utils/Utils';
 import {ERequestStatus} from '../../core/enums';
-import {handleLocationChange, IAppState} from '../../core/reduxStore';
+import {navigateTo, IAppState} from '../../core/reduxStore';
 import {getPost} from './Utils';
 import {ThunkDispatch} from 'redux-thunk';
 import {NotificationActions} from '../notification/Actions';
@@ -82,7 +82,7 @@ export class BlogActions {
                     () => {
                         this.setRequestStatus(ERequestStatus.SUCCESS, 'submitStatus');
                         this.clearPostEditForm();
-                        handleLocationChange('/blog');
+                        navigateTo('/blog');
                         notificationActions.show({
                             message: notificationMessage,
                             variant: ENotificationVariant.SUCCESS

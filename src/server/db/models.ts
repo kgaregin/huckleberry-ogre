@@ -1,4 +1,4 @@
-import {Sequelize, DataTypes} from 'sequelize';
+import {Sequelize, DataTypes, Instance} from 'sequelize';
 
 /**
  * Common field set for any model.
@@ -30,7 +30,7 @@ export interface IPost extends IModelCommonFields {
  * @param {Sequelize} sequelize Sequelize instance.
  * @param {DataTypes} dataTypes Possible data types object.
  */
-export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<IPost, IPost>(
+export const PostModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<Instance<IPost>, IPost>(
     'post',
     {
         title: {type: dataTypes.STRING, validate: {notEmpty: true}},
@@ -57,11 +57,53 @@ export interface IFile extends IModelCommonFields {
  * @param {Sequelize} sequelize Sequelize instance.
  * @param {DataTypes} dataTypes Possible data types object.
  */
-export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<IFile, Partial<IFile>>(
+export const FileModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<Instance<IFile>, Partial<IFile>>(
     'file',
     {
         name: {type: dataTypes.STRING, validate: {notEmpty: true}},
         uuid: {type: dataTypes.UUID, validate: {notEmpty: true}},
         hash: {type: dataTypes.STRING, validate: {notEmpty: true}}
+    }
+);
+
+/**
+ * User role.
+ */
+export enum ERole {
+    ADMIN = 'ADMIN',
+    USER = 'USER'
+}
+
+/**
+ * Fields of user model.
+ *
+ * @prop {string} name User name.
+ * @prop {string} email User email.
+ * @prop {string} avatarURL User avatar link.
+ * @prop {string} googleId Google profile id.
+ * @prop {ERole} role Hash.
+ */
+export interface IUser extends IModelCommonFields {
+    name: string;
+    email: string;
+    avatarURL: string;
+    googleId: string;
+    role: ERole;
+}
+
+/**
+ * User model definition.
+ *
+ * @param {Sequelize} sequelize Sequelize instance.
+ * @param {DataTypes} dataTypes Possible data types object.
+ */
+export const UserModel = (sequelize: Sequelize, dataTypes: DataTypes) => sequelize.define<Instance<IUser>, Partial<IUser>>(
+    'user',
+    {
+        name: {type: dataTypes.STRING},
+        email: {type: dataTypes.STRING},
+        avatarURL: {type: dataTypes.STRING},
+        googleId: {type: dataTypes.STRING},
+        role: {type: dataTypes.STRING, validate: {notEmpty: true}}
     }
 );

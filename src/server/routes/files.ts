@@ -43,7 +43,7 @@ const routes: ServerRoute[] = [
             return FileActions.getFile({id})
                 .then(entry => {
                     if (!isEmpty(entry)) {
-                        return handler.file(`./${entry.uuid}`);
+                        return handler.file(`./${entry.get('uuid')}`);
                     } else {
                         return handler.continue;
                     }
@@ -123,7 +123,7 @@ const routes: ServerRoute[] = [
             if (id) {
                 return FileActions.getFile({id}).then<ResponseObject | number>(entry => {
                     if (!isEmpty(entry)) {
-                        const filePath = `${filesDirectory}/${entry.uuid}`;
+                        const filePath = `${filesDirectory}/${entry.get('uuid')}`;
 
                         unlink(filePath, noop);
 

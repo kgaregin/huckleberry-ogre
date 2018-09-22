@@ -41,7 +41,8 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
         color: theme.palette.secondary.contrastText
     },
     homeButton: {
-        transition: '.3s'
+        transition: '.3s',
+        flexGrow: 0.98
     },
     homeButtonShift: {
         transform: 'translate3d(-70px,0,0)'
