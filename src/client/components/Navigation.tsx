@@ -1,29 +1,28 @@
 import React from 'react';
 import {
     AppBar,
-    IconButton,
-    Typography,
-    Toolbar,
-    Drawer,
     Divider,
+    Drawer,
     Grid,
+    IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
+    Toolbar,
+    Typography,
     WithStyles,
 } from '@material-ui/core';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
 import classNames from 'classnames';
-import {RouteComponentProps, Route, Switch, Link} from 'react-router-dom';
+import {Link, Route, RouteComponentProps, Switch} from 'react-router-dom';
 import {Blog} from '../modules/blog/Blog';
 import {EBlogViewMode} from '../modules/blog/Enums';
 import {ErrorBoundary} from './ErrorBoundary';
-import {navigateTo, IAppState} from '../core/reduxStore';
+import {IAppState, navigateTo} from '../core/reduxStore';
 import Samurai_Jack from '../assets/Samurai_Jack.png';
 import {Notification} from '../modules/notification/Notification';
 import {BlogActions} from '../modules/blog/Actions';
@@ -32,6 +31,8 @@ import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {DropZoneActions} from '../modules/dropZone/Actions';
 import {LoginActions} from '../modules/login/Actions';
+import {Login} from "../modules/login/Login";
+import {NotificationActions} from "../modules/notification/Actions";
 
 /**
  * Navigation component properties.
@@ -99,7 +100,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
     };
 
     render() {
-        const {classes, loginActions} = this.props;
+        const {classes} = this.props;
         const {isDrawerOpen} = this.state;
         const mainClassName = classNames(classes.content, {
                 [classes.contentShift]: isDrawerOpen
@@ -119,14 +120,15 @@ class NavigationComponent extends React.Component<TProps, IState> {
                             >
                                 <MenuIcon/>
                             </IconButton>
-                            <Typography variant="title"
-                                        className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}
+                            <Typography
+                                variant="title"
+                                className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}
                             >
                                 <Link to="/" onClick={this.handleDrawerClose}>
                                     {'Huckleberry Ogre Home'}
                                 </Link>
                             </Typography>
-                            <IconButton onClick={loginActions.handleLoginWithGoogle}><AccountCircleIcon/></IconButton>
+                            <Login/>
                         </Toolbar>
                     </AppBar>
                     <Drawer
@@ -159,7 +161,7 @@ class NavigationComponent extends React.Component<TProps, IState> {
                                             <div className='text-center'>
                                                 <h1>404 :\</h1>
                                                 <h3>This page is totally lost!</h3>
-                                                <img src={Samurai_Jack} alt=""/>
+                                                <img src={Samurai_Jack} alt="just like Jack..."/>
                                             </div>
                                         )}
                                         />
@@ -179,11 +181,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) =>
     return {
         blogActions: new BlogActions(dispatch),
         dropZoneActions: new DropZoneActions(dispatch),
-        loginActions: new LoginActions(dispatch)
+        loginActions: new LoginActions(dispatch),
+        notificationActions: new NotificationActions(dispatch)
     };
 };
 
-type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions, loginActions: LoginActions }
+type TDispatchProps = {
+    blogActions: BlogActions,
+    dropZoneActions: DropZoneActions,
+    loginActions: LoginActions,
+    notificationActions: NotificationActions
+}
 type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
 type TStyleProps = WithStyles<typeof styles>;
 

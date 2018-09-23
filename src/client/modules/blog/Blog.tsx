@@ -1,17 +1,16 @@
-import React from 'react';
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {EBlogViewMode, ETabIndex} from './Enums';
 import {RouteComponentProps} from 'react-router-dom';
 import {
-    Tabs,
-    Tab,
-    TextField,
     Button,
-    Paper,
-    Typography,
     Divider,
     Grid,
     IconButton,
+    Paper,
+    Tab,
+    Tabs,
+    TextField,
+    Typography,
     WithStyles,
 } from '@material-ui/core';
 import {styles} from '../../styles/modules/Blog';
@@ -20,8 +19,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import {BlogActions} from './Actions';
 import {Action} from 'redux';
-import {navigateTo, IAppState} from '../../core/reduxStore';
-import {IPost} from '../../../server/db/models';
+import {IAppState, navigateTo} from '../../core/reduxStore';
+import {ERole, IPost} from '../../../server/db/models';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import classNames from 'classnames';
@@ -31,6 +30,7 @@ import {HOC} from '../../core/utils/HOC';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import {DropZoneActions} from '../dropZone/Actions';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import {ILoginStateProps} from "../login/Login";
 
 /**
  * Form fields set.
@@ -61,7 +61,7 @@ export interface IBlogStateProps {
 /**
  * Blog props.
  */
-type TProps = IBlogStateProps & TRouteProps & TStyleProps & TDispatchProps;
+type TProps = IBlogStateProps & ILoginStateProps & TRouteProps & TStyleProps & TDispatchProps;
 
 /**
  * Blog state.
@@ -216,9 +216,10 @@ class BlogComponent extends Component<TProps, IState> {
 
     render() {
         const mode = this.props.match.params.mode || EBlogViewMode.READ;
-        const {classes, posts, requestPostsStatus} = this.props;
+        const {classes, posts, requestPostsStatus, user} = this.props;
+        const isAdmin = user && user.role === ERole.ADMIN;
 
-        if (mode === EBlogViewMode.CREATE || mode === EBlogViewMode.EDIT) {
+        if (mode === EBlogViewMode.CREATE || mode === EBlogViewMode.EDIT && isAdmin) {
             return this.renderPostEdit();
         }
 
@@ -226,13 +227,13 @@ class BlogComponent extends Component<TProps, IState> {
             <div>
                 <div
                     className={classNames(classes.progress, {['active']: requestPostsStatus === ERequestStatus.PENDING})}>
-                    <LinearProgress />
+                    <LinearProgress/>
                 </div>
                 {sortBy(posts, 'id').map(post =>
                     post.message &&
                     <Paper className={classes.postPaper} key={post.id}>
                         <Grid container>
-                            <Grid item md={11} xs={12}>
+                            <Grid item md={isAdmin ? 11 : 12} xs={12}>
                                 {post.title &&
                                 <Typography variant="title" gutterBottom align={'center'}>
                                     {post.title}
@@ -242,8 +243,8 @@ class BlogComponent extends Component<TProps, IState> {
                                     {parser.toReact(post.message)}
                                 </Typography>
                             </Grid>
-                            <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>
-                            <Grid item md={1} xs={12} className={classes.postActions}>
+                            {isAdmin && <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>}
+                            {isAdmin && <Grid item md={1} xs={12} className={classes.postActions}>
                                 <IconButton
                                     onClick={() => post.id && this.handlePostRemove(post.id)}
                                     aria-label="Remove post"
@@ -256,25 +257,30 @@ class BlogComponent extends Component<TProps, IState> {
                                 >
                                     <BorderColorIcon className={classes.postActionButtonIcon}/>
                                 </IconButton>
-                            </Grid>
+                            </Grid>}
                         </Grid>
                     </Paper>)
                 }
-                <Button
-                    variant="fab"
-                    color="primary"
-                    aria-label="edit"
-                    className={classes.buttonCreate}
-                    onClick={this.handleCreatePostButtonClick}
-                >
-                    <ModeEditIcon/>
-                </Button>
+                {isAdmin && (
+                    <Button
+                        variant="fab"
+                        color="primary"
+                        aria-label="edit"
+                        className={classes.buttonCreate}
+                        onClick={this.handleCreatePostButtonClick}
+                    >
+                        <ModeEditIcon/>
+                    </Button>
+                )}
             </div>
         );
     }
 }
 
-const mapStateToProps = (state: IAppState) => state.blogState;
+const mapStateToProps = (state: IAppState) => ({
+    ...state.blogState,
+    ...state.loginState
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {

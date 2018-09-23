@@ -45,7 +45,7 @@ const routes: ServerRoute[] = [
                     if (!isEmpty(entry)) {
                         return handler.file(`./${entry.get('uuid')}`);
                     } else {
-                        return handler.continue;
+                        return handler.response('file not found').code(404);
                     }
                 });
         }
@@ -53,16 +53,7 @@ const routes: ServerRoute[] = [
     {
         method: 'GET',
         path: '/rest/db/files/all',
-        handler: (__, handler) => {
-            return FileActions.getAllFiles()
-                .then(entries => {
-                    if (!isEmpty(entries)) {
-                        return handler.response(JSON.stringify(entries));
-                    }
-
-                    return handler.continue;
-                });
-        }
+        handler: () => FileActions.getAllFiles()
     },
     {
         method: 'POST',

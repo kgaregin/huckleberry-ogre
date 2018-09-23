@@ -5,9 +5,11 @@ import {createBrowserHistory, History} from 'history';
 import {connectRouter, routerMiddleware, push, RouterState} from 'connected-react-router';
 import {IBlogStateProps} from '../modules/blog/Blog';
 import {INotificationStateProps} from '../modules/notification/Notification';
+import {IDropZoneStateProps} from '../modules/dropZone/DropZone';
+import {ILoginStateProps} from "../modules/login/Login";
 import {notificationState} from '../modules/notification/Reducers';
 import {dropZoneState} from '../modules/dropZone/Reducers';
-import {IDropZoneStateProps} from '../modules/dropZone/DropZone';
+import {loginState} from "../modules/login/Reducers";
 
 /**
  * Combined reducers interface.
@@ -18,6 +20,7 @@ export interface ICombinedReducers {
     blogState: IBlogStateProps;
     notificationState: INotificationStateProps;
     dropZoneState: IDropZoneStateProps;
+    loginState: ILoginStateProps;
 }
 
 /** Combined reducers. */
@@ -25,7 +28,8 @@ const combinedReducers = combineReducers<ICombinedReducers>(
     {
         blogState,
         dropZoneState,
-        notificationState
+        notificationState,
+        loginState
     }
 );
 

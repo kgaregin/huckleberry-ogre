@@ -26,7 +26,7 @@ const webpackConfiguration: webpack.Configuration = {
             enforce: 'pre',
             test: /\.ts|\.tsx$/,
             loader: 'source-map-loader',
-            include: path.resolve(__dirname, 'src/client')
+            include: [path.resolve(__dirname, 'src/client'), path.resolve(__dirname, 'src/server/db/models.ts')]
         }, {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
@@ -48,7 +48,7 @@ const webpackConfiguration: webpack.Configuration = {
             options: {
                 configFileName: path.resolve(__dirname, 'src/client/tsconfig.json')
             },
-            include: path.resolve(__dirname, 'src/client'),
+            include: [path.resolve(__dirname, 'src/client'), path.resolve(__dirname, 'src/server/db/models.ts')],
             exclude: /node_modules/
         }]
     },

@@ -16,6 +16,9 @@ import {BlogActions} from '../modules/blog/Actions';
 import {RouteComponentProps} from 'react-router-dom';
 import {get as getCookie, erase as removeCookie} from 'browser-cookies';
 import {Base64} from 'js-base64';
+import {ENotificationVariant} from "../modules/notification/Notification";
+import {LoginActions} from "../modules/login/Actions";
+import {NotificationActions} from "../modules/notification/Actions";
 
 /**
  * @prop {JSX.Element} children React children not provided by default.
@@ -46,22 +49,41 @@ class GlobalLayoutComponent extends React.Component<IProps> {
      * @param {Location} location Location object.
      */
     handleLocationChange = (location: Location) => {
-        const {blogActions, dropZoneActions} = this.props;
-        const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
-        const blogPageRouteMatch = blogPageRoute.match(location.pathname);
+        const {blogActions, dropZoneActions, loginActions, notificationActions} = this.props;
         const newLocation = getCookie('redirectTo');
         const user = getCookie('user');
+        const pathName = newLocation && Base64.decode(newLocation) || location.pathname;
+        const blogPageRoute = new RouteParser('/blog(/:mode)(/:postID)');
+        const blogPageRouteMatch = blogPageRoute.match(pathName);
+
         let isDropZoneEnabled = false;
 
         if (user) {
-            //toDo: handle user info.
-            console.log(JSON.parse(Base64.decode(user)));
+            try {
+                const decodedUser = Base64.decode(user);
+                loginActions.setUser(JSON.parse(decodedUser));
+                localStorage.setItem('user', decodedUser);
+                removeCookie('user', {path: 'rest/login'});
+            } catch (exception) {
+                notificationActions.show({
+                    message: 'Can\'t log in, check console for errors',
+                    variant: ENotificationVariant.ERROR
+                });
+                console.log(exception)
+            }
         }
 
         if (newLocation) {
             //toDo: find out why cookie doesn't deletes if path is not given...
             //toDo: find other approach, this way is too dangerous :\
             removeCookie('redirectTo', {path: 'rest/login'});
+            if (getCookie('redirectTo')) {
+                notificationActions.show({
+                    message: 'Trying to delete cookie manually to avoid errors.',
+                    variant: ENotificationVariant.WARNING
+                });
+                document.cookie = 'redirectTo=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            }
             navigateTo(Base64.decode(newLocation));
         }
 
@@ -101,12 +123,19 @@ class GlobalLayoutComponent extends React.Component<IProps> {
 const mapDispatchToProps = (dispatch: ThunkDispatch<IAppState, void, Action>) => {
     return {
         blogActions: new BlogActions(dispatch),
-        dropZoneActions: new DropZoneActions(dispatch)
+        dropZoneActions: new DropZoneActions(dispatch),
+        loginActions: new LoginActions(dispatch),
+        notificationActions: new NotificationActions(dispatch)
     };
 };
 
 type TRouteProps = RouteComponentProps<{ mode: EBlogViewMode, postID: string }>;
-type TDispatchProps = { blogActions: BlogActions, dropZoneActions: DropZoneActions }
+type TDispatchProps = {
+    blogActions: BlogActions,
+    dropZoneActions: DropZoneActions,
+    loginActions: LoginActions,
+    notificationActions: NotificationActions
+}
 type TStyleProps = WithStyles<typeof styles>;
 
 export const GlobalLayout = HOC<{}, TDispatchProps, TStyleProps, TRouteProps>(

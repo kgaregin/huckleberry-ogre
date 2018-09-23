@@ -11,7 +11,7 @@ import {withRouter} from 'react-router-dom';
  * @param {MapStateToPropsParam | null} settings.mapStateToProps State props.
  * @param {MapDispatchToPropsParam | null} settings.mapDispatchToProps Dispatch props.
  * @param {StyleRulesCallback | StyleRules} [settings.styles] If provided, wuthStyles hoc added.
- * @param {boolean} [settings.isWithRouter] Should router be connected flag.
+ * @param {boolean} [settings.isWithRouter] Should router be connected flag. False by default.
  */
 interface IHOCSettings<TStateProps, TDispatchProps, TStyleProps, TRouteProps> {
     mapStateToProps: MapStateToPropsParam<TStateProps, TStyleProps & TRouteProps, IAppState> | null,

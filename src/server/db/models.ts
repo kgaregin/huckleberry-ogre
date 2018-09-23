@@ -7,10 +7,10 @@ import {Sequelize, DataTypes, Instance} from 'sequelize';
  * {string} createdAt Creation timestamp.
  * {string} updatedAt Last update timestamp.
  */
-interface IModelCommonFields {
-    id?: number,
-    createdAt?: string,
-    updatedAt?: string
+export interface IModelCommonFields {
+    id?: number;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 /**
@@ -20,8 +20,8 @@ interface IModelCommonFields {
  * {string} message Body of post.
  */
 export interface IPost extends IModelCommonFields {
-    title?: string,
-    message?: string,
+    title?: string;
+    message?: string;
 }
 
 /**
