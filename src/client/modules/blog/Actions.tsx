@@ -8,7 +8,7 @@ import {getPost} from './Utils';
 import {ThunkDispatch} from 'redux-thunk';
 import {NotificationActions} from '../notification/Actions';
 import {ENotificationVariant} from '../notification/Notification';
-import {IBlogStateProps} from "./Blog";
+import {IBlogFormField, IBlogStateProps} from "./Blog";
 import {IPost} from "../../../server/db/models";
 
 /**
@@ -175,10 +175,10 @@ export class BlogActions {
     /**
      * Handle form input events.
      *
-     * @param {string} fieldName Name of field.
+     * @param {keyof IBlogFormField} fieldName Name of field.
      * @param {string} fieldValue Value.
      */
-    handleFormInput = (fieldName: string, fieldValue: string) => this.dispatch({
+    handleFormInput = (fieldName: keyof IBlogFormField, fieldValue: string) => this.dispatch({
         type: HANDLE_FORM_INPUT,
         payload: {
             fieldName,

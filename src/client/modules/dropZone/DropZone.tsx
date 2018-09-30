@@ -24,6 +24,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {isInsideElement} from './Utils';
 import classNames from 'classnames';
 import {IFile} from '../../../server/db/models';
+import {EModalTabIndex} from "./Reducers";
 
 /**
  * DropZone state.
@@ -58,14 +59,6 @@ enum EDragPosition {
 }
 
 /**
- * Tab index of modal window.
- */
-export enum EModalTabIndex {
-    UPLOAD,
-    GALLERY
-}
-
-/**
  * DropZone component.
  */
 class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProps & TDispatchProps, IState> {
@@ -87,8 +80,8 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
      */
     handleUrlKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
-            // ToDo: add support for urls
-            console.log('process url');
+            const inputUrlFieldValue = event.currentTarget.querySelector('input').value;
+            this.props.actions.addImgFromURL(inputUrlFieldValue);
         }
     };
 
@@ -218,7 +211,6 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                 {tabIndex === EModalTabIndex.UPLOAD && (
                                     <div className={classes.uploadTab}>
                                         <TextField
-                                            id='urlInput'
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -229,6 +221,7 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                             fullWidth
                                             onKeyPress={this.handleUrlKeyPress}
                                             className='margin-bottom-2'
+                                            name='inputURL'
                                         />
                                         <div
                                             id="dropZone"

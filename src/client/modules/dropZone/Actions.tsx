@@ -4,10 +4,11 @@ import {IAppState} from '../../core/reduxStore';
 import {ThunkDispatch} from 'redux-thunk';
 import forEach from 'lodash/forEach';
 import {post, get, remove} from '../../core/utils/ServiceUtils';
-import {EModalTabIndex} from "./DropZone";
+import {EModalTabIndex} from "./Reducers";
 import {IFile} from "../../../server/db/models";
 import {ENotificationVariant} from "../notification/Notification";
 import {NotificationActions} from "../notification/Actions";
+import {BlogActions} from "../blog/Actions";
 
 /**
  * Action types.
@@ -159,4 +160,20 @@ export class DropZoneActions {
                 });
             });
     };
+
+    /**
+     * Adds image into message form field.
+     *
+     * @param {string} url Image link.
+     */
+    addImgFromURL = (url: string) => this.dispatch(
+        (dispatch, getState) => {
+            const blogActions = new BlogActions(dispatch);
+            blogActions.handleFormInput(
+                'message',
+                `${getState().blogState.form.message}\n[img]${url}[/img]`
+            );
+            this.hide();
+        }
+    );
 }

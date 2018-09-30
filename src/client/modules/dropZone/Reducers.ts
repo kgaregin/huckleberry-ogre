@@ -7,7 +7,15 @@ import {
     DROP_ZONE_MODAL_TAB_CHANGE,
     DROP_ZONE_GET_ALL_FILES,
 } from './Actions';
-import {EModalTabIndex, IDropZoneStateProps} from './DropZone';
+import {IDropZoneStateProps} from './DropZone';
+
+/**
+ * Tab index of modal window.
+ */
+export enum EModalTabIndex {
+    UPLOAD,
+    GALLERY
+}
 
 /**
  * Initial DropZone state.

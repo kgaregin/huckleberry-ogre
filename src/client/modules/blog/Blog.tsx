@@ -38,7 +38,7 @@ import {ILoginStateProps} from "../login/Login";
  * @prop {string} title Post title.
  * @prop {string} message Post message.
  */
-interface IForm {
+export interface IBlogFormField {
     title: string;
     message: string;
 }
@@ -53,7 +53,7 @@ interface IForm {
  */
 export interface IBlogStateProps {
     posts: IPost[],
-    form: IForm
+    form: IBlogFormField
     submitStatus: ERequestStatus;
     requestPostsStatus: ERequestStatus;
 }
@@ -150,7 +150,6 @@ class BlogComponent extends Component<TProps, IState> {
                             <form className={classes.form} noValidate>
                                 <TextField
                                     placeholder="Got something new?"
-                                    id="title"
                                     label="Title"
                                     className={classes.textField}
                                     value={title}
@@ -158,6 +157,7 @@ class BlogComponent extends Component<TProps, IState> {
                                     margin="normal"
                                     fullWidth
                                     autoComplete="off"
+                                    name="title"
                                 />
                                 <div className={classes.actionPanel}>
                                     <Button
@@ -174,8 +174,8 @@ class BlogComponent extends Component<TProps, IState> {
                                 </div>
                                 <TextField
                                     placeholder="Go on and share it with friends!"
-                                    id="message"
                                     label="Message"
+                                    name="message"
                                     className='margin-top-0'
                                     multiline
                                     fullWidth
