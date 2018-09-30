@@ -31,3 +31,4 @@ npm-debug.log
 /.idea/
 huckleberry-ogre.iml
 dist
+server/db/sqlite/hbogre.db

@@ -12,7 +12,7 @@ export const styles: StyleRulesCallback = (__: Theme) => createStyles({
             color: 'white'
         },
         '& .googleIcon': {
-            width: '70%',
+            width: '56%',
         },
         '& .accountCircleIcon': {
             transform: 'scale(1.4)'
