@@ -60,6 +60,7 @@ enum EDragPosition {
 
 /**
  * DropZone component.
+ * toDo: extract inner logic of modal window into separate FileManager component.
  */
 class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProps & TDispatchProps, IState> {
 

@@ -54,7 +54,7 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
 
         return (
             <span className={classes.message}>
-                <Icon className={classes.icon}/>
+                {Icon && <Icon className={classes.icon}/>}
                 <span className={classes.messageText}>{message}</span>
             </span>
         );
@@ -71,6 +71,7 @@ class NotificationComponent extends React.Component<INotificationStateProps & TS
                 }}
                 onClose={actions.close}
                 open={show}
+                className={classes.notificationSnackbar}
             >
                 <SnackbarContent
                     className={classes[variant]}

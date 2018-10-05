@@ -15,6 +15,9 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
     warning: {
         backgroundColor: amber[700],
     },
+    notificationSnackbar: {
+        top: '7px'
+    },
     icon: {
         fontSize: 20,
         opacity: 0.9,

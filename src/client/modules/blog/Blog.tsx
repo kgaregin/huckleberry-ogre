@@ -24,10 +24,11 @@ import {ERole, IPost} from '../../../server/db/models';
 import sortBy from 'lodash/sortBy';
 import {ERequestStatus} from '../../core/enums';
 import classNames from 'classnames';
-import parser from 'bbcode-to-react';
+import {parser} from '../../core/utils/BBCodeParser';
 import {ThunkDispatch} from 'redux-thunk';
 import {HOC} from '../../core/utils/HOC';
-import AddAPhoto from '@material-ui/icons/AddAPhoto';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import CameraIcon from '@material-ui/icons/Camera';
 import {DropZoneActions} from '../dropZone/Actions';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {ILoginStateProps} from "../login/Login";
@@ -168,7 +169,17 @@ class BlogComponent extends Component<TProps, IState> {
                                         className={classes.actionPanelButton}
                                     >
                                         {'Add image'}
-                                        <AddAPhoto className={classes.actionPanelIcon}/>
+                                        <AddAPhotoIcon className={classes.actionPanelIcon}/>
+                                    </Button>
+                                    <Button
+                                        variant="text"
+                                        component="span"
+                                        onClick={dropZoneActions.show}
+                                        size='small'
+                                        className={classes.actionPanelButton}
+                                    >
+                                        {'Add video'}
+                                        <CameraIcon className={classes.actionPanelIcon}/>
                                     </Button>
                                     <hr className='margin-top-0 margin-bottom-2'/>
                                 </div>
