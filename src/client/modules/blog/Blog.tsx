@@ -31,7 +31,7 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import CameraIcon from '@material-ui/icons/Camera';
 import {DropZoneActions} from '../dropZone/Actions';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {ILoginStateProps} from "../login/Login";
+import {ILoginStateProps} from '../login/Login';
 
 /**
  * Form fields set.
@@ -225,65 +225,88 @@ class BlogComponent extends Component<TProps, IState> {
         );
     };
 
-    render() {
-        const mode = this.props.match.params.mode || EBlogViewMode.READ;
-        const {classes, posts, requestPostsStatus, user} = this.props;
+    renderPostView = () => {
+        const {classes, posts, requestPostsStatus} = this.props;
+        const {user} = this.props;
         const isAdmin = user && user.role === ERole.ADMIN;
 
-        if (mode === EBlogViewMode.CREATE || mode === EBlogViewMode.EDIT && isAdmin) {
-            return this.renderPostEdit();
+        return (
+            <>
+            <div
+                className={classNames(classes.progress, {['active']: requestPostsStatus === ERequestStatus.PENDING})}
+            >
+                <LinearProgress/>
+            </div>
+            {sortBy(posts, 'id').map(post =>
+                post.message &&
+                <Paper className={classes.postPaper} key={post.id}>
+                    <Grid container>
+                        <Grid item md={isAdmin ? 11 : 12} xs={12}>
+                            {post.title &&
+                            <Typography variant="title" gutterBottom align={'center'}>
+                                {post.title}
+                            </Typography>}
+                            {post.title && <Divider className={classes.postDivider}/>}
+                            <Typography variant="body1" gutterBottom align={'left'}>
+                                {parser.toReact(post.message)}
+                            </Typography>
+                        </Grid>
+                        {isAdmin &&
+                        <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>}
+                        {isAdmin && <Grid item md={1} xs={12} className={classes.postActions}>
+                            <IconButton
+                                onClick={() => post.id && this.handlePostRemove(post.id)}
+                                aria-label="Remove post"
+                            >
+                                <DeleteIcon className={classes.postActionButtonIcon}/>
+                            </IconButton>
+                            <IconButton
+                                onClick={() => post.id && this.handlePostEdit(post.id)}
+                                aria-label="Edit post"
+                            >
+                                <BorderColorIcon className={classes.postActionButtonIcon}/>
+                            </IconButton>
+                        </Grid>}
+                    </Grid>
+                </Paper>
+            )}
+            {isAdmin && (
+                <Button
+                    variant="fab"
+                    color="primary"
+                    aria-label="edit"
+                    className={classes.buttonCreate}
+                    onClick={this.handleCreatePostButtonClick}
+                >
+                    <ModeEditIcon/>
+                </Button>
+            )}
+            </>
+        );
+    };
+
+    render() {
+        const mode = this.props.match.params.mode || EBlogViewMode.READ;
+        const {user} = this.props;
+        const isAdmin = user && user.role === ERole.ADMIN;
+        let blogForm: JSX.Element;
+
+        switch (mode) {
+            case EBlogViewMode.CREATE:
+            case EBlogViewMode.EDIT:
+                blogForm = isAdmin ? this.renderPostEdit() : this.renderPostView();
+                break;
+            case EBlogViewMode.READ:
+            default:
+                blogForm = this.renderPostView();
         }
 
         return (
-            <div>
-                <div
-                    className={classNames(classes.progress, {['active']: requestPostsStatus === ERequestStatus.PENDING})}>
-                    <LinearProgress/>
-                </div>
-                {sortBy(posts, 'id').map(post =>
-                    post.message &&
-                    <Paper className={classes.postPaper} key={post.id}>
-                        <Grid container>
-                            <Grid item md={isAdmin ? 11 : 12} xs={12}>
-                                {post.title &&
-                                <Typography variant="title" gutterBottom align={'center'}>
-                                    {post.title}
-                                </Typography>}
-                                {post.title && <Divider className={classes.postDivider}/>}
-                                <Typography variant="body1" gutterBottom align={'left'}>
-                                    {parser.toReact(post.message)}
-                                </Typography>
-                            </Grid>
-                            {isAdmin && <Divider className={classNames(classes.postDivider, 'display-none-md-up')}/>}
-                            {isAdmin && <Grid item md={1} xs={12} className={classes.postActions}>
-                                <IconButton
-                                    onClick={() => post.id && this.handlePostRemove(post.id)}
-                                    aria-label="Remove post"
-                                >
-                                    <DeleteIcon className={classes.postActionButtonIcon}/>
-                                </IconButton>
-                                <IconButton
-                                    onClick={() => post.id && this.handlePostEdit(post.id)}
-                                    aria-label="Edit post"
-                                >
-                                    <BorderColorIcon className={classes.postActionButtonIcon}/>
-                                </IconButton>
-                            </Grid>}
-                        </Grid>
-                    </Paper>)
-                }
-                {isAdmin && (
-                    <Button
-                        variant="fab"
-                        color="primary"
-                        aria-label="edit"
-                        className={classes.buttonCreate}
-                        onClick={this.handleCreatePostButtonClick}
-                    >
-                        <ModeEditIcon/>
-                    </Button>
-                )}
-            </div>
+            <Grid container justify={'center'}>
+                <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
+                    {blogForm}
+                </Grid>
+            </Grid>
         );
     }
 }

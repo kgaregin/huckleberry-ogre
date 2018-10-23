@@ -58,7 +58,6 @@ const webpackConfiguration: webpack.Configuration = {
             title: 'Huckleberry Ogre welcomes you, stranger!',
             template: 'index_template.ejs'
         }),
-        new webpack.HotModuleReplacementPlugin(),
         new CopyWebpackPlugin([
             {from: 'node_modules/react/umd/react.development.js', to: 'react.development.js'},
             {from: 'node_modules/react-dom/umd/react-dom.development.js', to: 'react-dom.development.js'},

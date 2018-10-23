@@ -16,9 +16,9 @@ import {BlogActions} from '../modules/blog/Actions';
 import {RouteComponentProps} from 'react-router-dom';
 import {get as getCookie, erase as removeCookie} from 'browser-cookies';
 import {Base64} from 'js-base64';
-import {ENotificationVariant} from "../modules/notification/Notification";
-import {LoginActions} from "../modules/login/Actions";
-import {NotificationActions} from "../modules/notification/Actions";
+import {ENotificationVariant} from '../modules/notification/Notification';
+import {LoginActions} from '../modules/login/Actions';
+import {NotificationActions} from '../modules/notification/Actions';
 
 /**
  * @prop {JSX.Element} children React children not provided by default.
@@ -69,7 +69,7 @@ class GlobalLayoutComponent extends React.Component<IProps> {
                     message: 'Can\'t log in, check console for errors',
                     variant: ENotificationVariant.ERROR
                 });
-                console.log(exception)
+                console.log(exception);
             }
         }
 
@@ -88,15 +88,20 @@ class GlobalLayoutComponent extends React.Component<IProps> {
         }
 
 
-        if (blogPageRouteMatch) {
+        if (blogPageRouteMatch || pathName === '/') {
             blogActions.requestBlogPosts().then(() => {
-                if (blogPageRouteMatch.mode === EBlogViewMode.EDIT && blogPageRouteMatch.postID) {
+                if (blogPageRouteMatch &&
+                    blogPageRouteMatch.mode === EBlogViewMode.EDIT &&
+                    blogPageRouteMatch.postID
+                ) {
                     blogActions.fillPostEditForm(+blogPageRouteMatch.postID);
                 }
             });
-            if (blogPageRouteMatch.mode === EBlogViewMode.EDIT || blogPageRouteMatch.mode === EBlogViewMode.CREATE) {
-                isDropZoneEnabled = true;
-            }
+            isDropZoneEnabled = blogPageRouteMatch && (
+                blogPageRouteMatch.mode === EBlogViewMode.EDIT ||
+                blogPageRouteMatch.mode === EBlogViewMode.CREATE
+            );
+
         }
 
         isDropZoneEnabled ? dropZoneActions.enable() : dropZoneActions.disable();

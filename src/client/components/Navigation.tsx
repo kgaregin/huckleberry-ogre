@@ -3,7 +3,6 @@ import {
     AppBar,
     Divider,
     Drawer,
-    Grid,
     IconButton,
     List,
     ListItem,
@@ -14,6 +13,7 @@ import {
     WithStyles,
 } from '@material-ui/core';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {styles} from '../styles/components/Navigation';
@@ -31,8 +31,9 @@ import {ThunkDispatch} from 'redux-thunk';
 import {Action} from 'redux';
 import {DropZoneActions} from '../modules/dropZone/Actions';
 import {LoginActions} from '../modules/login/Actions';
-import {Login} from "../modules/login/Login";
-import {NotificationActions} from "../modules/notification/Actions";
+import {Login} from '../modules/login/Login';
+import {NotificationActions} from '../modules/notification/Actions';
+import {ElectricForceField} from '../modules/electricForceField/electricForceField';
 
 /**
  * Navigation component properties.
@@ -95,84 +96,92 @@ class NavigationComponent extends React.Component<TProps, IState> {
                     <ListItemText className={classes.listItemText} primary="Blog"/>
                 </ListItem>
                 <Divider/>
+                <ListItem
+                    className={classes.listItem}
+                    onClick={() => this.handleListItemClick('/electricForceField')}
+                >
+                    <ListItemIcon>
+                        <BlurOnIcon/>
+                    </ListItemIcon>
+                    <ListItemText className={classes.listItemText} primary="Electric force field app"/>
+                </ListItem>
+                <Divider/>
             </List>
         );
     };
 
     render() {
-        const {classes} = this.props;
+        const {classes, location:{pathname}} = this.props;
         const {isDrawerOpen} = this.state;
+        const isElectricForceFieldPage = pathname === '/electricForceField';
         const mainClassName = classNames(classes.content, {
-                [classes.contentShift]: isDrawerOpen
+                [classes.contentShift]: isDrawerOpen,
+                'padding-0 overflowHidden': isElectricForceFieldPage
             }
         );
 
         return (
-            <div className={classes.root}>
-                <div className={classes.appFrame}>
-                    <AppBar className={classNames(classes.appBar, isDrawerOpen && classes.appBarShift)}>
-                        <Toolbar className={classes.toolbar} disableGutters={!isDrawerOpen}>
-                            <IconButton
-                                className={classNames(classes.menuButton, isDrawerOpen && classes.hide)}
-                                color="primary"
-                                aria-label="open drawer"
-                                onClick={this.handleDrawerOpen}
-                            >
-                                <MenuIcon/>
-                            </IconButton>
-                            <Typography
-                                variant="title"
-                                className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}
-                            >
-                                <Link to="/" onClick={this.handleDrawerClose}>
-                                    {'Huckleberry Ogre Home'}
-                                </Link>
-                            </Typography>
-                            <Login/>
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer
-                        variant="persistent"
-                        classes={{
-                            paper: classes.drawerPaper,
-                            docked: classes.drawerDocked
-                        }}
-                        open={isDrawerOpen}
-                    >
-                        <div>
-                            <div className={classes.drawerHeader}>
-                                <IconButton onClick={this.handleDrawerClose}>
-                                    <ChevronLeftIcon/>
+            <ErrorBoundary>
+                <div className={classes.root}>
+                    <div className={classes.appFrame}>
+                        <AppBar className={classNames(classes.appBar, isDrawerOpen && classes.appBarShift)}>
+                            <Toolbar className={classes.toolbar} disableGutters={!isDrawerOpen}>
+                                <IconButton
+                                    className={classNames(classes.menuButton, isDrawerOpen && classes.hide)}
+                                    color="primary"
+                                    aria-label="open drawer"
+                                    onClick={this.handleDrawerOpen}
+                                >
+                                    <MenuIcon/>
                                 </IconButton>
+                                <Typography
+                                    variant="title"
+                                    className={classNames(classes.homeButton, isDrawerOpen && classes.homeButtonShift)}
+                                >
+                                    <Link to="/" onClick={this.handleDrawerClose}>
+                                        {'Huckleberry Ogre Home'}
+                                    </Link>
+                                </Typography>
+                                <Login/>
+                            </Toolbar>
+                        </AppBar>
+                        <Drawer
+                            variant="persistent"
+                            classes={{
+                                paper: classes.drawerPaper,
+                                docked: classes.drawerDocked
+                            }}
+                            open={isDrawerOpen}
+                        >
+                            <div>
+                                <div className={classes.drawerHeader}>
+                                    <IconButton onClick={this.handleDrawerClose}>
+                                        <ChevronLeftIcon/>
+                                    </IconButton>
+                                </div>
+                                <Divider/>
+                                {this.getNavigationList()}
                             </div>
-                            <Divider/>
-                            {this.getNavigationList()}
-                        </div>
-                    </Drawer>
-                    <main className={mainClassName} onClick={this.handleDrawerClose}>
-                        {/*ToDo: maybe add some cool iScroll with touch events support here?*/}
-                        <Grid container justify={'center'}>
-                            <Grid item xl={8} lg={10} md={11} sm={12} xs={12}>
-                                <ErrorBoundary>
-                                    <Switch>
-                                        <Route exact path="/" render={() => <h1>Main page under construction</h1>}/>
-                                        <Route path="/blog/:mode?/:postID?" component={Blog}/>
-                                        <Route render={() => (
-                                            <div className='text-center'>
-                                                <h1>404 :\</h1>
-                                                <h3>This page is totally lost!</h3>
-                                                <img src={Samurai_Jack} alt="just like Jack..."/>
-                                            </div>
-                                        )}
-                                        />
-                                    </Switch>
-                                </ErrorBoundary>
-                            </Grid>
-                        </Grid>
-                        <Notification/>
-                    </main>
+                        </Drawer>
+                        <main className={mainClassName} onClick={this.handleDrawerClose}>
+                            <Switch>
+                                <Route exact path="/" component={Blog}/>
+                                <Route path="/blog/:mode?/:postID?" component={Blog}/>
+                                <Route path="/electricForceField" component={ElectricForceField}/>
+                                <Route render={() => (
+                                    <div className='text-center'>
+                                        <h1>404 :\</h1>
+                                        <h3>This page is totally lost!</h3>
+                                        <img src={Samurai_Jack} alt="just like Jack..."/>
+                                    </div>
+                                )}
+                                />
+                            </Switch>
+                            <Notification/>
+                        </main>
+                    </div>
                 </div>
-            </div>
+            </ErrorBoundary>
         );
     }
 }

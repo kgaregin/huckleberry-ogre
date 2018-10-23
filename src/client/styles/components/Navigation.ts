@@ -80,10 +80,10 @@ export const styles: StyleRulesCallback = (theme: Theme) => createStyles({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        height: 'calc(100% - 112px)',
+        height: 'calc(100% - 64px)',
         marginTop: '64px',
         [theme.breakpoints.up('sm')]: {
-            height: 'calc(100% - 112px)'
+            height: 'calc(100% - 64px)'
         },
     },
     contentShift: {
