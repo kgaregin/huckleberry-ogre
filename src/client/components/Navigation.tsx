@@ -33,7 +33,7 @@ import {DropZoneActions} from '../modules/dropZone/Actions';
 import {LoginActions} from '../modules/login/Actions';
 import {Login} from '../modules/login/Login';
 import {NotificationActions} from '../modules/notification/Actions';
-import {ElectricForceField} from '../modules/electricForceField/electricForceField';
+import {ElectricForceField} from '../modules/electricForceField/ElectricForceField';
 
 /**
  * Navigation component properties.

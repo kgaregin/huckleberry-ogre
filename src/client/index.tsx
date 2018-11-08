@@ -7,7 +7,7 @@ import {store, history} from './core/reduxStore';
 import {Provider} from 'react-redux';
 import {ConnectedRouter} from 'connected-react-router';
 import {ErrorBoundary} from './components/ErrorBoundary';
-import {ElectricForceField} from './modules/electricForceField/electricForceField';
+import {ElectricForceField} from './modules/electricForceField/ElectricForceField';
 
 <ErrorBoundary>
     <Provider store={store}>
