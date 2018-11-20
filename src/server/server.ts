@@ -5,7 +5,7 @@ import inert from 'inert';
 import {HomeRoute} from './routes/home';
 import {BlogRoute} from './routes/blog';
 import {FilesRoute} from './routes/files';
-import {SERVER_PORT} from '../config';
+import {SERVER_HOSTNAME, SERVER_PORT} from '../config';
 import {LoginRoute} from './routes/login';
 
 /**
@@ -13,7 +13,7 @@ import {LoginRoute} from './routes/login';
  */
 const serverOptions: ServerOptions = {
     port: SERVER_PORT,
-    host: 'localhost',
+    host: SERVER_HOSTNAME
 };
 
 /**

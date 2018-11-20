@@ -1,12 +1,7 @@
-import {IS_DEVELOPMENT} from './Utils';
 import isEmpty from 'lodash/isEmpty';
-import {SERVER_PORT} from '../../../config';
+import {REST_PATH, SERVER_ADDRESS} from '../../../config';
 import {EResponseType} from '../enums';
 import {Omit} from '@material-ui/core'
-
-/** Parts of url on server requests. */
-const SERVER_ADDRESS = IS_DEVELOPMENT ? `http://localhost:${SERVER_PORT}/` : '/';
-const REST = 'rest/';
 
 /**
  * RequestInit parameters of fetch second argument.
@@ -54,7 +49,7 @@ class ServiceUtils {
             requestSettings: {}
         };
         const {responseType, noWrap, requestSettings} = {...defaultOptions, ...options} as IRequestMethodOptions;
-        const REQUEST_URL = `${SERVER_ADDRESS}${REST}${requestURL}${method === 'get' && !isEmpty(body) ? `?payload=${body}` : ''}`;
+        const REQUEST_URL = `${SERVER_ADDRESS}/${REST_PATH}/${requestURL}${method === 'get' && !isEmpty(body) ? `?payload=${body}` : ''}`;
         let result: Promise<any> = fetch(REQUEST_URL, method === 'get' ? {method} : {
             method,
             body: noWrap ? body : JSON.stringify(body), ...requestSettings

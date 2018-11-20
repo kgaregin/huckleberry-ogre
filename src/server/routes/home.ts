@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 const distDirectory = path.join(__dirname, '../../../dist');
-const isFileExist = memoize(fileName => fs.existsSync(`${distDirectory}\\${fileName}`));
+const isFileExist = memoize(fileName => fs.existsSync(`${distDirectory}/${fileName}`));
 
 /**
  * Home routes configuration.

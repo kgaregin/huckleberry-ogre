@@ -12,7 +12,9 @@
     "webpack-error": "webpack --display-error-details",
     "tsc:server": "tsc --project src/server/tsconfig.json",
     "tsc:client": "tsc --project src/client/tsconfig.json",
-    "tsc": "npm run tsc:server && npm run tsc:client"
+    "tsc": "npm run tsc:server && npm run tsc:client",
+    "build-client": "webpack",
+    "release": "npx npm-run-all -p build-client server"
   },
   "repository": {
     "type": "git",

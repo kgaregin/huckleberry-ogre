@@ -2,6 +2,7 @@ import {Action} from 'redux';
 import {IAppState} from '../../core/reduxStore';
 import {ThunkDispatch} from 'redux-thunk';
 import {IUser} from '../../../server/db/models';
+import {SERVER_REST_ADDRESS} from "../../../config";
 
 /**
  * Action types.
@@ -20,7 +21,7 @@ export class LoginActions {
      * Starts handshaking with Google.
      */
     startLoginWithGoogle = () => {
-        window.location.href = `http://localhost:3001/rest/login/google?redirectTo=${window.location.pathname}`;
+        window.location.href = `${SERVER_REST_ADDRESS}/login/google?redirectTo=${window.location.pathname}`;
     };
 
     /**
