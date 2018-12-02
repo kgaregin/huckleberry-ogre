@@ -1,20 +1,21 @@
 {
   "name": "huckleberry-ogre",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Playground personal website",
   "main": "backend/bin/runServer.js",
   "scripts": {
-    "start": "npx npm-run-all -p server client",
-    "server": "ts-node-dev --project src/server/tsconfig.json src/server/server.ts",
+    "start": "npx npm-run-all -p server-dev client-watch",
+    "server-prod": "ts-node-dev --project src/server/tsconfig.json src/server/server.ts",
+    "server-dev": "ts-node-dev --project src/server/tsconfig.json src/server/server.ts",
     "server-debug": "ts-node-dev %NODE_DEBUG_OPTION% --project src/server/tsconfig.json src/server/server.ts",
-    "client": "webpack --watch",
+    "client-build": "webpack",
+    "client-watch": "webpack --watch",
     "client-debug": "webpack --watch %NODE_DEBUG_OPTION%",
     "webpack-error": "webpack --display-error-details",
     "tsc:server": "tsc --project src/server/tsconfig.json",
     "tsc:client": "tsc --project src/client/tsconfig.json",
     "tsc": "npm run tsc:server && npm run tsc:client",
-    "build-client": "webpack",
-    "release": "npx npm-run-all -p build-client server"
+    "release": "npx npm-run-all -p client-build server-prod"
   },
   "repository": {
     "type": "git",
