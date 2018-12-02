@@ -4,6 +4,12 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
+const tsFrontDirs = [
+    path.resolve(__dirname, 'src/client'),
+    path.resolve(__dirname, 'src/server/db/models.ts'),
+    path.resolve(__dirname, 'src/config.ts')
+];
+
 const webpackConfiguration: webpack.Configuration = {
     stats: {
         colors: true
@@ -26,7 +32,7 @@ const webpackConfiguration: webpack.Configuration = {
             enforce: 'pre',
             test: /\.ts|\.tsx$/,
             loader: 'source-map-loader',
-            include: [path.resolve(__dirname, 'src/client'), path.resolve(__dirname, 'src/server/db/models.ts')]
+            include: tsFrontDirs
         }, {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
@@ -48,7 +54,7 @@ const webpackConfiguration: webpack.Configuration = {
             options: {
                 configFileName: path.resolve(__dirname, 'src/client/tsconfig.json')
             },
-            include: [path.resolve(__dirname, 'src/client'), path.resolve(__dirname, 'src/server/db/models.ts')],
+            include: tsFrontDirs,
             exclude: /node_modules/
         }]
     },

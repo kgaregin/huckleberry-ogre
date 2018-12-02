@@ -5,8 +5,10 @@ import inert from 'inert';
 import {HomeRoute} from './routes/home';
 import {BlogRoute} from './routes/blog';
 import {FilesRoute} from './routes/files';
-import {SERVER_HOSTNAME, SERVER_PORT} from '../config';
+import {AppConfig} from '../config';
 import {LoginRoute} from './routes/login';
+
+const {SERVER_HOSTNAME, SERVER_PORT, AUTHENTICATION} = AppConfig;
 
 /**
  * Hapi server options.
@@ -28,13 +30,7 @@ const start = async () => {
     await server.register(inert);
     await server.register(Bell);
 
-    server.auth.strategy('google', 'bell', {
-        provider: 'google',
-        password: 'cookie_encryption_password_secure',
-        clientId: '196556193526-arf8m6in9vtgclg3q01ov6erhccc0588.apps.googleusercontent.com',
-        clientSecret: 'bjHlp0zxg4Pdo86JkC5O6Z9A',
-        isSecure: false,
-    });
+    server.auth.strategy('google', 'bell', AUTHENTICATION.GOOGLE);
 
     [HomeRoute, LoginRoute, BlogRoute, FilesRoute].forEach(route => route(server));
 

@@ -1,8 +1,26 @@
-import {IS_DEVELOPMENT} from "./client/core/utils/Utils";
-
-/** Parts of url on server requests. */
-export const REST_PATH = 'rest';
-export const SERVER_PORT = IS_DEVELOPMENT ? 3001 : 80;
-export const SERVER_HOSTNAME = IS_DEVELOPMENT ? 'localhost' : 'hqua0071371.online-vm.com';
-export const SERVER_ADDRESS = `http://${SERVER_HOSTNAME}:${SERVER_PORT}`;
-export const SERVER_REST_ADDRESS = `${SERVER_ADDRESS}/${REST_PATH}`;
+/**
+ * Application config sample.
+ *
+ * REST_PATH - path to rest service.
+ * SERVER_PORT - port number, set 80 for production.
+ * SERVER_HOSTNAME - set real hostname for production.
+ * SERVER_ADDRESS - hostname + port.
+ * SERVER_REST_ADDRESS - hostname + port + rest path.
+ * AUTHENTICATION - authentication configurations for each provider.
+ */
+export class AppConfig {
+    static REST_PATH = 'rest';
+    static SERVER_PORT = 3001;
+    static SERVER_HOSTNAME = 'localhost';
+    static SERVER_ADDRESS = `http://${AppConfig.SERVER_HOSTNAME}:${AppConfig.SERVER_PORT}`;
+    static SERVER_REST_ADDRESS = `${AppConfig.SERVER_ADDRESS}/${AppConfig.REST_PATH}`;
+    static AUTHENTICATION = {
+        GOOGLE: {
+            provider: 'google',
+            password: 'cookie_encryption_password_secure',
+            clientId: '196556193526-arf8m6in9vtgclg3q01ov6erhccc0588.apps.googleusercontent.com',
+            clientSecret: 'bjHlp0zxg4Pdo86JkC5O6Z9A',
+            isSecure: false
+        }
+    }
+}

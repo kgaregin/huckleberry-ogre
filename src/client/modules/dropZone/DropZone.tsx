@@ -25,7 +25,7 @@ import {isInsideElement} from './Utils';
 import classNames from 'classnames';
 import {IFile} from '../../../server/db/models';
 import {EModalTabIndex} from "./Reducers";
-import {SERVER_REST_ADDRESS} from '../../../config';
+import {AppConfig} from '../../../config';
 
 /**
  * DropZone state.
@@ -265,7 +265,7 @@ class DropZoneComponent extends React.Component<IDropZoneStateProps & TStyleProp
                                     <Card className={classes.card} key={file.id}>
                                         <CardMedia
                                             className={classes.cardMedia}
-                                            image={`${SERVER_REST_ADDRESS}/file/${file.id}`}
+                                            image={`${AppConfig.SERVER_REST_ADDRESS}/file/${file.id}`}
                                         />
                                         <CardContent className={classes.cardContent}>
                                             <Typography
