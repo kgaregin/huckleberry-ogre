@@ -5,7 +5,7 @@
   "main": "backend/bin/runServer.js",
   "scripts": {
     "start": "npx npm-run-all -p server-dev client-watch",
-    "server-prod": "ts-node-dev --project src/server/tsconfig.json src/server/server.ts",
+    "server-prod": "ts-node --project src/server/tsconfig.json src/server/server.ts",
     "server-dev": "ts-node-dev --project src/server/tsconfig.json src/server/server.ts",
     "server-debug": "ts-node-dev %NODE_DEBUG_OPTION% --project src/server/tsconfig.json src/server/server.ts",
     "client-build": "webpack",
