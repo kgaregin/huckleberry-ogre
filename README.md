@@ -1,4 +1,7 @@
 ### Huckleberry Ogre playground website
+#### Note: as project grows, I decided to move it to bitbucket*. For the latest version, write me kgaregin@gmail.com
+###### \* GitHub doesn't offer any easy-to-use solutions for storing sensitive data and I don't want to separate this data with repository in purpose to make faster deployment process.
+
 * required global dependencies:
 ```
 npm i typescript -g
